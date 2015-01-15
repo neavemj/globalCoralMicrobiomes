@@ -37,11 +37,11 @@ allPhylo= phyloseq(OTU, TAX, META)
 
 # some transformations
 
-microSub <- prune_taxa(taxa_sums(allPhylo) > 0, allPhylo)
-microSubRel = transform_sample_counts(microSub, function(x) x / sum(x) )
-microSubRelFilt = filter_taxa(microSubRel, function(x) mean(x) > 1e-5, TRUE)
+allPhylo <- prune_taxa(taxa_sums(allPhylo) > 0, allPhylo)
+allPhyloFilt = filter_taxa(allPhylo, function(x) mean(x) > 0.1, TRUE)
 
-plot_bar(allPhylo, x='species', fill="Phylum")
+plot_bar(allPhyloFilt, fill="Phylum") +
+  facet_wrap(~species, scales='free')
 
 
 

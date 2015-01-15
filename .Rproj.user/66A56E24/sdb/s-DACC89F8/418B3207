@@ -1,0 +1,17 @@
+{
+    "contents" : "## Phyloseq and r analysis of the Minimum Entropy Decomposition results ##\n# 15.1.2015\n\n",
+    "created" : 1421317965197.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1634103408",
+    "id" : "418B3207",
+    "lastKnownWriteTime" : 1421318029,
+    "path" : "~/microbiome/subprojects/2.16S_MiSeq/2.data/MEDecomposition/combinedMED.R",
+    "project_path" : "combinedMED.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

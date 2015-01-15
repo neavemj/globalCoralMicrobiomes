@@ -40,9 +40,30 @@ allPhylo= phyloseq(OTU, TAX, META)
 allPhylo <- prune_taxa(taxa_sums(allPhylo) > 0, allPhylo)
 allPhyloFilt = filter_taxa(allPhylo, function(x) mean(x) > 0.1, TRUE)
 
+# bar chart with everything included
+
 plot_bar(allPhyloFilt, fill="Phylum") +
   facet_wrap(~species, scales='free')
 
+# let's check what's happening with different Endozoicomonas OTUs
+
+allPhyloEndo = subset_taxa(allPhylo, Genus=='Endozoicomonas')
+
+allBarEndo <- plot_bar(allPhyloEndo, fill="Genus")
+allBarEndo + facet_wrap(~site, scales='free')
+
+# add coloring for different Endozoicomonas OTUs
+
+tax_table(allPhyloEndo) <- cbind(tax_table(allPhyloEndo), Strain=taxa_names(allPhyloEndo))
+myranks = c("Genus", "Strain")
+mylabels = apply(tax_table(allPhyloEndo)[, myranks], 1, paste, sep="", collapse="_")
+
+tax_table(allPhyloEndo) <- cbind(tax_table(allPhyloEndo), catglab=mylabels)
+
+allPhyloEndoFilt = filter_taxa(allPhyloEndo, function(x) mean(x) > 0.1, TRUE)
+
+plot_bar(allPhyloEndoFilt, fill="catglab") +
+  facet_wrap(~morphology+site, scales='free')
 
 
 

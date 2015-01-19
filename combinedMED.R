@@ -60,14 +60,14 @@ mylabels = apply(tax_table(allPhyloEndo)[, myranks], 1, paste, sep="", collapse=
 
 tax_table(allPhyloEndo) <- cbind(tax_table(allPhyloEndo), catglab=mylabels)
 
-allPhyloEndoFilt = filter_taxa(allPhyloEndo, function(x) mean(x) > 1, TRUE)
+allPhyloEndoFilt = filter_taxa(allPhyloEndo, function(x) mean(x) > 0.1, TRUE)
 
 plot_bar(allPhyloEndoFilt, fill="catglab") +
   facet_wrap(~species+site, scales='free')
 
 # take a look at the pocilloporid endozoics
 
-allPhyloEndoFiltPoc = subset_samples(allPhyloEndoFilt, species=='Pocillopora damicornis')
+allPhyloEndoFiltPoc = subset_samples(allPhyloEndoFilt, species=='Pocillopora verrucosa')
 
 plot_bar(allPhyloEndoFiltPoc, fill="catglab") +
   facet_wrap(~species+site, scales='free')

@@ -163,8 +163,8 @@ spistOTUphyloEndo1MicRS = merge_phyloseq(spistOTUphyloEndo1Mic, spistOTUphyloEnd
 spistOTUphyloEndo1MicRSBar <- plot_bar(spistOTUphyloEndo1MicRS, title='3% OTUs')
 
 ggplot(spistOTUphyloEndo1MicRSBar$data, aes(x=site, y=Abundance)) +
-  geom_boxplot(aes(fill=catglab), alpha=0.8) +
-  geom_point(position=position_dodge(width=0.75), aes(group=catglab)) 
+  geom_boxplot(aes(fill=catglab)) +
+  geom_point(position=position_dodge(width=0.75), aes(group=catglab), size=3) 
 
 # 1% OTUs
 
@@ -180,7 +180,7 @@ spistOTUphyloEndo1_1 = merge_phyloseq(spistOTUphyloEndo1_3, spistOTUphyloEndo1_6
 end1bar_1 <- plot_bar(spistOTUphyloEndo1_1, title='1% OTUs', fill='catglab')
 
 ggplot(end1bar_1$data, aes(x=site, y=Abundance)) +
-  geom_boxplot(aes(fill=catglab), alpha=0.8) +
+  geom_boxplot(aes(fill=catglab)) +
   geom_point(position=position_dodge(width=0.75), aes(group=catglab)) 
 
 # just Micronesia vs Red Sea
@@ -192,8 +192,24 @@ spistOTUphyloEndo1_1MicRS = merge_phyloseq(spistOTUphyloEndo1_1Mic, spistOTUphyl
 spistOTUphyloEndo1_1MicRSBar <- plot_bar(spistOTUphyloEndo1_1MicRS, title='1% OTUs')
 
 ggplot(spistOTUphyloEndo1_1MicRSBar$data, aes(x=site, y=Abundance)) +
-  geom_boxplot(aes(fill=catglab), alpha=0.8) +
+  geom_boxplot(aes(fill=catglab)) +
   geom_point(position=position_dodge(width=0.75), aes(group=catglab)) 
+
+
+# OTU 3
+
+spistMEDEndoRel1_4794Mic = subset_samples(spistMEDEndoRel1_4794, site=='Micronesia')
+spistMEDEndoRel1_4794RS = subset_samples(spistMEDEndoRel1_4794, site=='RedSea')
+spistMEDEndoRel1_4794MicRS = merge_phyloseq(spistMEDEndoRel1_4794RS, spistMEDEndoRel1_4794Mic)
+
+spistMEDEndoRel1_4794MicRSBar <- plot_bar(spistMEDEndoRel1_4794MicRS, title='MED nodes')
+
+ggplot(spistMEDEndoRel1_4794MicRSBar$data, aes(x=site, y=Abundance, title='MED4794')) +
+  geom_boxplot(aes(fill = site)) +
+  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
+
+
 
 
 # MED nodes split from the original Otu0001 at 3%
@@ -214,6 +230,12 @@ ggplot(endMEDbar_1$data, aes(x=site, y=Abundance)) +
   geom_boxplot(aes(fill=catglab), alpha=0.8) +
   geom_point(position=position_dodge(width=0.75), aes(group=catglab)) 
 
+endMEDbar_4794 <- plot_bar(spistMEDEndoRel1_4794, title='MED nodes', fill='catglab')
+
+ggplot(endMEDbar_4794$data, aes(x=site, y=Abundance)) +
+  geom_boxplot(aes(fill=catglab), alpha=0.8) +
+  geom_point(position=position_dodge(width=0.75), aes(group=catglab)) 
+
 # just Micronesia vs Red Sea
 
 spistMEDEndoRel1Mic = subset_samples(spistMEDEndoRel1, site=='Micronesia')
@@ -226,7 +248,42 @@ ggplot(spistMEDEndoRel1MicRSBar$data, aes(x=site, y=Abundance)) +
   geom_boxplot(aes(fill=catglab), alpha=0.8) +
   geom_point(position=position_dodge(width=0.75), aes(group=catglab)) 
 
+# MED4794
 
+spistMEDEndoRel1_4794Mic = subset_samples(spistMEDEndoRel1_4794, site=='Micronesia')
+spistMEDEndoRel1_4794RS = subset_samples(spistMEDEndoRel1_4794, site=='RedSea')
+spistMEDEndoRel1_4794MicRS = merge_phyloseq(spistMEDEndoRel1_4794RS, spistMEDEndoRel1_4794Mic)
 
+spistMEDEndoRel1_4794MicRSBar <- plot_bar(spistMEDEndoRel1_4794MicRS, title='MED nodes')
 
+ggplot(spistMEDEndoRel1_4794MicRSBar$data, aes(x=site, y=Abundance, title='MED4794')) +
+  geom_boxplot(aes(fill = site)) +
+  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
+
+# MED5444
+
+spistMEDEndoRel1_5444Mic = subset_samples(spistMEDEndoRel1_5444, site=='Micronesia')
+spistMEDEndoRel1_5444RS = subset_samples(spistMEDEndoRel1_5444, site=='RedSea')
+spistMEDEndoRel1_5444MicRS = merge_phyloseq(spistMEDEndoRel1_5444RS, spistMEDEndoRel1_5444Mic)
+
+spistMEDEndoRel1_5444MicRSBar <- plot_bar(spistMEDEndoRel1_5444MicRS, title='MED nodes')
+
+ggplot(spistMEDEndoRel1_5444MicRSBar$data, aes(x=site, y=Abundance, title='MED5444')) +
+  geom_boxplot(aes(fill = site)) +
+  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
+
+# MED4669
+
+spistMEDEndoRel1_4669Mic = subset_samples(spistMEDEndoRel1_4669, site=='Micronesia')
+spistMEDEndoRel1_4669RS = subset_samples(spistMEDEndoRel1_4669, site=='RedSea')
+spistMEDEndoRel1_4669MicRS = merge_phyloseq(spistMEDEndoRel1_4669RS, spistMEDEndoRel1_4669Mic)
+
+spistMEDEndoRel1_4669MicRSBar <- plot_bar(spistMEDEndoRel1_4669MicRS, title='MED nodes')
+
+ggplot(spistMEDEndoRel1_4669MicRSBar$data, aes(x=site, y=Abundance, title='MED4669')) +
+  geom_boxplot(aes(fill = site)) +
+  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
 

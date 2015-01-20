@@ -151,7 +151,7 @@ spistOTUphyloEndo1 = subset_taxa(spistOTUphyloEndoRel, catglab=='Endozoicomonas(
 end1bar <- plot_bar(spistOTUphyloEndo1, title='3% OTUs')
 
 ggplot(end1bar$data) +
-  geom_boxplot(aes(x=site, y=Abundance, fill=site)) +
+  geom_boxplot(aes(x=site, y=Abundance, fill=catglab)) +
   geom_point(aes(x=site, y=Abundance))
 
 # 1% OTUs
@@ -165,15 +165,35 @@ spistOTUphyloEndo1_144 = subset_taxa(spist1OTUphyloEndoRel, catglab=="Endozoicom
 
 spistOTUphyloEndo1_1 = merge_phyloseq(spistOTUphyloEndo1_3, spistOTUphyloEndo1_6, spistOTUphyloEndo1_7, spistOTUphyloEndo1_144)
 
-
-
 end1bar_1 <- plot_bar(spistOTUphyloEndo1_1, title='1% OTUs', fill='catglab')
 
 ggplot(end1bar_1$data) +
-  geom_boxplot(aes(x=site, y=Abundance, fill=catglab)) +
+  geom_boxplot(aes(x=site, y=Abundance, fill=catglab), alpha=1) +
   geom_point(aes(x=site, y=Abundance))
 
+# MED nodes split from the original Otu0001 at 3%
 
+spistMEDEndoRel = transform_sample_counts(spistPhyloEndo, function(x) x / sum(x) )
+
+spistMEDEndoRel1_2908 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000002908")
+spistMEDEndoRel1_5444 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000005444")
+spistMEDEndoRel1_4684 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000004684")
+spistMEDEndoRel1_4669 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000004669")
+spistMEDEndoRel1_4794 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000004794")
+
+spistMEDEndoRel1 = merge_phyloseq(spistMEDEndoRel1_2908, spistMEDEndoRel1_5444, spistMEDEndoRel1_4684, spistMEDEndoRel1_4669, spistMEDEndoRel1_4794)
+
+endMEDbar_1 <- plot_bar(spistMEDEndoRel1, title='MED nodes', fill='catglab')
+
+ggplot(endMEDbar_1$data, aes(x=site, y=Abundance)) +
+  geom_boxplot(aes(fill=catglab)) +
+  geom_point(position=position_dodge(width=0.75), aes(group=catglab)) 
+
+
+  geom_jitter()
+  geom_jitter(aes(group=catglab))
+  
+position = position_jitter(width = 0.2), 
 
 
 

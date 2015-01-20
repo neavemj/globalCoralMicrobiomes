@@ -129,27 +129,54 @@ tax_table(spist1OTUphyloEndo) <- cbind(tax_table(spist1OTUphyloEndo), catglab=my
 
 # standardize the OTU shared files
 
-spistOTUphyloEndoRel = transform_sample_counts(spistOTUphyloEndo, function(x) x / sum(x) )
+spistOTUphyloEndoMerged = merge_samples(spistOTUphyloEndo, "site")
+spistOTUphyloEndoMergedRel = transform_sample_counts(spistOTUphyloEndoMerged, function(x) x / sum(x) )
+plot_bar(spistOTUphyloEndoMergedRel, fill='catglab', title='3% OTUs')
 
-spistOTUphyloEndoFile = filter_taxa(spistOTUphyloEndo, function(x) mean(x) > 0.1, TRUE)
-spistOTUphyloEndoFile = filter_taxa(spistOTUphyloEndo, function(x) mean(x) > 0.1, TRUE)
-spistOTUphyloEndoFile = filter_taxa(spistOTUphyloEndo, function(x) mean(x) > 0.1, TRUE)
+spist1OTUphyloEndoMerged = merge_samples(spist1OTUphyloEndo, "site")
+spist1OTUphyloEndoMergedRel = transform_sample_counts(spist1OTUphyloEndoMerged, function(x) x / sum(x) )
+spist1OTUphyloEndoMergedRelFilt = filter_taxa(spist1OTUphyloEndoMergedRel, function(x) mean(x) > 0.01, TRUE)
+plot_bar(spist1OTUphyloEndoMergedRelFilt, fill='catglab', title='1% OTUs')
 
-plot_bar(spistOTUphyloEndoRel, x='site', fill="catglab", title='3% OTUs') +
-  facet_wrap(~species+site, scales='free')
+spistPhyloEndoMerged = merge_samples(spistPhyloEndo, "site")
+spistPhyloEndoMergedRel = transform_sample_counts(spistPhyloEndoMerged, function(x) x / sum(x) )
+spistPhyloEndoMergedRelFilt = filter_taxa(spistPhyloEndoMergedRel, function(x) mean(x) > 0.01, TRUE)
+plot_bar(spistPhyloEndoMergedRelFilt, fill='catglab', title='MED otus')
 
-plot_bar(spist1OTUphyloEndo, x='site', fill="catglab", title='1% OTUs') +
-  facet_wrap(~species+site, scales='free')
+# let's have a look at what happends to the most abundant Endo OTU
+# 3% OTUs - OTU0001
 
-plot_bar(spistPhyloEndo, fill="catglab", x='site', title='MED nodes') +
-  facet_wrap(~species+site, scales='free')
+spistOTUphyloEndo1 = subset_taxa(spistOTUphyloEndoRel, catglab=='Endozoicomonas(100)_Otu0001')
+
+end1bar <- plot_bar(spistOTUphyloEndo1, title='3% OTUs')
+
+ggplot(end1bar$data) +
+  geom_boxplot(aes(x=site, y=Abundance, fill=site)) +
+  geom_point(aes(x=site, y=Abundance))
+
+# 1% OTUs
+
+spist1OTUphyloEndoRel = transform_sample_counts(spist1OTUphyloEndo, function(x) x / sum(x) )
+
+spistOTUphyloEndo1_3 = subset_taxa(spist1OTUphyloEndoRel, catglab=="Endozoicomonas(100)_Otu00003")
+spistOTUphyloEndo1_6 = subset_taxa(spist1OTUphyloEndoRel, catglab=="Endozoicomonas(100)_Otu00006")
+spistOTUphyloEndo1_7 = subset_taxa(spist1OTUphyloEndoRel, catglab=="Endozoicomonas(100)_Otu00007")
+spistOTUphyloEndo1_144 = subset_taxa(spist1OTUphyloEndoRel, catglab=="Endozoicomonas(100)_Otu00144")
+
+spistOTUphyloEndo1_1 = merge_phyloseq(spistOTUphyloEndo1_3, spistOTUphyloEndo1_6, spistOTUphyloEndo1_7, spistOTUphyloEndo1_144)
 
 
-# take a look at the pocilloporid endozoics
 
-allPhyloEndoFiltPoc = subset_samples(allPhyloEndoFilt, species=='Pocillopora verrucosa')
+end1bar_1 <- plot_bar(spistOTUphyloEndo1_1, title='1% OTUs', fill='catglab')
 
-plot_bar(allPhyloEndoFiltPoc, fill="catglab") +
-  facet_wrap(~species+site, scales='free')
+ggplot(end1bar_1$data) +
+  geom_boxplot(aes(x=site, y=Abundance, fill=catglab)) +
+  geom_point(aes(x=site, y=Abundance))
+
+
+
+
+
+
 
 

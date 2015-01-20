@@ -6,7 +6,7 @@
 
 library("phyloseq")
 library("ggplot2")
-library("plyr")
+?library("plyr")
 library("vegan")
 setwd("./data")
 
@@ -127,18 +127,21 @@ tax_table(spistPhyloEndo) <- cbind(tax_table(spistPhyloEndo), catglab=mylabelsME
 tax_table(spistOTUphyloEndo) <- cbind(tax_table(spistOTUphyloEndo), catglab=mylabels3OTU)
 tax_table(spist1OTUphyloEndo) <- cbind(tax_table(spist1OTUphyloEndo), catglab=mylabels1OTU)
 
-## THE OTU TABLES ARE NOT STANDARDIZED
+# standardize the OTU shared files
 
-allPhyloEndoFilt = filter_taxa(allPhyloEndo, function(x) mean(x) > 0.1, TRUE)
+spistOTUphyloEndoRel = transform_sample_counts(spistOTUphyloEndo, function(x) x / sum(x) )
 
+spistOTUphyloEndoFile = filter_taxa(spistOTUphyloEndo, function(x) mean(x) > 0.1, TRUE)
+spistOTUphyloEndoFile = filter_taxa(spistOTUphyloEndo, function(x) mean(x) > 0.1, TRUE)
+spistOTUphyloEndoFile = filter_taxa(spistOTUphyloEndo, function(x) mean(x) > 0.1, TRUE)
 
-plot_bar(spistPhyloEndo, fill="catglab", title='MED nodes') +
+plot_bar(spistOTUphyloEndoRel, x='site', fill="catglab", title='3% OTUs') +
   facet_wrap(~species+site, scales='free')
 
-plot_bar(spistOTUphyloEndo, fill="catglab", title='3% OTUs') +
+plot_bar(spist1OTUphyloEndo, x='site', fill="catglab", title='1% OTUs') +
   facet_wrap(~species+site, scales='free')
 
-plot_bar(spist1OTUphyloEndo, fill="catglab", title='1% OTUs') +
+plot_bar(spistPhyloEndo, fill="catglab", x='site', title='MED nodes') +
   facet_wrap(~species+site, scales='free')
 
 

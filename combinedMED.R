@@ -82,16 +82,20 @@ plot_bar(allPhyloEndoFiltPoc, fill="catglab") +
 
 # plot a tree of all endozoicomonas MED nodes
 
-plot_tree(endoTree, ladderize='left', color='site', base.spacing = 0.04, size='abundance')
-
-allPhyloEndoFilt = filter_taxa(allPhyloEndo, function(x) mean(x) > 0.1, TRUE)
+plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='site', size='abundance', label.tips = 'taxa_names')
 
 
+# mess around with merging etc.
 
+endoTreeSite = merge_samples(endoTree, "site", fun=)
 
+sample_data(endoTreeSite)$site <- factor(sample_names(endoTreeSite))
+sample_data(endoTreeSite)$species <- factor(sample_names(endoTreeSite))
+endoTreeSiteRel = transform_sample_counts(endoTreeSite, function(x) x / sum(x) )
 
+endoTreeFilt= filter_taxa(endoTree, function(x) mean(x) > 0.1, TRUE)
 
-
+plot_tree(endoTree, ladderize='left', color='site', base.spacing = 0.04, size='abundance', )
 
 
 

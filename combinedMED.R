@@ -88,14 +88,17 @@ plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='site', s
 # mess around with merging etc.
 
 endoTreeSite = merge_samples(endoTree, "site", fun=)
+endoTreeSpecies = merge_samples(endoTree, 'species', fun=mean)
+
+# for some reason this just sums the taxa abundances - doesn't calculate the mean! Ahh...
 
 sample_data(endoTreeSite)$site <- factor(sample_names(endoTreeSite))
-sample_data(endoTreeSite)$species <- factor(sample_names(endoTreeSite))
+sample_data(endoTreeSpecies)$species <- factor(sample_names(endoTreeSpecies))
+
+get_taxa(endoTreeSite)
+get_taxa(endoTree)
+
 endoTreeSiteRel = transform_sample_counts(endoTreeSite, function(x) x / sum(x) )
+plot_tree(endoTree, ladderize='left', color='site', size='abundance', label.tips='taxa_names')
 
-endoTreeFilt= filter_taxa(endoTree, function(x) mean(x) > 0.1, TRUE)
-
-plot_tree(endoTree, ladderize='left', color='site', base.spacing = 0.04, size='abundance', )
-
-
-
+#endoTreeFilt= filter_taxa(endoTree, function(x) mean(x) > 0.1, TRUE)

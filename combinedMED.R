@@ -7,6 +7,7 @@ library("phyloseq")
 library("ggplot2")
 library("plyr")
 library("vegan")
+library('ape')
 setwd("./data")
 
 # import data
@@ -28,12 +29,17 @@ metaFile = read.table('metaData2.MED', header=T, sep='\t')
 rownames(metaFile) = metaFile[,1]
 metaFile = metaFile[,2:7]
 
+# import phylogenetic tree of Endozoicomonas types
+
+endoTree = read.tree(file='MEDNJ3.tree')
+
 ### Create phyloseq object
 
 OTU = otu_table(allShared, taxa_are_rows = FALSE)
 TAX = tax_table(allTax)
 META = sample_data(metaFile)
-allPhylo= phyloseq(OTU, TAX, META)
+TREE = phy_tree(endoTree)
+allPhylo = phyloseq(OTU, TAX, META, TREE)
 
 # some transformations
 
@@ -72,6 +78,10 @@ allPhyloEndoFiltPoc = subset_samples(allPhyloEndoFilt, species=='Pocillopora ver
 plot_bar(allPhyloEndoFiltPoc, fill="catglab") +
   facet_wrap(~species+site, scales='free')
 
+# plot a tree of all endozoicomonas MED nodes
+
+
+plot_tree(allPhylo, ladderize='left', label.tips='taxa_names', color='site', size='abundance')
 
 
 

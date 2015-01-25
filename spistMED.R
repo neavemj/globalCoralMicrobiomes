@@ -162,9 +162,10 @@ spistOTUphyloEndo1MicRS = merge_phyloseq(spistOTUphyloEndo1Mic, spistOTUphyloEnd
 
 spistOTUphyloEndo1MicRSBar <- plot_bar(spistOTUphyloEndo1MicRS, title='3% OTUs')
 
-ggplot(spistOTUphyloEndo1MicRSBar$data, aes(x=site, y=Abundance)) +
-  geom_boxplot(aes(fill=catglab)) +
-  geom_point(position=position_dodge(width=0.75), aes(group=catglab), size=3) 
+ggplot(spistOTUphyloEndo1MicRSBar$data, aes(x=site, y=Abundance, title='OTU1')) +
+  geom_boxplot(aes(fill = site)) +
+  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
 
 # 1% OTUs
 
@@ -198,18 +199,42 @@ ggplot(spistOTUphyloEndo1_1MicRSBar$data, aes(x=site, y=Abundance)) +
 
 # OTU 3
 
-spistMEDEndoRel1_4794Mic = subset_samples(spistMEDEndoRel1_4794, site=='Micronesia')
-spistMEDEndoRel1_4794RS = subset_samples(spistMEDEndoRel1_4794, site=='RedSea')
-spistMEDEndoRel1_4794MicRS = merge_phyloseq(spistMEDEndoRel1_4794RS, spistMEDEndoRel1_4794Mic)
+spistOTUphyloEndo1_3Mic = subset_samples(spistOTUphyloEndo1_3, site=='Micronesia')
+spistOTUphyloEndo1_3RS = subset_samples(spistOTUphyloEndo1_3, site=='RedSea')
+spistOTUphyloEndo1_3MicRS = merge_phyloseq(spistOTUphyloEndo1_3RS, spistOTUphyloEndo1_3Mic)
 
-spistMEDEndoRel1_4794MicRSBar <- plot_bar(spistMEDEndoRel1_4794MicRS, title='MED nodes')
+spistOTUphyloEndo1_3MicRSBar <- plot_bar(spistOTUphyloEndo1_3MicRS, title='OTU3')
 
-ggplot(spistMEDEndoRel1_4794MicRSBar$data, aes(x=site, y=Abundance, title='MED4794')) +
+ggplot(spistOTUphyloEndo1_3MicRSBar$data, aes(x=site, y=Abundance, title='OTU3')) +
   geom_boxplot(aes(fill = site)) +
   scale_fill_manual(values=c("#00BA38", "#F8766D")) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
 
+# OTU 6
 
+spistOTUphyloEndo1_6Mic = subset_samples(spistOTUphyloEndo1_6, site=='Micronesia')
+spistOTUphyloEndo1_6RS = subset_samples(spistOTUphyloEndo1_6, site=='RedSea')
+spistOTUphyloEndo1_6MicRS = merge_phyloseq(spistOTUphyloEndo1_6RS, spistOTUphyloEndo1_6Mic)
+
+spistOTUphyloEndo1_6MicRSBar <- plot_bar(spistOTUphyloEndo1_6MicRS, title='OTU6')
+
+ggplot(spistOTUphyloEndo1_6MicRSBar$data, aes(x=site, y=Abundance, title='OTU6')) +
+  geom_boxplot(aes(fill = site)) +
+  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
+
+# OTU 7
+
+spistOTUphyloEndo1_7Mic = subset_samples(spistOTUphyloEndo1_7, site=='Micronesia')
+spistOTUphyloEndo1_7RS = subset_samples(spistOTUphyloEndo1_7, site=='RedSea')
+spistOTUphyloEndo1_7MicRS = merge_phyloseq(spistOTUphyloEndo1_7RS, spistOTUphyloEndo1_7Mic)
+
+spistOTUphyloEndo1_7MicRSBar <- plot_bar(spistOTUphyloEndo1_7MicRS, title='OTU7')
+
+ggplot(spistOTUphyloEndo1_7MicRSBar$data, aes(x=site, y=Abundance, title='OTU7')) +
+  geom_boxplot(aes(fill = site)) +
+  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
 
 
 # MED nodes split from the original Otu0001 at 3%

@@ -39,7 +39,9 @@ OTU = otu_table(allShared, taxa_are_rows = FALSE)
 TAX = tax_table(allTax)
 META = sample_data(metaFile)
 TREE = phy_tree(endoTree)
-allPhylo = phyloseq(OTU, TAX, META, TREE)
+allPhylo = phyloseq(OTU, TAX, META)
+
+endoTree = phyloseq(OTU, META, TREE)
 
 # some transformations
 
@@ -80,8 +82,16 @@ plot_bar(allPhyloEndoFiltPoc, fill="catglab") +
 
 # plot a tree of all endozoicomonas MED nodes
 
+plot_tree(endoTree, ladderize='left', color='site', base.spacing = 0.04, size='abundance')
 
-plot_tree(allPhylo, ladderize='left', label.tips='taxa_names', color='site', size='abundance')
+allPhyloEndoFilt = filter_taxa(allPhyloEndo, function(x) mean(x) > 0.1, TRUE)
+
+
+
+
+
+
+
 
 
 

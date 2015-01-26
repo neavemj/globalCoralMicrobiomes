@@ -50,17 +50,25 @@ allPhyloFilt = filter_taxa(allPhylo, function(x) mean(x) > 0.1, TRUE)
 
 # bar chart with everything included
 
+theme_set(theme_bw())
 plot_bar(allPhyloFilt, fill="Phylum") +
-  facet_wrap(~species, scales='free')
+  scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
+  facet_grid(~site, scales='free', space='free_x')
 
 # bar chart of s.pistillata phyla
 
 spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
-spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
+#sort(unique(sample_data(spist)$site))
+sample_data(spist)$siteOrdered <- factor(sample_data(spist)$site, levels = c("AmericanSamoa", "Indonesia", "MaggieIs", "Micronesia", "Ningaloo", "RedSea"))
+
+spistFilt = filter_taxa(spist, function(x) mean(x) > 0.01, TRUE)
 
 theme_set(theme_bw())
-plot_bar(spistFilt, fill="Phylum") +
-  facet_wrap(~site, scales='free_x')
+plot_bar(spist, fill="Phylum") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
+  facet_grid(~site, scales='free', space='free_x')
+
+
 
 # let's check what's happening with different Endozoicomonas OTUs
 

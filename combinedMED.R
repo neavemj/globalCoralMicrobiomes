@@ -10,18 +10,31 @@ library("vegan")
 library('ape')
 setwd("./data")
 
-# import data
+# import normal matrix
 
 allShared = read.table("all.matrixPercent.txt", header=T)
 rownames(allShared) = allShared[,1]
 allShared = allShared[,2:length(allShared)]
 
-# Import taxonomy file from mothur
+# import matrix modified for phylogenetic tree
 
-allTax = read.table('all.MED.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
+allSharedTree = read.table("all.matrixPercent.tree.txt", header=T)
+rownames(allSharedTree) = allSharedTree[,1]
+allSharedTree = allSharedTree[,2:length(allSharedTree)]
+
+# Import normal taxonomy file from mothur
+
+allTax = read.table('all.nodeReps.taxonomy', header=T, sep='\t')
 rownames(allTax) = allTax[,1]
 allTax = allTax[,3:9]
 allTax = as.matrix(allTax)
+
+# Import taxonomy file modified for the tree
+
+allTaxTree = read.table('all.nodeReps.tree.taxonomy', header=T, sep='\t')
+rownames(allTaxTree) = allTaxTree[,1]
+allTaxTree = allTaxTree[,3:9]
+allTaxTree = as.matrix(allTaxTree)
 
 # import meta data
 
@@ -36,12 +49,13 @@ endoTree = read.tree(file='MEDNJ3.tree')
 ### Create phyloseq object
 
 OTU = otu_table(allShared, taxa_are_rows = FALSE)
-TAX = tax_table(allTax)
+OTUtree = otu_table(allSharedTree, taxa_are_rows = FALSE)
+TAX = tax_table(allTax) 
+Taxtree = tax_table(allTaxTree)
 META = sample_data(metaFile)
 TREE = phy_tree(endoTree)
 allPhylo = phyloseq(OTU, TAX, META)
-
-endoTree = phyloseq(OTU, META, TREE)
+endoTree = phyloseq(OTUtree, META, TREE)
 
 # some transformations
 
@@ -59,15 +73,17 @@ plot_bar(allPhyloFilt, fill="Phylum") +
 
 spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
 #sort(unique(sample_data(spist)$site))
-sample_data(spist)$siteOrdered <- factor(sample_data(spist)$site, levels = c("AmericanSamoa", "Indonesia", "MaggieIs", "Micronesia", "Ningaloo", "RedSea"))
+#sample_data(spist)$siteOrdered <- factor(sample_data(spist)$site, levels = c("AmericanSamoa", "Indonesia", "MaggieIs", "Micronesia", "Ningaloo", "RedSea"))
 
-spistFilt = filter_taxa(spist, function(x) mean(x) > 0.01, TRUE)
+spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
 
 theme_set(theme_bw())
-plot_bar(spist, fill="Phylum") +
+plot_bar(spistFilt, fill="Class") +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x')
 
+#Top100OTUs = names(sort(taxa_sums(spist), TRUE)[1:100])
+#spist100 = prune_taxa(Top50OTUs, spist)
 
 
 # let's check what's happening with different Endozoicomonas OTUs
@@ -99,23 +115,18 @@ plot_bar(allPhyloEndoFiltPoc, fill="catglab") +
 
 # plot a tree of all endozoicomonas MED nodes
 
-plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='site', size='abundance', label.tips = 'taxa_names')
-
+plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='species', size='abundance', label.tips = 'taxa_names')
 
 # mess around with merging etc.
 
-endoTreeSite = merge_samples(endoTree, "site", fun=)
-endoTreeSpecies = merge_samples(endoTree, 'species', fun=mean)
+#endoTreeSite = merge_samples(endoTree, "site", fun=)
+#endoTreeSpecies = merge_samples(endoTree, 'species', fun=mean)
 
 # for some reason this just sums the taxa abundances - doesn't calculate the mean! Ahh...
 
-sample_data(endoTreeSite)$site <- factor(sample_names(endoTreeSite))
-sample_data(endoTreeSpecies)$species <- factor(sample_names(endoTreeSpecies))
-
-get_taxa(endoTreeSite)
-get_taxa(endoTree)
-
-endoTreeSiteRel = transform_sample_counts(endoTreeSite, function(x) x / sum(x) )
-plot_tree(endoTree, ladderize='left', color='site', size='abundance', label.tips='taxa_names')
-
+#sample_data(endoTreeSite)$site <- factor(sample_names(endoTreeSite))
+#sample_data(endoTreeSpecies)$species <- factor(sample_names(endoTreeSpecies))
+#get_taxa(endoTreeSite)
+#get_taxa(endoTree)
+#endoTreeSiteRel = transform_sample_counts(endoTreeSite, function(x) x / sum(x) )
 #endoTreeFilt= filter_taxa(endoTree, function(x) mean(x) > 0.1, TRUE)

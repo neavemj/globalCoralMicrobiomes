@@ -53,6 +53,15 @@ allPhyloFilt = filter_taxa(allPhylo, function(x) mean(x) > 0.1, TRUE)
 plot_bar(allPhyloFilt, fill="Phylum") +
   facet_wrap(~species, scales='free')
 
+# bar chart of s.pistillata phyla
+
+spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
+spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
+
+theme_set(theme_bw())
+plot_bar(spistFilt, fill="Phylum") +
+  facet_wrap(~site, scales='free_x')
+
 # let's check what's happening with different Endozoicomonas OTUs
 
 allPhyloEndo = subset_taxa(allPhylo, Genus=='Endozoicomonas')

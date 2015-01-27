@@ -54,10 +54,10 @@ pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.2, TRUE)
 #colourCount = length(unique(mtcars$hp))
 #getPalette = colorRampPalette(brewer.pal(9, "Set1"))
 
-pVerrFiltGlom <- tax_glom(pVerrFilt, taxrank="Phylum")
+pVerrFiltGlom <- tax_glom(pVerrFilt, taxrank="Class")
 
 theme_set(theme_bw())
-plot_bar(pVerrFiltGlom, fill="Phylum", x="names") +
+plot_bar(pVerrFiltGlom, fill="Class", x="names") +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x')
 

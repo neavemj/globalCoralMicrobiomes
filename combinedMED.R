@@ -57,8 +57,9 @@ TREE = phy_tree(endoTree)
 allPhylo = phyloseq(OTU, TAX, META)
 endoTree = phyloseq(OTUtree, META, TREE)
 
-# some transformations
+# some transformations and top line to keep sample order in bar graphs
 
+sample_data(allPhylo)$names <- factor(sample_names(allPhylo), levels=unique(sample_names(allPhylo)))
 allPhylo <- prune_taxa(taxa_sums(allPhylo) > 0, allPhylo)
 allPhyloFilt = filter_taxa(allPhylo, function(x) mean(x) > 0.1, TRUE)
 
@@ -75,10 +76,13 @@ spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
 #sort(unique(sample_data(spist)$site))
 #sample_data(spist)$siteOrdered <- factor(sample_data(spist)$site, levels = c("AmericanSamoa", "Indonesia", "MaggieIs", "Micronesia", "Ningaloo", "RedSea"))
 
-spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
+
+sample_data(spist)$names <- factor(sample_names(spist), levels=unique(sample_names(spist)))
+
+spistFilt = filter_taxa(spist, function(x) mean(x) > 0.01, TRUE)
 
 theme_set(theme_bw())
-plot_bar(spistFilt, fill="Class") +
+plot_bar(spistFilt, fill="Class", x="names") +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x')
 
@@ -89,22 +93,39 @@ plot_bar(spistFilt, fill="Class") +
 # let's check what's happening with different Endozoicomonas OTUs
 
 allPhyloEndo = subset_taxa(allPhylo, Genus=='Endozoicomonas')
-
-allBarEndo <- plot_bar(allPhyloEndo, fill="Genus")
-allBarEndo + facet_wrap(~site, scales='free')
+spistEndo = subset_taxa(spist, Genus=='Endozoicomonas')
 
 # add coloring for different Endozoicomonas OTUs
 
 tax_table(allPhyloEndo) <- cbind(tax_table(allPhyloEndo), Strain=taxa_names(allPhyloEndo))
+tax_table(spistEndo) <- cbind(tax_table(spistEndo), Strain=taxa_names(spistEndo))
+
 myranks = c("Genus", "Strain")
+
 mylabels = apply(tax_table(allPhyloEndo)[, myranks], 1, paste, sep="", collapse="_")
+mylabelsSpist = apply(tax_table(spistEndo)[, myranks], 1, paste, sep="", collapse="_")
 
 tax_table(allPhyloEndo) <- cbind(tax_table(allPhyloEndo), catglab=mylabels)
+tax_table(spistEndo) <- cbind(tax_table(spistEndo), catglab=mylabelsSpist)
 
 allPhyloEndoFilt = filter_taxa(allPhyloEndo, function(x) mean(x) > 0.1, TRUE)
 
 plot_bar(allPhyloEndoFilt, fill="catglab") +
   facet_wrap(~species+site, scales='free')
+
+
+
+sample_data(spistEndo)$names <- factor(sample_names(spistEndo), levels=unique(sample_names(spistEndo)))
+
+spistEndoFilt = filter_taxa(spistEndo, function(x) mean(x) > 0.2, TRUE)
+
+theme_set(theme_bw())
+plot_bar(spistEndoFilt, fill="catglab", x="names") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
+  scale_fill_brewer(type='qual', palette = 'Dark2') +
+  facet_grid(~site, scales='free', space='free_x')
+
+
 
 # take a look at the pocilloporid endozoics
 

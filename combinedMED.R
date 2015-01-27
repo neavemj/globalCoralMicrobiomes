@@ -10,17 +10,23 @@ library("vegan")
 library('ape')
 setwd("./data")
 
-# import normal matrix
+# import normal percent matrix
 
 allShared = read.table("all.matrixPercent.txt", header=T)
 rownames(allShared) = allShared[,1]
 allShared = allShared[,2:length(allShared)]
 
-# import matrix modified for phylogenetic tree
+# import percent matrix modified for phylogenetic tree
 
 allSharedTree = read.table("all.matrixPercent.tree.txt", header=T)
 rownames(allSharedTree) = allSharedTree[,1]
 allSharedTree = allSharedTree[,2:length(allSharedTree)]
+
+# import count matrix for alpha diversity measures
+
+allSharedDiv = read.table("all.MED.matrixCount", header=T)
+rownames(allSharedDiv) = allSharedDiv[,1]
+allSharedDiv = allSharedDiv[,2:length(allSharedDiv)]
 
 # Import normal taxonomy file from mothur
 
@@ -49,15 +55,39 @@ endoTree = read.tree(file='MEDNJ3.tree')
 ### Create phyloseq object
 
 OTU = otu_table(allShared, taxa_are_rows = FALSE)
+OTUdiv = otu_table(allSharedDiv, taxa_are_rows = FALSE)
 OTUtree = otu_table(allSharedTree, taxa_are_rows = FALSE)
 TAX = tax_table(allTax) 
 Taxtree = tax_table(allTaxTree)
 META = sample_data(metaFile)
 TREE = phy_tree(endoTree)
 allPhylo = phyloseq(OTU, TAX, META)
+allPhyloDiv = phyloseq(OTUdiv, TAX, META)
 endoTree = phyloseq(OTUtree, META, TREE)
 
-# some transformations and top line to keep sample order in bar graphs
+# Alpha diversity measures first
+
+theme_set(theme_bw())
+allDivPlot <- plot_richness(allPhyloDiv, x = 'species', measures = c('Chao1', 'Shannon', 'observed'), color = 'site')
+allDivPlot
+
+# get rid of a few of those low corals
+
+allPhyloDivTmp <- subset_samples(allPhyloDiv, species=="seawater")
+allPhyloDivTmp2 <- subset_samples(allPhyloDiv, species=="Stylophora pistillata")
+allPhyloDivTmp3 <- subset_samples(allPhyloDiv, species=="Pocillopora verrucosa")
+allPhyloDivTmp4 <- subset_samples(allPhyloDiv, species=="Pocillopora damicornis")
+allPhyloDiv2 <- merge_phyloseq(allPhyloDivTmp, allPhyloDivTmp2, allPhyloDivTmp3, allPhyloDivTmp4)
+
+
+# The predicted number of OTUs and diversity indecies look similar across the different coral species. I'll add some whisker plots to make this easier to see. 
+
+allDivPlot2 <- plot_richness(allPhyloDiv2, x = 'species', measures = c('Chao1', 'Shannon', 'observed'), color = 'site')
+allDivPlot2
+
+allDivPlot2 + geom_boxplot(data = allDivPlot2$data, aes(x = species, y = value, color = NULL), alpha = 0.1)
+
+# some transformations - top line is to keep sample order in bar graphs
 
 sample_data(allPhylo)$names <- factor(sample_names(allPhylo), levels=unique(sample_names(allPhylo)))
 allPhylo <- prune_taxa(taxa_sums(allPhylo) > 0, allPhylo)

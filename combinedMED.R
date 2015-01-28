@@ -18,7 +18,7 @@ allShared = allShared[,2:length(allShared)]
 
 # import percent matrix modified for phylogenetic tree
 
-allSharedTree = read.table("all.matrixPercent.tree.txt", header=T)
+allSharedTree = read.table("all.matrixPercentTree.txt", header=T)
 rownames(allSharedTree) = allSharedTree[,1]
 allSharedTree = allSharedTree[,2:length(allSharedTree)]
 
@@ -35,13 +35,6 @@ rownames(allTax) = allTax[,1]
 allTax = allTax[,3:9]
 allTax = as.matrix(allTax)
 
-# Import taxonomy file modified for the tree
-
-allTaxTree = read.table('all.nodeReps.tree.taxonomy', header=T, sep='\t')
-rownames(allTaxTree) = allTaxTree[,1]
-allTaxTree = allTaxTree[,3:9]
-allTaxTree = as.matrix(allTaxTree)
-
 # import meta data
 
 metaFile = read.table('metaData2.MED', header=T, sep='\t')
@@ -50,7 +43,7 @@ metaFile = metaFile[,2:7]
 
 # import phylogenetic tree of Endozoicomonas types
 
-endoTree = read.tree(file='MEDNJ3.tree')
+endoTree = read.tree(file='MEDNJ4.tree')
 
 ### Create phyloseq object
 
@@ -58,7 +51,6 @@ OTU = otu_table(allShared, taxa_are_rows = FALSE)
 OTUdiv = otu_table(allSharedDiv, taxa_are_rows = FALSE)
 OTUtree = otu_table(allSharedTree, taxa_are_rows = FALSE)
 TAX = tax_table(allTax) 
-Taxtree = tax_table(allTaxTree)
 META = sample_data(metaFile)
 TREE = phy_tree(endoTree)
 allPhylo = phyloseq(OTU, TAX, META)
@@ -102,7 +94,15 @@ plot_bar(allPhyloFilt, fill="Phylum") +
 
 # plot a tree of all endozoicomonas MED nodes
 
-plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='species', size='abundance', label.tips = 'taxa_names')
+plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='site', size='abundance', label.tips = 'taxa_names', base.spacing = 0.005)
+
+
+theme_set(theme_bw())
+plot_bar(endoTree) +
+  scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
+  facet_grid(~site, scales='free', space='free_x')
+
+
 
 # mess around with merging etc.
 

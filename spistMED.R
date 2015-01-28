@@ -94,6 +94,74 @@ plot_bar(spistEndoFilt, fill="catglab", x="names") +
 
 
 
+# ordination for the poc samples
+
+theme_set(theme_bw())
+spistOrd <- ordinate(spist, "NMDS", "bray")
+plot_ordination(spist, spistOrd, type = 'samples', color='site', title='spist')
+
+# overlay the OTUs onto this
+
+spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
+
+#Top10OTUs = names(sort(taxa_sums(spistFilt), TRUE)[1:10])
+#spistFilt10 = prune_taxa(Top10OTUs, spistFilt)
+
+spistOrd <- ordinate(spist, "NMDS", "bray")
+plot_ordination(spist, spistOrd, type = 'split', color='site', title='spistwater', label="Genus")
+
+# calculate indicator species
+
+spistDist <- vegdist(otu_table(spist), method="bray")
+spistInd <- indspc(otu_table(spist), spistDist, numitr=1000)
+
+# sort by most important indicator species
+
+spistIndVals <- spistInd$vals
+spistIndValsSorted <- spistIndVals[order(-spistIndVals$indval),,drop=FALSE]
+
+indval numocc  pval
+MED000007667 0.5318256470      7 0.001
+MED000007525 0.4988038081      4 0.001
+MED000002495 0.4936241515      2 0.006
+MED000002426 0.4936241515      2 0.006
+MED000005726 0.4634710015      2 0.009
+MED000005721 0.4160763361      5 0.001
+MED000007914 0.4160763361      5 0.001
+MED000005203 0.4133567153      2 0.015
+MED000005495 0.4133567153      2 0.015
+MED000006562 0.3998108740      5 0.001
+
+# overlay these onto ordination
+
+spistOrdTop10 <- spistOrd$species[c(rownames(spistIndValsSorted)[1:10]),]
+
+arrowmatrix = spistOrdTop10
+arrowdf <- data.frame(labels = rownames(arrowmatrix), arrowmatrix)
+
+# get taxonomic information from the original tax file
+
+arrowdf <- data.frame(labels = allTax[rownames(arrowmatrix),"Genus"], arrowmatrix)
+
+arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=1, shape = NULL, color = NULL, label = labels)
+labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = labels, size=1.5)
+arrowhead = arrow(length = unit(0.02, "npc"))
+
+
+spistFiltPlot <- plot_ordination(spist, spistOrd, type = 'samples', color='site', title='spistwater')
+
+spistFiltPlotArrow <- spistFiltPlot + geom_segment(arrowmap, size = 1, data = arrowdf, color = "black",  arrow = arrowhead, show_guide = FALSE) + geom_text(labelmap, size = 4, data = arrowdf)
+spistFiltPlotArrow
+
+# check if sites significantly different
+
+df = as(sample_data(spist), "data.frame")
+d = distance(spist, "bray")
+spistAdonis = adonis(d ~ site, df, permutations=999)
+spistAdonis
+
+
+
 
 
 

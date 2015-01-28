@@ -98,9 +98,7 @@ MED000000600 0.69992476     23 0.001
 
 # overlay these onto ordination
 
-seaOrdFiltTop10 <- seaOrd$species[c("MED000002578","MED000006214","MED000002576","MED000004147","MED000005444","MED000005550","MED000007083","MED000006657","MED000006596","MED000005833"),]
-
-seaOrdTop10 <- seaOrd$species[c("MED000006898","MED000001740","MED000004938","MED000007874","MED000005832","MED000003752","MED000006835","MED000002578","MED000007846","MED000000600"),]
+seaOrdTop10 <- seaOrd$species[c(rownames(seaIndValsSorted)[1:10]),]
 
 arrowmatrix = seaOrdTop10
 arrowdf <- data.frame(labels = rownames(arrowmatrix), arrowmatrix)
@@ -109,14 +107,14 @@ arrowdf <- data.frame(labels = rownames(arrowmatrix), arrowmatrix)
 
 arrowdf <- data.frame(labels = allTax[rownames(arrowmatrix),"Family"], arrowmatrix)
 
-arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=0.5, shape = NULL, color = NULL, label = labels)
+arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=1, shape = NULL, color = NULL, label = labels)
 labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = labels, size=1.5)
 arrowhead = arrow(length = unit(0.02, "npc"))
 
 
-seaFiltPlot <- plot_ordination(seaFilt, seaOrd, type = 'samples', color='site', title='seawater')
+seaFiltPlot <- plot_ordination(sea, seaOrd, type = 'samples', color='site', title='seawater')
 
-seaFiltPlotArrow <- seaFiltPlot + geom_segment(arrowmap, size = 0.5, data = arrowdf, color = "black",  arrow = arrowhead, show_guide = FALSE) + geom_text(labelmap, size = 3, data = arrowdf)
+seaFiltPlotArrow <- seaFiltPlot + geom_segment(arrowmap, size = 1, data = arrowdf, color = "black",  arrow = arrowhead, show_guide = FALSE) + geom_text(labelmap, size = 4, data = arrowdf)
 seaFiltPlotArrow
 
 # check if sites significantly different

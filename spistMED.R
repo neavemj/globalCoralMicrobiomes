@@ -110,6 +110,16 @@ spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
 spistOrd <- ordinate(spist, "NMDS", "bray")
 plot_ordination(spist, spistOrd, type = 'split', color='site', title='spistwater', label="Genus")
 
+
+siteVector <- as.numeric(sample_data(spist)$site)
+
+dimnames(otu_table(spist))
+
+groups = c(rep(1, 500), rep(2, 200), rep(3,42))
+
+indval = multipatt(allShared, groups, control = how(nperm=999))
+
+
 # calculate indicator species
 
 spistDist <- vegdist(otu_table(spist), method="bray")

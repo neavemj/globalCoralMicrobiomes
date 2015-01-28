@@ -47,8 +47,10 @@ sample_data(spist)$names <- factor(sample_names(spist), levels=unique(sample_nam
 
 spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
 
+spistFiltGlom <- tax_glom(spistFilt, taxrank="Class")
+
 theme_set(theme_bw())
-plot_bar(spistFilt, fill="Class", x="names") +
+plot_bar(spistFiltFlom, fill="Class", x="names") +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x')
 

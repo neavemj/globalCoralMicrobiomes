@@ -20,12 +20,6 @@ allShared = read.table("all.matrixPercent.txt", header=T)
 rownames(allShared) = allShared[,1]
 allShared = allShared[,2:length(allShared)]
 
-# import count matrix for alpha diversity measures
-
-allSharedDiv = read.table("all.MED.matrixCount", header=T)
-rownames(allSharedDiv) = allSharedDiv[,1]
-allSharedDiv = allSharedDiv[,2:length(allSharedDiv)]
-
 # Import normal taxonomy file from mothur
 
 allTax = read.table('all.nodeReps.taxonomy', header=T, sep='\t')
@@ -42,11 +36,9 @@ metaFile = metaFile[,2:7]
 ### Create phyloseq object
 
 OTU = otu_table(allShared, taxa_are_rows = FALSE)
-OTUdiv = otu_table(allSharedDiv, taxa_are_rows = FALSE)
 TAX = tax_table(allTax) 
 META = sample_data(metaFile)
 allPhylo = phyloseq(OTU, TAX, META)
-allPhyloDiv = phyloseq(OTUdiv, TAX, META)
 
 # bar chart of s.pistillata phyla or class - the names parameter preserves order
 
@@ -79,13 +71,13 @@ seaFilt = filter_taxa(sea, function(x) mean(x) > 0.1, TRUE)
 #Top10OTUs = names(sort(taxa_sums(seaFilt), TRUE)[1:10])
 #seaFilt10 = prune_taxa(Top10OTUs, seaFilt)
 
-seaOrd <- ordinate(seaFilt, "NMDS", "bray")
-plot_ordination(seaFilt, seaOrd, type = 'split', color='site', title='seawater', label="Genus")
+seaOrd <- ordinate(sea, "NMDS", "bray")
+plot_ordination(sea, seaOrd, type = 'split', color='site', title='seawater', label="Genus")
 
 # calculate indicator species
 
-seaDist <- vegdist(otu_table(seaFilt), method="bray")
-seaInd <- indspc(otu_table(seaFilt), seaDist, numitr=1000)
+seaDist <- vegdist(otu_table(sea), method="bray")
+seaInd <- indspc(otu_table(sea), seaDist, numitr=1000)
 
 # sort by most important indicator species
 
@@ -93,21 +85,22 @@ seaIndVals <- seaInd$vals
 seaIndValsSorted <- seaIndVals[order(-seaIndVals$indval),,drop=FALSE]
 
 indval numocc  pval
-MED000002578 0.7439444     22 0.001
-MED000006214 0.6228868     34 0.001
-MED000002576 0.6095937     28 0.001
-MED000004147 0.5992344     30 0.001
-MED000005444 0.5828933     34 0.001
-MED000005550 0.5814497     39 0.001
-MED000007083 0.5718403     32 0.001
-MED000006657 0.5716694     41 0.001
-MED000006596 0.5716694     41 0.001
-MED000005833 0.5716694     41 0.001
+MED000006898 0.82280849      2 0.027
+MED000001740 0.79870842      2 0.046
+MED000004938 0.78373661      2 0.054
+MED000007874 0.75106607     14 0.001
+MED000005832 0.74325044      2 0.080
+MED000003752 0.73354346      9 0.001
+MED000006835 0.73130608      6 0.001
+MED000002578 0.70127820     22 0.001
+MED000007846 0.70127820     22 0.001
+MED000000600 0.69992476     23 0.001
 
-# overlay these onto ordination? 
+# overlay these onto ordination
 
+seaOrdFiltTop10 <- seaOrd$species[c("MED000002578","MED000006214","MED000002576","MED000004147","MED000005444","MED000005550","MED000007083","MED000006657","MED000006596","MED000005833"),]
 
-seaOrdTop10 <- seaOrd$species[c("MED000002578","MED000006214","MED000002576","MED000004147","MED000005444","MED000005550","MED000007083","MED000006657","MED000006596","MED000005833"),]
+seaOrdTop10 <- seaOrd$species[c("MED000006898","MED000001740","MED000004938","MED000007874","MED000005832","MED000003752","MED000006835","MED000002578","MED000007846","MED000000600"),]
 
 arrowmatrix = seaOrdTop10
 arrowdf <- data.frame(labels = rownames(arrowmatrix), arrowmatrix)
@@ -130,7 +123,7 @@ seaFiltPlotArrow
 
 df = as(sample_data(sea), "data.frame")
 d = distance(sea, "bray")
-seaAdonis = adonis(d ~ site + reef, df)
+seaAdonis = adonis(d ~ site, df, permutations=999)
 seaAdonis
 
 

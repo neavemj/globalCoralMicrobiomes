@@ -107,5 +107,16 @@ plot_bar(pVerrEndoFilt, fill="catglab", x="names") +
 
 # SAVE EPS 1500 x 700
 
+# ordination for the pocillopora verrucosa
+
+theme_set(theme_bw())
+pVerrOrd <- ordinate(pVerr, "NMDS", "bray")
+plot_ordination(pVerr, pVerrOrd, type = 'samples', color='site', title='pVerr')
+
+
+
+
+
+
 
 

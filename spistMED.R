@@ -89,7 +89,7 @@ plot_bar(spistEndoFilt, fill="catglab", x="names") +
   scale_fill_brewer(type='qual', palette = 'Dark2') +
   facet_grid(~site, scales='free', space='free_x')
 
-# SAVE PLOT: EPS 1500 x 1174. Greater than 0.2%
+# SAVE PLOT: EPS 1500 x 600. Greater than 0.2%
 
 
 

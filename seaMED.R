@@ -46,12 +46,29 @@ sample_data(sea)$names <- factor(sample_names(sea), levels=unique(sample_names(s
 
 seaFilt = filter_taxa(sea, function(x) mean(x) > 0.1, TRUE)
 
-seaFiltGlom <- tax_glom(seaFilt, taxrank="Class")
+seaFiltGlom <- tax_glom(seaFilt, taxrank="Phylum")
 
 theme_set(theme_bw())
-plot_bar(seaFiltGlom, fill="Class", x="names") +
+plot_bar(seaFiltGlom, fill="Phylum", x="names") +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x')
+
+# SAVE EPS 1500 x 700
+
+# ordination for the seawater samples
+
+theme_set(theme_bw())
+seaOrd <- ordinate(sea, "NMDS", "bray")
+plot_ordination(sea, seaOrd, type = 'samples', color='site', title='seawater')
+
+# overlay the OTUs onto this
+
+seaOrd <- ordinate(sea, "NMDS", "bray")
+plot_ordination(sea, seaOrd, type = 'biplot', color='site', title='seawater')
+
+# can we overlay the chemical data on this?
+
+
 
 
 

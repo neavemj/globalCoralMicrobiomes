@@ -58,9 +58,7 @@ plot_bar(seaFiltGlom, fill="Phylum", x="names") +
 
 # SAVE EPS 1500 x 700
 
-
 # see if SIMPER works
-
 
 metaFileSIMP <- subset(metaFile, site != 'NA')
 seaDistSIMP <- merge(otu_table(sea), metaFileSIMP, by="row.names")
@@ -73,6 +71,15 @@ seaDistSIMP[,750]
 
 spistSIMP <- simper(OTUsSIMP, factorsSIMP$site)
 
-taxFile["Otu000066", "Family"]
+allTax["MED000008042", "Genus"]
+
+# SIMPROF
+
+seaSIMPROF <- simprof(OTUsSIMP, num.expected=10, num.simulated=9, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=FALSE)
+
+simprof.plot(seaSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+
+
+
 
 

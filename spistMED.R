@@ -157,8 +157,7 @@ arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=1, shape = NULL, c
 labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = labels, size=1.5)
 arrowhead = arrow(length = unit(0.02, "npc"))
 
-
-spistFiltPlot <- plot_ordination(spist, spistOrd, type = 'samples', color='site', title='spistwater')
+spistFiltPlot <- plot_ordination(spist, spistOrd, type = 'samples', color='site', title='spist')
 
 spistFiltPlotArrow <- spistFiltPlot + geom_segment(arrowmap, size = 1, data = arrowdf, color = "black",  arrow = arrowhead, show_guide = FALSE) + geom_text(labelmap, size = 4, data = arrowdf)
 spistFiltPlotArrow

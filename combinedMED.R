@@ -94,8 +94,9 @@ plot_bar(allPhyloFilt, fill="Phylum") +
 
 # plot a tree of all endozoicomonas MED nodes
 
-plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='site', size='abundance', label.tips = 'taxa_names', base.spacing = 0.005)
+plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='species', size='abundance', label.tips = 'taxa_names', base.spacing = 0.005)
 
+# SAVE AS EPS 1500 x 1200
 
 theme_set(theme_bw())
 plot_bar(endoTree) +

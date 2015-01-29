@@ -120,7 +120,7 @@ arrowdf <- data.frame(arrowmatrix)
 
 # get taxonomic information from the original tax file
 
-arrowdf <- data.frame(labels = allTax[rownames(arrowmatrix),"Genus"], arrowmatrix)
+arrowdf <- data.frame(labels = allTax[rownames(arrowmatrix),"Class"], arrowmatrix)
 arrowdf <- cbind(arrowdf, seaOrd$species[seaMothurSpearman, ])
 
 # also combine MED node with genus taxonomy for labelling

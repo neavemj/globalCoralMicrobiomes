@@ -113,8 +113,38 @@ theme_set(theme_bw())
 pVerrOrd <- ordinate(pVerr, "NMDS", "bray")
 plot_ordination(pVerr, pVerrOrd, type = 'samples', color='site', title='pVerr')
 
+# overlay the best Spearman correlations from mothur
+
+pVerrMothurSpearman <- c("MED000007996","MED000007267","MED000007994","MED000007995","MED000007271","MED000007997","MED000007227","MED000006335","MED000003910","MED000000074")
 
 
+arrowmatrix <- data.frame(labels = pVerrMothurSpearman)
+rownames(arrowmatrix) <- arrowmatrix[,1]
+arrowdf <- data.frame(arrowmatrix)
+
+# get taxonomic information from the original tax file
+
+arrowdf <- data.frame(labels = allTax[rownames(arrowmatrix),"Genus"], arrowmatrix)
+arrowdf <- cbind(arrowdf, pVerrOrd$species[pVerrMothurSpearman, ])
+
+# also combine MED node with genus taxonomy for labelling
+
+mylabels = apply(arrowdf[, c("labels", "labels.1")], 1, paste, sep="", collapse="_")
+arrowdf <- cbind(arrowdf, catglab=mylabels)
+
+# now create labels, arrows, etc.
+
+arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=1, shape = NULL, color = NULL, label = labels)
+labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = catglab, size=1.5)
+arrowhead = arrow(length = unit(0.02, "npc"))
+
+pVerrFiltPlot <- plot_ordination(pVerr, pVerrOrd, type = 'samples', color='site', title='pVerr')
+
+pVerrFiltPlotArrow <- pVerrFiltPlot + 
+  geom_segment(arrowmap, size = 1, data = arrowdf, color = "black",  arrow = arrowhead, show_guide = FALSE) + 
+  geom_text(labelmap, size = 4, data = arrowdf)
+
+pVerrFiltPlotArrow
 
 
 

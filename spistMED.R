@@ -45,12 +45,12 @@ spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
 
 sample_data(spist)$names <- factor(sample_names(spist), levels=unique(sample_names(spist)))
 
-spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
+spistFilt = filter_taxa(spist, function(x) mean(x) > 1, TRUE)
 
-spistFiltGlom <- tax_glom(spistFilt, taxrank="Class")
+spistFiltGlom <- tax_glom(spistFilt, taxrank="Genus")
 
 theme_set(theme_bw())
-plot_bar(spistFiltFlom, fill="Class", x="names") +
+plot_bar(spistFiltGlom, fill="Genus", x="names") +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x')
 
@@ -91,9 +91,6 @@ plot_bar(spistEndoFilt, fill="catglab", x="names") +
 
 # SAVE PLOT: EPS 1500 x 600. Greater than 0.2%
 
-
-
-
 # ordination for the poc samples
 
 theme_set(theme_bw())
@@ -120,10 +117,20 @@ groups = c(rep(1, 500), rep(2, 200), rep(3,42))
 indval = multipatt(allShared, groups, control = how(nperm=999))
 
 
+scores. 
+
+
+
 # calculate indicator species
 
 spistDist <- vegdist(otu_table(spist), method="bray")
 spistInd <- indspc(otu_table(spist), spistDist, numitr=1000)
+
+
+scores.spist <- scores(spistSIMP, display='species')
+
+spist.cor <- cor(otu_table(spist), method='pearson')
+
 
 # sort by most important indicator species
 
@@ -146,12 +153,19 @@ MED000006562 0.3998108740      5 0.001
 
 spistOrdTop10 <- spistOrd$species[c(rownames(spistIndValsSorted)[1:10]),]
 
-arrowmatrix = spistOrdTop10
-arrowdf <- data.frame(labels = rownames(arrowmatrix), arrowmatrix)
+
+spistMothurSpearman <- c("MED000005291",  "MED000007322",  "MED000004773",  "MED000008122",  "MED000001462",  "MED000002421",  "MED000002425",  "MED000008070", "MED000008072",  "MED000005094")
+
+
+arrowmatrix <- data.frame(labels = spistMothurSpearman)
+rownames(arrowmatrix) <- arrowmatrix[,1]
+
+arrowdf <- data.frame(arrowmatrix)
 
 # get taxonomic information from the original tax file
 
 arrowdf <- data.frame(labels = allTax[rownames(arrowmatrix),"Genus"], arrowmatrix)
+arrowdf <- cbind(arrowdf, spistOrd$species[spistMothurSpearman, ])
 
 arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=1, shape = NULL, color = NULL, label = labels)
 labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = labels, size=1.5)
@@ -159,7 +173,10 @@ arrowhead = arrow(length = unit(0.02, "npc"))
 
 spistFiltPlot <- plot_ordination(spist, spistOrd, type = 'samples', color='site', title='spist')
 
-spistFiltPlotArrow <- spistFiltPlot + geom_segment(arrowmap, size = 1, data = arrowdf, color = "black",  arrow = arrowhead, show_guide = FALSE) + geom_text(labelmap, size = 4, data = arrowdf)
+spistFiltPlotArrow <- spistFiltPlot + 
+  geom_segment(arrowmap, size = 1, data = arrowdf, color = "black",  arrow = arrowhead, show_guide = FALSE) + 
+  geom_text(labelmap, size = 4, data = arrowdf)
+
 spistFiltPlotArrow
 
 # check if sites significantly different

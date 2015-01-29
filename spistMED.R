@@ -107,30 +107,14 @@ spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
 spistOrd <- ordinate(spist, "NMDS", "bray")
 plot_ordination(spist, spistOrd, type = 'split', color='site', title='spistwater', label="Genus")
 
-
-siteVector <- as.numeric(sample_data(spist)$site)
-
-dimnames(otu_table(spist))
-
-groups = c(rep(1, 500), rep(2, 200), rep(3,42))
-
-indval = multipatt(allShared, groups, control = how(nperm=999))
-
-
-scores. 
-
-
-
 # calculate indicator species
 
 spistDist <- vegdist(otu_table(spist), method="bray")
 spistInd <- indspc(otu_table(spist), spistDist, numitr=1000)
 
-
 scores.spist <- scores(spistSIMP, display='species')
 
 spist.cor <- cor(otu_table(spist), method='pearson')
-
 
 # sort by most important indicator species
 
@@ -159,7 +143,6 @@ spistMothurSpearman <- c("MED000005291",  "MED000007322",  "MED000004773",  "MED
 
 arrowmatrix <- data.frame(labels = spistMothurSpearman)
 rownames(arrowmatrix) <- arrowmatrix[,1]
-
 arrowdf <- data.frame(arrowmatrix)
 
 # get taxonomic information from the original tax file
@@ -167,8 +150,15 @@ arrowdf <- data.frame(arrowmatrix)
 arrowdf <- data.frame(labels = allTax[rownames(arrowmatrix),"Genus"], arrowmatrix)
 arrowdf <- cbind(arrowdf, spistOrd$species[spistMothurSpearman, ])
 
+# also combine MED node with genus taxonomy for labelling
+
+mylabels = apply(arrowdf[, c("labels", "labels.1")], 1, paste, sep="", collapse="_")
+arrowdf <- cbind(arrowdf, catglab=mylabels)
+
+# now create labels, arrows, etc.
+
 arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=1, shape = NULL, color = NULL, label = labels)
-labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = labels, size=1.5)
+labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = catglab, size=1.5)
 arrowhead = arrow(length = unit(0.02, "npc"))
 
 spistFiltPlot <- plot_ordination(spist, spistOrd, type = 'samples', color='site', title='spist')
@@ -178,6 +168,8 @@ spistFiltPlotArrow <- spistFiltPlot +
   geom_text(labelmap, size = 4, data = arrowdf)
 
 spistFiltPlotArrow
+
+
 
 # check if sites significantly different
 

@@ -100,21 +100,42 @@ MED000000600 0.69992476     23 0.001
   
 seaOrdTop10 <- seaOrd$species[c(rownames(seaIndValsSorted)[1:10]),]
 
-arrowmatrix = seaOrdTop10
-arrowdf <- data.frame(labels = rownames(arrowmatrix), arrowmatrix)
+# can also use Mothur to get Pearson correlations
+
+# sample_names(sea)
+
+seaMothurSpearman <- c("MED000007608","MED000006893","MED000005444","MED000004065","MED000007963","MED000006897","MED000007201","MED000004072","MED000006014","MED000006278")
+
+
+arrowmatrix <- data.frame(labels = seaMothurSpearman)
+rownames(arrowmatrix) <- arrowmatrix[,1]
+arrowdf <- data.frame(arrowmatrix)
 
 # get taxonomic information from the original tax file
-  
-arrowdf <- data.frame(labels = allTax[rownames(arrowmatrix),"Family"], arrowmatrix)
+
+arrowdf <- data.frame(labels = allTax[rownames(arrowmatrix),"Genus"], arrowmatrix)
+arrowdf <- cbind(arrowdf, seaOrd$species[seaMothurSpearman, ])
+
+# also combine MED node with genus taxonomy for labelling
+
+mylabels = apply(arrowdf[, c("labels", "labels.1")], 1, paste, sep="", collapse="_")
+arrowdf <- cbind(arrowdf, catglab=mylabels)
+
+# now create labels, arrows, etc.
 
 arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=1, shape = NULL, color = NULL, label = labels)
-labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = labels, size=1.5)
+labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = catglab, size=1.5)
 arrowhead = arrow(length = unit(0.02, "npc"))
 
-seaFiltPlot <- plot_ordination(sea, seaOrd, type = 'samples', color='site', title='seawater')
+seaFiltPlot <- plot_ordination(sea, seaOrd, type = 'samples', color='site', title='sea')
 
-seaFiltPlotArrow <- seaFiltPlot + geom_segment(arrowmap, size = 1, data = arrowdf, color = "black",  arrow = arrowhead, show_guide = FALSE) + geom_text(labelmap, size = 4, data = arrowdf)
+seaFiltPlotArrow <- seaFiltPlot + 
+  geom_segment(arrowmap, size = 1, data = arrowdf, color = "black",  arrow = arrowhead, show_guide = FALSE) + 
+  geom_text(labelmap, size = 4, data = arrowdf)
+
 seaFiltPlotArrow
+
+
 
 # see if SIMPER works
 

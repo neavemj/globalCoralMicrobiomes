@@ -107,6 +107,14 @@ spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
 spistOrd <- ordinate(spist, "NMDS", "bray")
 plot_ordination(spist, spistOrd, type = 'split', color='site', title='spistwater', label="Genus")
 
+# generate some colors to be consistent
+
+#display.brewer.all()
+#display.brewer.pal(n = 8, name = 'Dark2')
+#brewer.pal(n = 8, name = "Dark2")
+
+cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#66A61E", "Maldives" = "#E6AB02", "Micronesia" = "#1B9E77", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
+
 # calculate indicator species
 
 spistDist <- vegdist(otu_table(spist), method="bray")
@@ -157,15 +165,16 @@ arrowdf <- cbind(arrowdf, catglab=mylabels)
 
 # now create labels, arrows, etc.
 
-arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=1, shape = NULL, color = NULL, label = labels)
+arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NULL, label = labels)
 labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = catglab, size=1.5)
 arrowhead = arrow(length = unit(0.02, "npc"))
 
 spistFiltPlot <- plot_ordination(spist, spistOrd, type = 'samples', color='site', title='spist')
 
 spistFiltPlotArrow <- spistFiltPlot + 
-  geom_segment(arrowmap, size = 1, data = arrowdf, color = "black",  arrow = arrowhead, show_guide = FALSE) + 
-  geom_text(labelmap, size = 4, data = arrowdf)
+  geom_segment(arrowmap, size = 1, data = arrowdf, color = "grey",  arrow = arrowhead, show_guide = FALSE) + 
+  scale_color_manual(values=cols) +
+  geom_text(labelmap, size = 2, data = arrowdf)
 
 spistFiltPlotArrow
 

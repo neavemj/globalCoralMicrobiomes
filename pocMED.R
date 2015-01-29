@@ -10,6 +10,7 @@ library("ggplot2")
 library("plyr")
 library("vegan")
 library('ape')
+library(RColorBrewer)
 setwd("./data")
 
 # import normal percent matrix
@@ -107,6 +108,14 @@ plot_bar(pVerrEndoFilt, fill="catglab", x="names") +
 
 # SAVE EPS 1500 x 700
 
+# generate some colors to be consistent
+
+#display.brewer.all()
+#display.brewer.pal(n = 8, name = 'Dark2')
+#brewer.pal(n = 8, name = "Dark2")
+
+cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#66A61E", "Maldives" = "#E6AB02", "Micronesia" = "#1B9E77", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
+
 # ordination for the pocillopora verrucosa
 
 theme_set(theme_bw())
@@ -134,17 +143,19 @@ arrowdf <- cbind(arrowdf, catglab=mylabels)
 
 # now create labels, arrows, etc.
 
-arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=1, shape = NULL, color = NULL, label = labels)
+arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NULL, label = labels)
 labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = catglab, size=1.5)
 arrowhead = arrow(length = unit(0.02, "npc"))
 
 pVerrFiltPlot <- plot_ordination(pVerr, pVerrOrd, type = 'samples', color='site', title='pVerr')
 
 pVerrFiltPlotArrow <- pVerrFiltPlot + 
-  geom_segment(arrowmap, size = 1, data = arrowdf, color = "black",  arrow = arrowhead, show_guide = FALSE) + 
-  geom_text(labelmap, size = 4, data = arrowdf)
+  geom_segment(arrowmap, size = 1, data = arrowdf, color = "grey",  arrow = arrowhead, show_guide = FALSE) +
+  scale_color_manual(values=cols) +
+  geom_text(labelmap, size = 2, data = arrowdf)
 
 pVerrFiltPlotArrow
+
 
 
 

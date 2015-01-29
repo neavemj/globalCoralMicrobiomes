@@ -79,6 +79,14 @@ plot_ordination(sea, seaOrd, type = 'split', color='site', title='seawater', lab
 seaDist <- vegdist(otu_table(sea), method="bray")
 seaInd <- indspc(otu_table(sea), seaDist, numitr=1000)
 
+# generate some colors to be consistent
+
+#display.brewer.all()
+#display.brewer.pal(n = 8, name = 'Dark2')
+#brewer.pal(n = 8, name = "Dark2")
+
+cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#66A61E", "Maldives" = "#E6AB02", "Micronesia" = "#1B9E77", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
+
 # sort by most important indicator species
   
 seaIndVals <- seaInd$vals
@@ -106,7 +114,6 @@ seaOrdTop10 <- seaOrd$species[c(rownames(seaIndValsSorted)[1:10]),]
 
 seaMothurSpearman <- c("MED000007608","MED000006893","MED000005444","MED000004065","MED000007963","MED000006897","MED000007201","MED000004072","MED000006014","MED000006278")
 
-
 arrowmatrix <- data.frame(labels = seaMothurSpearman)
 rownames(arrowmatrix) <- arrowmatrix[,1]
 arrowdf <- data.frame(arrowmatrix)
@@ -123,15 +130,16 @@ arrowdf <- cbind(arrowdf, catglab=mylabels)
 
 # now create labels, arrows, etc.
 
-arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=1, shape = NULL, color = NULL, label = labels)
+arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NULL, label = labels)
 labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = catglab, size=1.5)
 arrowhead = arrow(length = unit(0.02, "npc"))
 
 seaFiltPlot <- plot_ordination(sea, seaOrd, type = 'samples', color='site', title='sea')
 
 seaFiltPlotArrow <- seaFiltPlot + 
-  geom_segment(arrowmap, size = 1, data = arrowdf, color = "black",  arrow = arrowhead, show_guide = FALSE) + 
-  geom_text(labelmap, size = 4, data = arrowdf)
+  geom_segment(arrowmap, size = 1, data = arrowdf, color = "grey",  arrow = arrowhead, show_guide = FALSE) + 
+  scale_color_manual(values=cols) +
+  geom_text(labelmap, size = 2, data = arrowdf)
 
 seaFiltPlotArrow
 

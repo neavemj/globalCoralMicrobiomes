@@ -51,6 +51,7 @@ sample_data(pDami)$names <- factor(sample_names(pDami), levels=unique(sample_nam
 
 pocFilt = filter_taxa(poc, function(x) mean(x) > 0.1, TRUE)
 pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.2, TRUE)
+pDamiFilt = filter_taxa(pDami, function(x) mean(x) > 1, TRUE)
 
 #colourCount = length(unique(mtcars$hp))
 #getPalette = colorRampPalette(brewer.pal(9, "Set1"))

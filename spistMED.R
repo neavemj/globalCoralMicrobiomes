@@ -15,13 +15,13 @@ setwd("./data")
 
 # import normal percent matrix
 
-allShared = read.table("all.matrixPercent.txt", header=T)
+allShared = read.table("all.7801.matrixPercent.txt", header=T)
 rownames(allShared) = allShared[,1]
 allShared = allShared[,2:length(allShared)]
 
 # Import normal taxonomy file from mothur
 
-allTax = read.table('all.nodeReps.taxonomy', header=T, sep='\t')
+allTax = read.table('all.7801.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
 rownames(allTax) = allTax[,1]
 allTax = allTax[,3:9]
 allTax = as.matrix(allTax)
@@ -45,12 +45,12 @@ spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
 
 sample_data(spist)$names <- factor(sample_names(spist), levels=unique(sample_names(spist)))
 
-spistFilt = filter_taxa(spist, function(x) mean(x) > 1, TRUE)
+spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
 
-spistFiltGlom <- tax_glom(spistFilt, taxrank="Genus")
+spistFiltGlom <- tax_glom(spistFilt, taxrank="Phylum")
 
 theme_set(theme_bw())
-plot_bar(spistFiltGlom, fill="Genus", x="names") +
+plot_bar(spistFiltGlom, fill="Phylum", x="names") +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x')
 
@@ -91,7 +91,7 @@ plot_bar(spistEndoFilt, fill="catglab", x="names") +
 
 # SAVE PLOT: EPS 1500 x 600. Greater than 0.2%
 
-# ordination for the poc samples
+# ordination for the spist samples
 
 theme_set(theme_bw())
 spistOrd <- ordinate(spist, "NMDS", "bray")
@@ -105,7 +105,7 @@ spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
 #spistFilt10 = prune_taxa(Top10OTUs, spistFilt)
 
 spistOrd <- ordinate(spist, "NMDS", "bray")
-plot_ordination(spist, spistOrd, type = 'split', color='site', title='spistwater', label="Genus")
+plot_ordination(spist, spistOrd, type = 'split', color='site', title='spist', label="Genus")
 
 # generate some colors to be consistent
 

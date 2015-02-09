@@ -265,8 +265,9 @@ spistMEDEndoRel1_6247MicRSBar <- plot_bar(spistMEDEndoRel1_6247MicRS, title='MED
 
 ggplot(spistMEDEndoRel1_6247MicRSBar$data, aes(x=site, y=Abundance, title='MED6247')) +
   geom_boxplot(aes(fill = site)) +
-  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
-  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=10, pch=21, colour = 'black') +
+  scale_fill_manual(values=cols) +
+  scale_color_manual(values=cols)
 
 # MED6549
 
@@ -278,7 +279,7 @@ spistMEDEndoRel1_6549MicRSBar <- plot_bar(spistMEDEndoRel1_6549MicRS, title='MED
 
 ggplot(spistMEDEndoRel1_6549MicRSBar$data, aes(x=site, y=Abundance, title='MED6549')) +
   geom_boxplot(aes(fill = site)) +
-  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
+  scale_fill_manual(values=cols) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
 
 # MED6809
@@ -291,6 +292,6 @@ spistMEDEndoRel1_6809MicRSBar <- plot_bar(spistMEDEndoRel1_6809MicRS, title='MED
 
 ggplot(spistMEDEndoRel1_6809MicRSBar$data, aes(x=site, y=Abundance, title='MED6809')) +
   geom_boxplot(aes(fill = site)) +
-  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
+  scale_fill_manual(values=cols) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
 

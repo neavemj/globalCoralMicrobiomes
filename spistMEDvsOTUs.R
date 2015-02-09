@@ -10,36 +10,18 @@ library("ggplot2")
 library("vegan")
 setwd("./data")
 
-# import MED data, 3% OTU and 1% OTU data for comparison
+# import normal percent matrix
 
-spistShared = read.table("spist.matrixPercent.txt", header=T)
-rownames(spistShared) = spistShared[,1]
-spistShared = spistShared[,2:length(spistShared)]
+spistMED = read.table("spist.7801.MED.matrixPercent", header=T)
+rownames(spistMED) = spistMED[,1]
+spistMED = spistMED[,2:length(spistMED)]
 
-spistOTUshared = read.table("spist.subsample.unique.good.filter.precluster.an.0.03.pick.shared", header=T)
-rownames(spistOTUshared) = spistOTUshared[,2]
-spistOTUshared = spistOTUshared[,4:length(spistOTUshared)]
+# Import normal taxonomy file from mothur
 
-spist1OTUshared = read.table("spist.subsample.0.01.pick.shared", header=T)
-rownames(spist1OTUshared) = spist1OTUshared[,2]
-spist1OTUshared = spist1OTUshared[,4:length(spist1OTUshared)]
-
-# Import taxonomy file from mothur
-
-spistTax = read.table('spist.MED.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
-rownames(spistTax) = spistTax[,1]
-spistTax = spistTax[,3:9]
-spistTax = as.matrix(spistTax)
-
-spist3OTUtax = read.table('spist.subsample.unique.good.filter.precluster.an.0.03.cons.taxonomy', header=T, sep='\t')
-rownames(spist3OTUtax) = spist3OTUtax[,1]
-spist3OTUtax = spist3OTUtax[,3:9]
-spist3OTUtax = as.matrix(spist3OTUtax)
-
-spist1OTUtax = read.table('spist.subsample.unique.good.filter.precluster.an.0.01.cons.taxonomy', header=T, sep='\t')
-rownames(spist1OTUtax) = spist1OTUtax[,1]
-spist1OTUtax = spist1OTUtax[,3:9]
-spist1OTUtax = as.matrix(spist1OTUtax)
+spistMEDTax = read.table('spist.7801.MED.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
+rownames(spistMEDTax) = spistMEDTax[,1]
+spistMEDTax = spistMEDTax[,3:9]
+spistMEDTax = as.matrix(spistMEDTax)
 
 # import meta data
 
@@ -47,21 +29,44 @@ metaFile = read.table('metaData2.MED', header=T, sep='\t')
 rownames(metaFile) = metaFile[,1]
 metaFile = metaFile[,2:7]
 
+# 3% OTU and 1% OTU data for comparison
+
+spist3OTUshared = read.table("spist.7801.0.03.0.03.pick.shared", header=T)
+rownames(spist3OTUshared) = spist3OTUshared[,2]
+spist3OTUshared = spist3OTUshared[,4:length(spist3OTUshared)]
+
+spist1OTUshared = read.table("spist.7801.0.01.0.01.pick.shared", header=T)
+rownames(spist1OTUshared) = spist1OTUshared[,2]
+spist1OTUshared = spist1OTUshared[,4:length(spist1OTUshared)]
+
+# Import taxonomy file from mothur
+
+spist3OTUtax = read.table('spist.7801.unique.good.filter.precluster.an.0.03.cons.taxonomy', header=T, sep='\t')
+rownames(spist3OTUtax) = spist3OTUtax[,1]
+spist3OTUtax = spist3OTUtax[,3:9]
+spist3OTUtax = as.matrix(spist3OTUtax)
+
+spist1OTUtax = read.table('spist.7801.unique.good.filter.precluster.an.0.01.cons.taxonomy', header=T, sep='\t')
+rownames(spist1OTUtax) = spist1OTUtax[,1]
+spist1OTUtax = spist1OTUtax[,3:9]
+spist1OTUtax = as.matrix(spist1OTUtax)
+
 ### Create phyloseq object
 
-OTU = otu_table(spistShared, taxa_are_rows = FALSE)
-OTUs3 = otu_table(spistOTUshared, taxa_are_rows = FALSE)
+OTU = otu_table(spistMED, taxa_are_rows = FALSE)
+TAX = tax_table(spistMEDTax) 
+META = sample_data(metaFile)
+spistPhylo = phyloseq(OTU, TAX, META)
+
+OTUs3 = otu_table(spist3OTUshared, taxa_are_rows = FALSE)
 OTUs1 = otu_table(spist1OTUshared, taxa_are_rows = FALSE)
 
-TAX = tax_table(spistTax)
 TAX3 = tax_table(spist3OTUtax)
 TAX1 = tax_table(spist1OTUtax)
 
-META = sample_data(metaFile)
-
-spistPhylo = phyloseq(OTU, TAX, META)
-spistOTUphylo = phyloseq(OTUs3, TAX3, META)
+spist3OTUphylo = phyloseq(OTUs3, TAX3, META)
 spist1OTUphylo = phyloseq(OTUs1, TAX1, META)
+
 
 # ordination comparing MED nodes and 3% OTUs
 
@@ -69,44 +74,22 @@ theme_set(theme_bw())
 spistMEDord <- ordinate(spistPhylo, "NMDS", "bray")
 plot_ordination(spistPhylo, spistMEDord, type = 'samples', color='site', title='MED nodes')
 
-spistOTUord <- ordinate(spistOTUphylo, "NMDS", "bray")
-plot_ordination(spistOTUphylo, spistOTUord, type = 'samples', color='site', title='3% OTUs')
+spist3OTUord <- ordinate(spist3OTUphylo, "NMDS", "bray")
+plot_ordination(spist3OTUphylo, spist3OTUord, type = 'samples', color='site', title='3% OTUs')
 
 spist1OTUord <- ordinate(spist1OTUphylo, "NMDS", "bray")
 plot_ordination(spist1OTUphylo, spist1OTUord, type = 'samples', color='site', title='1% OTUs')
 
-# stress is fairly high (~0.25). Try to log transform the OTUs
-
-spistSharedLog = decostand(spistShared, method='log', logbase=10)
-mds <- metaMDS(spistSharedLog, distance="bray")
-ggplot() + 
-       geom_point(aes(x=mds$points[,1], y=mds$points[,2])) +
-       scale_y_reverse()
-
-# still reasonably high (0.2)
-# do some more transforming to get stress down
-
-spistPhyloSqrt = transform_sample_counts(spistPhylo, function(x) sqrt(x))
-spistPhyloSqrtord <- ordinate(spistPhyloSqrt, "NMDS", "bray")
-plot_ordination(spistPhyloSqrt, spistPhyloSqrtord, type = 'samples', color='site')
-
-spistPhyloFilt = filter_taxa(spistPhylo, function(x) mean(x) > 1, TRUE)
-spistPhyloFiltord <- ordinate(spistPhyloFilt, "NMDS", "bray")
-plot_ordination(spistPhyloFilt, spistPhyloFiltord, type = 'samples', color='site')
-
-# sqrt doesn't make a difference because this is automatically done in the ordination proceedure anyway
-# filtering taxa doesn't make much difference until almost all taxa are gone (only 20 or so left)
-
 # do some bar plots to check if MED nodes resolve endozoic types better than OTUs
 
 spistPhyloEndo = subset_taxa(spistPhylo, Genus=='Endozoicomonas')
-spistOTUphyloEndo = subset_taxa(spistOTUphylo, Genus=='Endozoicomonas(100)')
+spist3OTUphyloEndo = subset_taxa(spist3OTUphylo, Genus=='Endozoicomonas(100)')
 spist1OTUphyloEndo = subset_taxa(spist1OTUphylo, Genus=='Endozoicomonas(100)')
 
 spistPhyloEndoBar <- plot_bar(spistPhyloEndo, fill="Genus")
 spistPhyloEndoBar + facet_wrap(~site, scales='free')
 
-spistOTUphyloEndoBar <- plot_bar(spistOTUphyloEndo, fill="Genus")
+spistOTUphyloEndoBar <- plot_bar(spist3OTUphyloEndo, fill="Genus")
 spistOTUphyloEndoBar + facet_wrap(~site, scales='free')
 
 spist1OTUphyloEndoBar <- plot_bar(spist1OTUphyloEndo, fill="Genus")
@@ -115,23 +98,23 @@ spist1OTUphyloEndoBar + facet_wrap(~site, scales='free')
 # add coloring for different Endozoicomonas OTUs
 
 tax_table(spistPhyloEndo) <- cbind(tax_table(spistPhyloEndo), Strain=taxa_names(spistPhyloEndo))
-tax_table(spistOTUphyloEndo) <- cbind(tax_table(spistOTUphyloEndo), Strain=taxa_names(spistOTUphyloEndo))
+tax_table(spist3OTUphyloEndo) <- cbind(tax_table(spist3OTUphyloEndo), Strain=taxa_names(spist3OTUphyloEndo))
 tax_table(spist1OTUphyloEndo) <- cbind(tax_table(spist1OTUphyloEndo), Strain=taxa_names(spist1OTUphyloEndo))
 myranks = c("Genus", "Strain")
 
 mylabelsMED = apply(tax_table(spistPhyloEndo)[, myranks], 1, paste, sep="", collapse="_")
-mylabels3OTU = apply(tax_table(spistOTUphyloEndo)[, myranks], 1, paste, sep="", collapse="_")
+mylabels3OTU = apply(tax_table(spist3OTUphyloEndo)[, myranks], 1, paste, sep="", collapse="_")
 mylabels1OTU = apply(tax_table(spist1OTUphyloEndo)[, myranks], 1, paste, sep="", collapse="_")
 
 tax_table(spistPhyloEndo) <- cbind(tax_table(spistPhyloEndo), catglab=mylabelsMED)
-tax_table(spistOTUphyloEndo) <- cbind(tax_table(spistOTUphyloEndo), catglab=mylabels3OTU)
+tax_table(spist3OTUphyloEndo) <- cbind(tax_table(spist3OTUphyloEndo), catglab=mylabels3OTU)
 tax_table(spist1OTUphyloEndo) <- cbind(tax_table(spist1OTUphyloEndo), catglab=mylabels1OTU)
 
 # standardize the OTU shared files
 
-spistOTUphyloEndoMerged = merge_samples(spistOTUphyloEndo, "site")
-spistOTUphyloEndoMergedRel = transform_sample_counts(spistOTUphyloEndoMerged, function(x) x / sum(x) )
-plot_bar(spistOTUphyloEndoMergedRel, fill='catglab', title='3% OTUs')
+spist3OTUphyloEndoMerged = merge_samples(spist3OTUphyloEndo, "site")
+spist3OTUphyloEndoMergedRel = transform_sample_counts(spist3OTUphyloEndoMerged, function(x) x / sum(x) )
+plot_bar(spist3OTUphyloEndoMergedRel, fill='catglab', title='3% OTUs')
 
 spist1OTUphyloEndoMerged = merge_samples(spist1OTUphyloEndo, "site")
 spist1OTUphyloEndoMergedRel = transform_sample_counts(spist1OTUphyloEndoMerged, function(x) x / sum(x) )
@@ -146,9 +129,9 @@ plot_bar(spistPhyloEndoMergedRelFilt, fill='catglab', title='MED otus')
 # let's have a look at what happends to the most abundant Endo OTU
 # 3% OTUs - OTU0001
 
-spistOTUphyloEndo1 = subset_taxa(spistOTUphyloEndoRel, catglab=='Endozoicomonas(100)_Otu0001')
-
-end1bar <- plot_bar(spistOTUphyloEndo1, title='3% OTUs')
+spist3OTUphyloEndoRel = transform_sample_counts(spist3OTUphyloEndo, function(x) x / sum(x) )
+spist3OTUphyloEndo1 = subset_taxa(spist3OTUphyloEndoRel, catglab=='Endozoicomonas(100)_Otu0001')
+end1bar <- plot_bar(spist3OTUphyloEndo1, title='3% OTUs')
 
 ggplot(end1bar$data, aes(x=site, y=Abundance)) +
   geom_boxplot(aes(fill=catglab), alpha=0.8) +
@@ -156,13 +139,13 @@ ggplot(end1bar$data, aes(x=site, y=Abundance)) +
 
 # just Micronesia vs Red Sea
 
-spistOTUphyloEndo1Mic = subset_samples(spistOTUphyloEndo1, site=='Micronesia')
-spistOTUphyloEndo1RS = subset_samples(spistOTUphyloEndo1, site=='RedSea')
-spistOTUphyloEndo1MicRS = merge_phyloseq(spistOTUphyloEndo1Mic, spistOTUphyloEndo1RS)
+spist3OTUphyloEndo1Mic = subset_samples(spist3OTUphyloEndo1, site=='Micronesia')
+spist3OTUphyloEndo1RS = subset_samples(spist3OTUphyloEndo1, site=='RedSea')
+spist3OTUphyloEndo1MicRS = merge_phyloseq(spist3OTUphyloEndo1Mic, spist3OTUphyloEndo1RS)
 
-spistOTUphyloEndo1MicRSBar <- plot_bar(spistOTUphyloEndo1MicRS, title='3% OTUs')
+spist3OTUphyloEndo1MicRSBar <- plot_bar(spist3OTUphyloEndo1MicRS, title='3% OTUs')
 
-ggplot(spistOTUphyloEndo1MicRSBar$data, aes(x=site, y=Abundance, title='OTU1')) +
+ggplot(spist3OTUphyloEndo1MicRSBar$data, aes(x=site, y=Abundance, title='OTU1')) +
   geom_boxplot(aes(fill = site)) +
   scale_fill_manual(values=c("#00BA38", "#F8766D")) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
@@ -170,13 +153,12 @@ ggplot(spistOTUphyloEndo1MicRSBar$data, aes(x=site, y=Abundance, title='OTU1')) 
 # 1% OTUs
 
 spist1OTUphyloEndoRel = transform_sample_counts(spist1OTUphyloEndo, function(x) x / sum(x) )
-
 spistOTUphyloEndo1_3 = subset_taxa(spist1OTUphyloEndoRel, catglab=="Endozoicomonas(100)_Otu00003")
 spistOTUphyloEndo1_6 = subset_taxa(spist1OTUphyloEndoRel, catglab=="Endozoicomonas(100)_Otu00006")
 spistOTUphyloEndo1_7 = subset_taxa(spist1OTUphyloEndoRel, catglab=="Endozoicomonas(100)_Otu00007")
-spistOTUphyloEndo1_144 = subset_taxa(spist1OTUphyloEndoRel, catglab=="Endozoicomonas(100)_Otu00144")
 
-spistOTUphyloEndo1_1 = merge_phyloseq(spistOTUphyloEndo1_3, spistOTUphyloEndo1_6, spistOTUphyloEndo1_7, spistOTUphyloEndo1_144)
+
+spistOTUphyloEndo1_1 = merge_phyloseq(spistOTUphyloEndo1_3, spistOTUphyloEndo1_6, spistOTUphyloEndo1_7)
 
 end1bar_1 <- plot_bar(spistOTUphyloEndo1_1, title='1% OTUs', fill='catglab')
 
@@ -241,13 +223,13 @@ ggplot(spistOTUphyloEndo1_7MicRSBar$data, aes(x=site, y=Abundance, title='OTU7')
 
 spistMEDEndoRel = transform_sample_counts(spistPhyloEndo, function(x) x / sum(x) )
 
-spistMEDEndoRel1_2908 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000002908")
-spistMEDEndoRel1_5444 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000005444")
-spistMEDEndoRel1_4684 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000004684")
-spistMEDEndoRel1_4669 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000004669")
-spistMEDEndoRel1_4794 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000004794")
+spistMEDEndoRel1_6247 = subset_taxa(spistPhyloEndo, catglab=="Endozoicomonas_MED000006247")
+spistMEDEndoRel1_6549 = subset_taxa(spistPhyloEndo, catglab=="Endozoicomonas_MED000006549")
+spistMEDEndoRel1_6809 = subset_taxa(spistPhyloEndo, catglab=="Endozoicomonas_MED000006809")
+#spistMEDEndoRel1_4669 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000004669")
+#spistMEDEndoRel1_4794 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000004794")
 
-spistMEDEndoRel1 = merge_phyloseq(spistMEDEndoRel1_2908, spistMEDEndoRel1_5444, spistMEDEndoRel1_4684, spistMEDEndoRel1_4669, spistMEDEndoRel1_4794)
+spistMEDEndoRel1 = merge_phyloseq(spistMEDEndoRel1_6247, spistMEDEndoRel1_6549, spistMEDEndoRel1_6809)
 
 endMEDbar_1 <- plot_bar(spistMEDEndoRel1, title='MED nodes', fill='catglab')
 
@@ -255,9 +237,9 @@ ggplot(endMEDbar_1$data, aes(x=site, y=Abundance)) +
   geom_boxplot(aes(fill=catglab), alpha=0.8) +
   geom_point(position=position_dodge(width=0.75), aes(group=catglab)) 
 
-endMEDbar_4794 <- plot_bar(spistMEDEndoRel1_4794, title='MED nodes', fill='catglab')
+endMEDbar_6247 <- plot_bar(spistMEDEndoRel1_6247, title='MED nodes', fill='catglab')
 
-ggplot(endMEDbar_4794$data, aes(x=site, y=Abundance)) +
+ggplot(endMEDbar_6247$data, aes(x=site, y=Abundance)) +
   geom_boxplot(aes(fill=catglab), alpha=0.8) +
   geom_point(position=position_dodge(width=0.75), aes(group=catglab)) 
 
@@ -273,41 +255,41 @@ ggplot(spistMEDEndoRel1MicRSBar$data, aes(x=site, y=Abundance)) +
   geom_boxplot(aes(fill=catglab), alpha=0.8) +
   geom_point(position=position_dodge(width=0.75), aes(group=catglab)) 
 
-# MED4794
+# MED6247
 
-spistMEDEndoRel1_4794Mic = subset_samples(spistMEDEndoRel1_4794, site=='Micronesia')
-spistMEDEndoRel1_4794RS = subset_samples(spistMEDEndoRel1_4794, site=='RedSea')
-spistMEDEndoRel1_4794MicRS = merge_phyloseq(spistMEDEndoRel1_4794RS, spistMEDEndoRel1_4794Mic)
+spistMEDEndoRel1_6247Mic = subset_samples(spistMEDEndoRel1_6247, site=='Micronesia')
+spistMEDEndoRel1_6247RS = subset_samples(spistMEDEndoRel1_6247, site=='RedSea')
+spistMEDEndoRel1_6247MicRS = merge_phyloseq(spistMEDEndoRel1_6247RS, spistMEDEndoRel1_6247Mic)
 
-spistMEDEndoRel1_4794MicRSBar <- plot_bar(spistMEDEndoRel1_4794MicRS, title='MED nodes')
+spistMEDEndoRel1_6247MicRSBar <- plot_bar(spistMEDEndoRel1_6247MicRS, title='MED nodes')
 
-ggplot(spistMEDEndoRel1_4794MicRSBar$data, aes(x=site, y=Abundance, title='MED4794')) +
+ggplot(spistMEDEndoRel1_6247MicRSBar$data, aes(x=site, y=Abundance, title='MED6247')) +
   geom_boxplot(aes(fill = site)) +
   scale_fill_manual(values=c("#00BA38", "#F8766D")) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
 
-# MED5444
+# MED6549
 
-spistMEDEndoRel1_5444Mic = subset_samples(spistMEDEndoRel1_5444, site=='Micronesia')
-spistMEDEndoRel1_5444RS = subset_samples(spistMEDEndoRel1_5444, site=='RedSea')
-spistMEDEndoRel1_5444MicRS = merge_phyloseq(spistMEDEndoRel1_5444RS, spistMEDEndoRel1_5444Mic)
+spistMEDEndoRel1_6549Mic = subset_samples(spistMEDEndoRel1_6549, site=='Micronesia')
+spistMEDEndoRel1_6549RS = subset_samples(spistMEDEndoRel1_6549, site=='RedSea')
+spistMEDEndoRel1_6549MicRS = merge_phyloseq(spistMEDEndoRel1_6549RS, spistMEDEndoRel1_6549Mic)
 
-spistMEDEndoRel1_5444MicRSBar <- plot_bar(spistMEDEndoRel1_5444MicRS, title='MED nodes')
+spistMEDEndoRel1_6549MicRSBar <- plot_bar(spistMEDEndoRel1_6549MicRS, title='MED nodes')
 
-ggplot(spistMEDEndoRel1_5444MicRSBar$data, aes(x=site, y=Abundance, title='MED5444')) +
+ggplot(spistMEDEndoRel1_6549MicRSBar$data, aes(x=site, y=Abundance, title='MED6549')) +
   geom_boxplot(aes(fill = site)) +
   scale_fill_manual(values=c("#00BA38", "#F8766D")) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
 
-# MED4669
+# MED6809
 
-spistMEDEndoRel1_4669Mic = subset_samples(spistMEDEndoRel1_4669, site=='Micronesia')
-spistMEDEndoRel1_4669RS = subset_samples(spistMEDEndoRel1_4669, site=='RedSea')
-spistMEDEndoRel1_4669MicRS = merge_phyloseq(spistMEDEndoRel1_4669RS, spistMEDEndoRel1_4669Mic)
+spistMEDEndoRel1_6809Mic = subset_samples(spistMEDEndoRel1_6809, site=='Micronesia')
+spistMEDEndoRel1_6809RS = subset_samples(spistMEDEndoRel1_6809, site=='RedSea')
+spistMEDEndoRel1_6809MicRS = merge_phyloseq(spistMEDEndoRel1_6809RS, spistMEDEndoRel1_6809Mic)
 
-spistMEDEndoRel1_4669MicRSBar <- plot_bar(spistMEDEndoRel1_4669MicRS, title='MED nodes')
+spistMEDEndoRel1_6809MicRSBar <- plot_bar(spistMEDEndoRel1_6809MicRS, title='MED nodes')
 
-ggplot(spistMEDEndoRel1_4669MicRSBar$data, aes(x=site, y=Abundance, title='MED4669')) +
+ggplot(spistMEDEndoRel1_6809MicRSBar$data, aes(x=site, y=Abundance, title='MED6809')) +
   geom_boxplot(aes(fill = site)) +
   scale_fill_manual(values=c("#00BA38", "#F8766D")) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 

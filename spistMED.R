@@ -1,5 +1,4 @@
 
-
 ## Phyloseq and r analysis of the Minimum Entropy Decomposition results ##
 # Stylophora pistillata samples extracted from all MED run
 # 27.1.2015
@@ -11,6 +10,8 @@ library("ggplot2")
 library("plyr")
 library("vegan")
 library('ape')
+library('grid')
+library('RColorBrewer')
 setwd("./data")
 
 # import normal percent matrix
@@ -113,7 +114,7 @@ plot_ordination(spist, spistOrd, type = 'split', color='site', title='spist', la
 #display.brewer.pal(n = 8, name = 'Dark2')
 #brewer.pal(n = 8, name = "Dark2")
 
-cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#66A61E", "Maldives" = "#E6AB02", "Micronesia" = "#1B9E77", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
+cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#66A61E", "Maldives" = "#E6AB02", "Micronesia" = "#666666", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
 
 # calculate indicator species
 
@@ -146,7 +147,7 @@ MED000006562 0.3998108740      5 0.001
 spistOrdTop10 <- spistOrd$species[c(rownames(spistIndValsSorted)[1:10]),]
 
 
-spistMothurSpearman <- c("MED000005291",  "MED000007322",  "MED000004773",  "MED000008122",  "MED000001462",  "MED000002421",  "MED000002425",  "MED000008070", "MED000008072",  "MED000005094")
+spistMothurSpearman <- c("MED000006776",  "MED000009228",  "MED000005973",  "MED000009485",  "MED000005839",  "MED000007679",  "MED000009504",  "MED000009644", "MED000010328",  "MED000009696")
 
 
 arrowmatrix <- data.frame(labels = spistMothurSpearman)
@@ -169,7 +170,8 @@ arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NU
 labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = catglab, size=1.5)
 arrowhead = arrow(length = unit(0.02, "npc"))
 
-spistFiltPlot <- plot_ordination(spist, spistOrd, type = 'samples', color='site', title='spist')
+spistFiltPlot <- plot_ordination(spist, spistOrd, type = 'samples', color='site', title='spist') +
+  scale_color_manual(values=cols)
 
 spistFiltPlotArrow <- spistFiltPlot + 
   geom_segment(arrowmap, size = 1, data = arrowdf, color = "grey",  arrow = arrowhead, show_guide = FALSE) + 
@@ -179,13 +181,6 @@ spistFiltPlotArrow <- spistFiltPlot +
 spistFiltPlotArrow
 
 
-
-# check if sites significantly different
-
-df = as(sample_data(spist), "data.frame")
-d = distance(spist, "bray")
-spistAdonis = adonis(d ~ site, df, permutations=999)
-spistAdonis
 
 
 

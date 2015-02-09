@@ -8,6 +8,7 @@ library("ggplot2")
 library("plyr")
 library("vegan")
 library('ape')
+library('RColorBrewer')
 setwd("./data")
 
 # import normal percent matrix

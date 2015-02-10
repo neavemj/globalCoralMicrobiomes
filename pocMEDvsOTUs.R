@@ -85,14 +85,14 @@ plot_ordination(pocPhylo, pocMEDord, type = 'samples', color='site', title='MED 
   scale_color_manual(values=cols)
 
 # SAVE AS 700 x 532
-# Best solution 0.23, 786 nodes
+# Best solution 0.25, 733 nodes
 
 poc3OTUord <- ordinate(poc3OTUphylo, "NMDS", "bray")
 plot_ordination(poc3OTUphylo, poc3OTUord, type = 'samples', color='site', title='3% OTUs') +
   geom_point(size=2) +
   scale_color_manual(values=cols)
 
-# Best solution 0.23, 673 OTUs
+# Best solution 0.27, 550 OTUs
 
 poc1OTUord <- ordinate(poc1OTUphylo, "NMDS", "bray")
 plot_ordination(poc1OTUphylo, poc1OTUord, type = 'samples', color='site', title='1% OTUs') +
@@ -101,7 +101,7 @@ plot_ordination(poc1OTUphylo, poc1OTUord, type = 'samples', color='site', title=
   scale_color_manual(values=cols)
 
 # SAVE AS 700 x 532
-# Best solution 0.23, 791 OTUs
+# Best solution 0.26, 721 OTUs
 
 # do some bar plots to check if MED nodes resolve endozoic types better than OTUs
 

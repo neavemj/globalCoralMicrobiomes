@@ -6,9 +6,18 @@
 
 library("phyloseq")
 library("ggplot2")
-?library("plyr")
+library("plyr")
 library("vegan")
+library("RColorBrewer")
 setwd("./data")
+
+# generate some colors to be consistent
+
+#display.brewer.all()
+#display.brewer.pal(n = 8, name = 'Dark2')
+#brewer.pal(n = 8, name = "Dark2")
+
+cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#666666", "Maldives" = "#E6AB02", "Micronesia" = "#66A61E", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
 
 # import normal percent matrix
 
@@ -72,13 +81,27 @@ spist1OTUphylo = phyloseq(OTUs1, TAX1, META)
 
 theme_set(theme_bw())
 spistMEDord <- ordinate(spistPhylo, "NMDS", "bray")
-plot_ordination(spistPhylo, spistMEDord, type = 'samples', color='site', title='MED nodes')
+plot_ordination(spistPhylo, spistMEDord, type = 'samples', color='site', title='MED nodes') +
+  geom_point(size=2) +
+  scale_color_manual(values=cols)
+
+# SAVE AS 700 x 532
+# Best solution 0.23, 786 nodes
 
 spist3OTUord <- ordinate(spist3OTUphylo, "NMDS", "bray")
-plot_ordination(spist3OTUphylo, spist3OTUord, type = 'samples', color='site', title='3% OTUs')
+plot_ordination(spist3OTUphylo, spist3OTUord, type = 'samples', color='site', title='3% OTUs') +
+  geom_point(size=2) +
+  scale_color_manual(values=cols)
+
+# Best solution 0.23, 673 OTUs
 
 spist1OTUord <- ordinate(spist1OTUphylo, "NMDS", "bray")
-plot_ordination(spist1OTUphylo, spist1OTUord, type = 'samples', color='site', title='1% OTUs')
+plot_ordination(spist1OTUphylo, spist1OTUord, type = 'samples', color='site', title='1% OTUs') +
+  geom_point(size=2) +
+  scale_color_manual(values=cols)
+
+# SAVE AS 700 x 532
+# Best solution 0.23, 791 OTUs
 
 # do some bar plots to check if MED nodes resolve endozoic types better than OTUs
 
@@ -127,6 +150,7 @@ spistPhyloEndoMergedRelFilt = filter_taxa(spistPhyloEndoMergedRel, function(x) m
 plot_bar(spistPhyloEndoMergedRelFilt, fill='catglab', title='MED otus')
 
 # let's have a look at what happends to the most abundant Endo OTU
+
 # 3% OTUs - OTU0001
 
 spist3OTUphyloEndoRel = transform_sample_counts(spist3OTUphyloEndo, function(x) x / sum(x) )
@@ -147,8 +171,11 @@ spist3OTUphyloEndo1MicRSBar <- plot_bar(spist3OTUphyloEndo1MicRS, title='3% OTUs
 
 ggplot(spist3OTUphyloEndo1MicRSBar$data, aes(x=site, y=Abundance, title='OTU1')) +
   geom_boxplot(aes(fill = site)) +
-  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
-  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
+  scale_fill_manual(values=cols) +
+  scale_color_manual(values=cols) 
+
+## SAVE AS 492 x 450
 
 # 1% OTUs
 
@@ -178,6 +205,7 @@ ggplot(spistOTUphyloEndo1_1MicRSBar$data, aes(x=site, y=Abundance)) +
   geom_boxplot(aes(fill=catglab)) +
   geom_point(position=position_dodge(width=0.75), aes(group=catglab)) 
 
+## SAVE AS 492 x 450
 
 # OTU 3
 
@@ -189,8 +217,11 @@ spistOTUphyloEndo1_3MicRSBar <- plot_bar(spistOTUphyloEndo1_3MicRS, title='OTU3'
 
 ggplot(spistOTUphyloEndo1_3MicRSBar$data, aes(x=site, y=Abundance, title='OTU3')) +
   geom_boxplot(aes(fill = site)) +
-  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
-  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
+  scale_fill_manual(values=cols) +
+  scale_color_manual(values=cols) 
+
+## SAVE AS 492 x 450
 
 # OTU 6
 
@@ -202,8 +233,11 @@ spistOTUphyloEndo1_6MicRSBar <- plot_bar(spistOTUphyloEndo1_6MicRS, title='OTU6'
 
 ggplot(spistOTUphyloEndo1_6MicRSBar$data, aes(x=site, y=Abundance, title='OTU6')) +
   geom_boxplot(aes(fill = site)) +
-  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
-  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
+  scale_fill_manual(values=cols) +
+  scale_color_manual(values=cols) 
+
+## SAVE AS 492 x 450
 
 # OTU 7
 
@@ -215,17 +249,18 @@ spistOTUphyloEndo1_7MicRSBar <- plot_bar(spistOTUphyloEndo1_7MicRS, title='OTU7'
 
 ggplot(spistOTUphyloEndo1_7MicRSBar$data, aes(x=site, y=Abundance, title='OTU7')) +
   geom_boxplot(aes(fill = site)) +
-  scale_fill_manual(values=c("#00BA38", "#F8766D")) +
-  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
+  scale_fill_manual(values=cols) +
+  scale_color_manual(values=cols) 
 
 
 # MED nodes split from the original Otu0001 at 3%
 
 spistMEDEndoRel = transform_sample_counts(spistPhyloEndo, function(x) x / sum(x) )
 
-spistMEDEndoRel1_6247 = subset_taxa(spistPhyloEndo, catglab=="Endozoicomonas_MED000006247")
-spistMEDEndoRel1_6549 = subset_taxa(spistPhyloEndo, catglab=="Endozoicomonas_MED000006549")
-spistMEDEndoRel1_6809 = subset_taxa(spistPhyloEndo, catglab=="Endozoicomonas_MED000006809")
+spistMEDEndoRel1_6247 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000006247")
+spistMEDEndoRel1_6549 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000006549")
+spistMEDEndoRel1_6809 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000006809")
 #spistMEDEndoRel1_4669 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000004669")
 #spistMEDEndoRel1_4794 = subset_taxa(spistMEDEndoRel, catglab=="Endozoicomonas_MED000004794")
 
@@ -265,9 +300,11 @@ spistMEDEndoRel1_6247MicRSBar <- plot_bar(spistMEDEndoRel1_6247MicRS, title='MED
 
 ggplot(spistMEDEndoRel1_6247MicRSBar$data, aes(x=site, y=Abundance, title='MED6247')) +
   geom_boxplot(aes(fill = site)) +
-  geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=10, pch=21, colour = 'black') +
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
   scale_fill_manual(values=cols) +
   scale_color_manual(values=cols)
+
+## SAVE AS 492 x 450
 
 # MED6549
 
@@ -279,8 +316,11 @@ spistMEDEndoRel1_6549MicRSBar <- plot_bar(spistMEDEndoRel1_6549MicRS, title='MED
 
 ggplot(spistMEDEndoRel1_6549MicRSBar$data, aes(x=site, y=Abundance, title='MED6549')) +
   geom_boxplot(aes(fill = site)) +
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
   scale_fill_manual(values=cols) +
-  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
+  scale_color_manual(values=cols) 
+
+## SAVE AS 492 x 450
 
 # MED6809
 
@@ -292,6 +332,7 @@ spistMEDEndoRel1_6809MicRSBar <- plot_bar(spistMEDEndoRel1_6809MicRS, title='MED
 
 ggplot(spistMEDEndoRel1_6809MicRSBar$data, aes(x=site, y=Abundance, title='MED6809')) +
   geom_boxplot(aes(fill = site)) +
+  geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
   scale_fill_manual(values=cols) +
-  geom_point(position=position_jitter(width=0.2), aes(group=catglab), size=5) 
+  scale_color_manual(values=cols) 
 

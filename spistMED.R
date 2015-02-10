@@ -14,6 +14,14 @@ library('grid')
 library('RColorBrewer')
 setwd("./data")
 
+# generate some colors to be consistent
+
+#display.brewer.all()
+#display.brewer.pal(n = 8, name = 'Dark2')
+#brewer.pal(n = 8, name = "Dark2")
+
+cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#666666", "Maldives" = "#E6AB02", "Micronesia" = "#66A61E", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
+
 # import normal percent matrix
 
 allShared = read.table("all.7801.matrixPercent.txt", header=T)
@@ -107,14 +115,6 @@ spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
 
 spistOrd <- ordinate(spist, "NMDS", "bray")
 plot_ordination(spist, spistOrd, type = 'split', color='site', title='spist', label="Genus")
-
-# generate some colors to be consistent
-
-#display.brewer.all()
-#display.brewer.pal(n = 8, name = 'Dark2')
-#brewer.pal(n = 8, name = "Dark2")
-
-cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#66A61E", "Maldives" = "#E6AB02", "Micronesia" = "#666666", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
 
 # calculate indicator species
 

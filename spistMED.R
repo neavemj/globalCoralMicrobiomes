@@ -49,6 +49,7 @@ META = sample_data(metaFile)
 allPhylo = phyloseq(OTU, TAX, META)
 
 # bar chart of s.pistillata phyla or class - the names parameter preserves order
+# transforming to normal matix and as.factor keeps taxa stacked consistently
 
 spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
 
@@ -56,12 +57,17 @@ sample_data(spist)$names <- factor(sample_names(spist), levels=unique(sample_nam
 
 spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
 
-spistFiltGlom <- tax_glom(spistFilt, taxrank="Phylum")
+physeqdf <- psmelt(spistFiltGlom)
 
 theme_set(theme_bw())
-plot_bar(spistFiltGlom, fill="Phylum", x="names") +
+ggplot(physeqdf, aes(x=Sample, y=Abundance, fill=Phylum, order = as.factor(Phylum))) +
+  geom_bar(stat="identity", colour="black") +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
-  facet_grid(~site, scales='free', space='free_x')
+  facet_grid(~site, scales='free', space='free_x') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+#sum(physeqdf["101",Abundance])
+
 
 # SAVE PLOT: EPS 1500 x 1174
 
@@ -97,6 +103,7 @@ plot_bar(spistEndoFilt, fill="catglab", x="names") +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   scale_fill_brewer(type='qual', palette = 'Dark2') +
   facet_grid(~site, scales='free', space='free_x')
+
 
 # SAVE PLOT: EPS 1500 x 600. Greater than 0.2%
 

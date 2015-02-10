@@ -57,16 +57,43 @@ sample_data(spist)$names <- factor(sample_names(spist), levels=unique(sample_nam
 
 spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
 
+spistFiltGlom <- tax_glom(spistFilt, taxrank="Phylum")
 physeqdf <- psmelt(spistFiltGlom)
 
+# get total abundance so can make a 'other' column
+# had to add ^ and $ characters to make sure grep matches whole word
+
+taxLevel = "Phylum"
+
+for (j in unique(physeqdf$Sample)) {
+  jFirst = paste('^', j, sep='')
+  jBoth = paste(jFirst, '$', sep='')
+  rowNumbers = grep(jBoth, physeqdf$Sample)
+  otherValue = 100 - sum(physeqdf[rowNumbers,"Abundance"])
+  newRow = (physeqdf[rowNumbers,])[1,]
+  newRow[,taxLevel] = "other"
+  newRow[,"Abundance"] = otherValue
+  physeqdfOther <- rbind(physeqdfOther, newRow)
+}
+
+# need to create my own ggplot colors then replace the last one with gray
+# this will ensure that the 'other' category is gray
+
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length=n+1)
+  hcl(h=hues, l=65, c=100)[1:n]
+}
+
+ggCols <- gg_color_hue(length(unique(physeqdfOther$Phylum)))
+ggCols <- head(ggCols, n=-1)
+
 theme_set(theme_bw())
-ggplot(physeqdf, aes(x=Sample, y=Abundance, fill=Phylum, order = as.factor(Phylum))) +
+ggplot(physeqdfOther, aes(x=Sample, y=Abundance, fill=Phylum, order = as.factor(Phylum))) +
   geom_bar(stat="identity", colour="black") +
+  scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
-#sum(physeqdf["101",Abundance])
 
 
 # SAVE PLOT: EPS 1500 x 1174

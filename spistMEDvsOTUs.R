@@ -135,19 +135,18 @@ tax_table(spist1OTUphyloEndo) <- cbind(tax_table(spist1OTUphyloEndo), catglab=my
 
 # standardize the OTU shared files
 
-spist3OTUphyloEndoMerged = merge_samples(spist3OTUphyloEndo, "site")
-spist3OTUphyloEndoMergedRel = transform_sample_counts(spist3OTUphyloEndoMerged, function(x) x / sum(x) )
-plot_bar(spist3OTUphyloEndoMergedRel, fill='catglab', title='3% OTUs')
+spist3OTUphyloEndoFilt = filter_taxa(spist3OTUphyloEndo, function(x) mean(x) > 0.1, TRUE)
+plot_bar(spist3OTUphyloEndoFilt, fill="catglab") +
+facet_wrap(~site, scales='free')
 
-spist1OTUphyloEndoMerged = merge_samples(spist1OTUphyloEndo, "site")
-spist1OTUphyloEndoMergedRel = transform_sample_counts(spist1OTUphyloEndoMerged, function(x) x / sum(x) )
-spist1OTUphyloEndoMergedRelFilt = filter_taxa(spist1OTUphyloEndoMergedRel, function(x) mean(x) > 0.01, TRUE)
-plot_bar(spist1OTUphyloEndoMergedRelFilt, fill='catglab', title='1% OTUs')
+spist1OTUphyloEndoFilt = filter_taxa(spist1OTUphyloEndo, function(x) mean(x) > 0.1, TRUE)
+plot_bar(spist1OTUphyloEndoFilt, fill="catglab") +
+  facet_wrap(~site, scales='free')
 
-spistPhyloEndoMerged = merge_samples(spistPhyloEndo, "site")
-spistPhyloEndoMergedRel = transform_sample_counts(spistPhyloEndoMerged, function(x) x / sum(x) )
-spistPhyloEndoMergedRelFilt = filter_taxa(spistPhyloEndoMergedRel, function(x) mean(x) > 0.01, TRUE)
-plot_bar(spistPhyloEndoMergedRelFilt, fill='catglab', title='MED otus')
+spistPhyloEndoFilt = filter_taxa(spistPhyloEndo, function(x) mean(x) > 0.1, TRUE)
+plot_bar(spistPhyloEndoFilt, fill="catglab") +
+  facet_wrap(~site, scales='free')
+
 
 # let's have a look at what happends to the most abundant Endo OTU
 

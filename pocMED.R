@@ -13,6 +13,14 @@ library('ape')
 library(RColorBrewer)
 setwd("./data")
 
+# generate some colors to be consistent
+
+#display.brewer.all()
+#display.brewer.pal(n = 8, name = 'Dark2')
+#brewer.pal(n = 8, name = "Dark2")
+
+cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#666666", "Maldives" = "#E6AB02", "Micronesia" = "#66A61E", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
+
 # import normal percent matrix
 
 allShared = read.table("all.matrixPercent.txt", header=T)
@@ -124,7 +132,6 @@ plot_bar(pocEndoFilt, fill="catglab", x="names") +
   scale_fill_brewer(type='qual', palette = 'Set1') +
   facet_grid(~site, scales='free', space='free_x')
 
-
 # let's check what's happening with different Endozoicomonas OTUs (Pocillopora verrucosa)
 
 pVerrEndo = subset_taxa(pVerr, Genus=='Endozoicomonas')
@@ -147,14 +154,6 @@ plot_bar(pVerrEndoFilt, fill="catglab", x="names") +
   facet_grid(~site, scales='free', space='free_x')
 
 # SAVE EPS 1500 x 700
-
-# generate some colors to be consistent
-
-#display.brewer.all()
-#display.brewer.pal(n = 8, name = 'Dark2')
-#brewer.pal(n = 8, name = "Dark2")
-
-cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#66A61E", "Maldives" = "#E6AB02", "Micronesia" = "#1B9E77", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
 
 # ordination for the pocillopora verrucosa
 

@@ -53,7 +53,7 @@ allPhylo = phyloseq(OTU, TAX, META)
 
 spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
 
-sample_data(spist)$names <- factor(sample_names(spist), levels=unique(sample_names(spist)))
+sample_data(spist)$names <- factor(sample_names(spist), levels=rownames(metaFile), ordered = TRUE)
 
 spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
 
@@ -125,7 +125,7 @@ tax_table(spistEndo) <- cbind(tax_table(spistEndo), catglab=mylabelsSpist)
 
 allPhyloEndoFilt = filter_taxa(allPhyloEndo, function(x) mean(x) > 0.1, TRUE)
 
-sample_data(spistEndo)$names <- factor(sample_names(spistEndo), levels=unique(sample_names(spistEndo)))
+sample_data(spistEndo)$names <- factor(sample_names(spistEndo), levels=rownames(metaFile), ordered = TRUE)
 
 spistEndoFilt = filter_taxa(spistEndo, function(x) mean(x) > 0.2, TRUE)
 

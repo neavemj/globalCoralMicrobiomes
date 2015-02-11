@@ -10,19 +10,27 @@ library("ggplot2")
 library("plyr")
 library("vegan")
 library('ape')
-library("labdsv")
-library("grid")
+library('grid')
+library('RColorBrewer')
 setwd("./data")
+
+# generate some colors to be consistent
+
+#display.brewer.all()
+#display.brewer.pal(n = 8, name = 'Dark2')
+#brewer.pal(n = 8, name = "Dark2")
+
+cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#666666", "Maldives" = "#E6AB02", "Micronesia" = "#66A61E", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
 
 # import normal percent matrix
 
-allShared = read.table("all.matrixPercent.txt", header=T)
+allShared = read.table("all.7801.matrixPercent.txt", header=T)
 rownames(allShared) = allShared[,1]
 allShared = allShared[,2:length(allShared)]
 
 # Import normal taxonomy file from mothur
 
-allTax = read.table('all.nodeReps.taxonomy', header=T, sep='\t')
+allTax = read.table('all.7801.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
 rownames(allTax) = allTax[,1]
 allTax = allTax[,3:9]
 allTax = as.matrix(allTax)
@@ -43,20 +51,84 @@ allPhylo = phyloseq(OTU, TAX, META)
 # bar chart of s.pistillata phyla or class - the names parameter preserves order
 
 sea <- subset_samples(allPhylo, species=='seawater')
-seaDiv <- subset_samples(allPhyloDiv, species=='seawater')
 
-sample_data(sea)$names <- factor(sample_names(sea), levels=unique(sample_names(sea)))
+sample_data(sea)$names <- factor(sample_names(sea), levels=rownames(metaFile), ordered = TRUE)
 
 seaFilt = filter_taxa(sea, function(x) mean(x) > 0.1, TRUE)
 
-seaFiltGlom <- tax_glom(seaFilt, taxrank="Phylum")
+taxLevel <- "Class"
+
+seaFiltGlom <- tax_glom(seaFilt, taxrank=taxLevel)
+physeqdf <- psmelt(seaFiltGlom)
+
+# get total abundance so can make a 'other' column
+# had to add ^ and $ characters to make sure grep matches whole word
+
+physeqdfOther <- physeqdf
+
+for (j in unique(physeqdf$Sample)) {
+  jFirst = paste('^', j, sep='')
+  jBoth = paste(jFirst, '$', sep='')
+  rowNumbers = grep(jBoth, physeqdf$Sample)
+  otherValue = 100 - sum(physeqdf[rowNumbers,"Abundance"])
+  newRow = (physeqdf[rowNumbers,])[1,]
+  newRow[,taxLevel] = "other"
+  newRow[,"Abundance"] = otherValue
+  physeqdfOther <- rbind(physeqdfOther, newRow)
+}
+
+# need to create my own ggplot colors then replace the last one with gray
+# this will ensure that the 'other' category is gray
+
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length=n+1)
+  hcl(h=hues, l=65, c=100)[1:n]
+}
+
+ggCols <- gg_color_hue(length(unique(physeqdfOther[,taxLevel])))
+ggCols <- head(ggCols, n=-1)
+
+physeqdfOther$names <- factor(physeqdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
 
 theme_set(theme_bw())
-plot_bar(seaFiltGlom, fill="Phylum", x="names") +
+ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Class))) +
+  geom_bar(stat="identity", colour="black") +
+  scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
+  facet_grid(~site, scales='free', space='free_x') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# SAVE EPS 1500 x 800
+
+# let's check what's happening with different Endozoicomonas OTUs
+
+seaEndo = subset_taxa(sea, Genus=='Endozoicomonas')
+
+# add coloring for different Endozoicomonas OTUs
+
+tax_table(seaEndo) <- cbind(tax_table(seaEndo), Strain=taxa_names(seaEndo))
+
+myranks = c("Genus", "Strain")
+mylabelssea = apply(tax_table(seaEndo)[, myranks], 1, paste, sep="", collapse="_")
+tax_table(seaEndo) <- cbind(tax_table(seaEndo), catglab=mylabelssea)
+
+sample_data(seaEndo)$names <- factor(sample_names(seaEndo), levels=rownames(metaFile), ordered = TRUE)
+
+seaEndoFilt = filter_taxa(seaEndo, function(x) mean(x) > 0.0001, TRUE)
+
+theme_set(theme_bw())
+plot_bar(seaEndoFilt, fill="catglab", x="names") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,1.6)) +
+  #scale_fill_brewer(type='qual', palette = 'Dark2') +
   facet_grid(~site, scales='free', space='free_x')
 
-# SAVE EPS 1500 x 700
+
+
+
+
+
+
+
 
 # ordination for the seawater samples
 

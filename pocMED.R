@@ -39,7 +39,7 @@ TAX = tax_table(allTax)
 META = sample_data(metaFile)
 allPhylo = phyloseq(OTU, TAX, META)
 
-# take a look at the pocilloporid endozoics
+# take a look at the pocilloporid samples
 
 pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
 pDami <- subset_samples(allPhylo, species=='Pocillopora damicornis')
@@ -49,21 +49,60 @@ sample_data(poc)$names <- factor(sample_names(poc), levels=unique(sample_names(p
 sample_data(pVerr)$names <- factor(sample_names(pVerr), levels=unique(sample_names(pVerr)))
 sample_data(pDami)$names <- factor(sample_names(pDami), levels=unique(sample_names(pDami)))
 
-pocFilt = filter_taxa(poc, function(x) mean(x) > 0.1, TRUE)
+pocFilt = filter_taxa(poc, function(x) mean(x) > 0.2, TRUE)
 pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.2, TRUE)
 pDamiFilt = filter_taxa(pDami, function(x) mean(x) > 1, TRUE)
 
-#colourCount = length(unique(mtcars$hp))
-#getPalette = colorRampPalette(brewer.pal(9, "Set1"))
+# phylum / class bars
+# transforming to normal matix and as.factor keeps taxa stacked consistently
 
-pVerrFiltGlom <- tax_glom(pVerrFilt, taxrank="Class")
+taxLevel <- "Class"
+
+pocFiltGlom <- tax_glom(pocFilt, taxrank=taxLevel)
+pocdf <- psmelt(pocFiltGlom)
+
+# get total abundance so can make a 'other' column
+# had to add ^ and $ characters to make sure grep matches whole word
+
+pocdfOther <- pocdf
+
+for (j in unique(pocdf$Sample)) {
+  jFirst = paste('^', j, sep='')
+  jBoth = paste(jFirst, '$', sep='')
+  rowNumbers = grep(jBoth, pocdf$Sample)
+  otherValue = 100 - sum(pocdf[rowNumbers,"Abundance"])
+  newRow = (pocdf[rowNumbers,])[1,]
+  newRow[,taxLevel] = "other"
+  newRow[,"Abundance"] = otherValue
+  pocdfOther <- rbind(pocdfOther, newRow)
+}
+
+# need to create my own ggplot colors then replace the last one with gray
+# this will ensure that the 'other' category is gray
+# need to manually change the tax level after ggplot
+
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length=n+1)
+  hcl(h=hues, l=65, c=100)[1:n]
+}
+
+ggCols <- gg_color_hue(length(unique(pocdfOther[,taxLevel])))
+ggCols <- head(ggCols, n=-1)
+
+pocdfOther$names <- factor(pocdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
 
 theme_set(theme_bw())
-plot_bar(pVerrFiltGlom, fill="Class", x="names") +
+ggplot(pocdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Class))) +
+  geom_bar(stat="identity", colour="black") +
+  scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
-  facet_grid(~site, scales='free', space='free_x')
+  facet_grid(~site, scales='free', space='free_x') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-# EXPORT AS EPS. 1500 x 600
+
+# SAVE PLOT: EPS 1500 x 800
+
+
 # let's check what's happening with different Endozoicomonas OTUs (Pocillopora combined)
 
 pocEndo = subset_taxa(poc, Genus=='Endozoicomonas')

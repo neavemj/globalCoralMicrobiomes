@@ -23,9 +23,9 @@ allSharedTree = read.table("all.matrixPercentTree.txt", header=T)
 rownames(allSharedTree) = allSharedTree[,1]
 allSharedTree = allSharedTree[,2:length(allSharedTree)]
 
-# import count matrix for alpha diversity measures
+# import NoSubsampling count matrix for alpha diversity measures
 
-allSharedDiv = read.table("all.MED.matrixCount", header=T)
+allSharedDiv = read.table("all.NoSubsampling.matrixCount", header=T)
 rownames(allSharedDiv) = allSharedDiv[,1]
 allSharedDiv = allSharedDiv[,2:length(allSharedDiv)]
 

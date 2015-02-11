@@ -1,5 +1,4 @@
 samples	reef	species	site	warmed	replicates	morphology
-other	other	other	other	other	other	other
 7	Mag2	Pocilloporidae	MaggieIs	FALSE	FALSE	
 9	Mag2	Pocillopora damicornis	MaggieIs	FALSE	FALSE	
 11	Mag3	Stylophora pistillata	MaggieIs	FALSE	FALSE	thick
@@ -96,6 +95,7 @@ other	other	other	other	other	other	other
 MIC-25	Yap 1, Dive 1	Stylophora pistillata	Micronesia	FALSE	FALSE	
 MIC-50	Yap 2, Dive 2	Stylophora pistillata	Micronesia	FALSE	FALSE	
 MIC-53	Yap 2, Dive 2	Stylophora pistillata	Micronesia	FALSE	FALSE	
+MIC-53-rep2	Yap 2, Dive 2	Stylophora pistillata	Micronesia	FALSE	TRUE	
 MIC-85	Woleai, Dive 1	Stylophora pistillata	Micronesia	FALSE	FALSE	
 MIC-91	Woleai, Dive 1	Stylophora pistillata	Micronesia	FALSE	FALSE	
 MIC-145	Woleai, Dive 2	Stylophora pistillata	Micronesia	FALSE	FALSE	
@@ -227,7 +227,6 @@ END63	Metagenome study	Acropora humilis	RedSea	FALSE	FALSE
 250-rep2	Al-Fahal	Pocillopora verrucosa	RedSea	FALSE	TRUE	
 253-rep2	Al-Fahal	Stylophora pistillata	RedSea	FALSE	TRUE	thick
 254-rep2	Al-Fahal	Stylophora pistillata	RedSea	FALSE	TRUE	thick
-MIC-53-rep2	Yap 2, Dive 2	Stylophora pistillata	Micronesia	FALSE	TRUE	
 MIC-85-rep2	Woleai, Dive 1	Stylophora pistillata	Micronesia	FALSE	TRUE	
 KAP1	KAP1	seawater	Micronesia	FALSE	FALSE	
 KAP2	KAP2	seawater	Micronesia	FALSE	FALSE	

@@ -57,13 +57,15 @@ sample_data(spist)$names <- factor(sample_names(spist), levels=unique(sample_nam
 
 spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
 
-spistFiltGlom <- tax_glom(spistFilt, taxrank="Phylum")
+taxLevel <- "Phylum"
+
+spistFiltGlom <- tax_glom(spistFilt, taxrank=taxLevel)
 physeqdf <- psmelt(spistFiltGlom)
 
 # get total abundance so can make a 'other' column
 # had to add ^ and $ characters to make sure grep matches whole word
 
-taxLevel = "Phylum"
+physeqdfOther <- physeqdf
 
 for (j in unique(physeqdf$Sample)) {
   jFirst = paste('^', j, sep='')
@@ -84,11 +86,13 @@ gg_color_hue <- function(n) {
   hcl(h=hues, l=65, c=100)[1:n]
 }
 
-ggCols <- gg_color_hue(length(unique(physeqdfOther$Phylum)))
+ggCols <- gg_color_hue(length(unique(physeqdfOther[,taxLevel])))
 ggCols <- head(ggCols, n=-1)
 
+physeqdfOther$names <- factor(physeqdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
+
 theme_set(theme_bw())
-ggplot(physeqdfOther, aes(x=Sample, y=Abundance, fill=Phylum, order = as.factor(Phylum))) +
+ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Phylum, order = as.factor(Phylum))) +
   geom_bar(stat="identity", colour="black") +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
@@ -96,7 +100,7 @@ ggplot(physeqdfOther, aes(x=Sample, y=Abundance, fill=Phylum, order = as.factor(
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
-# SAVE PLOT: EPS 1500 x 1174
+# SAVE PLOT: EPS 1500 x 800
 
 #Top100OTUs = names(sort(taxa_sums(spist), TRUE)[1:100])
 #spist100 = prune_taxa(Top50OTUs, spist)

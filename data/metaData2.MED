@@ -3,7 +3,7 @@ samples	reef	species	site	warmed	replicates	morphology	pocType
 9	Mag2	Pocillopora damicornis	MaggieIs	FALSE	FALSE		type5
 11	Mag3	Stylophora pistillata	MaggieIs	FALSE	FALSE	thick	
 12	Mag3	Pocillopora damicornis	MaggieIs	FALSE	FALSE		type5
-17	Mag3	Pocillopora damicornis	FALSE	FALSE		
+17	Mag3	Pocillopora damicornis	MaggieIs	FALSE	FALSE		
 19	Mag3	Stylophora pistillata	MaggieIs	FALSE	FALSE	thick	
 49-2	Ning1	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
 50	Ning1	Stylophora pistillata	Ningaloo	TRUE	FALSE	thick	

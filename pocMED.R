@@ -24,13 +24,13 @@ cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#6
 
 # import normal percent matrix
 
-allShared = read.table("all.matrixPercent.txt", header=T)
+allShared = read.table("all.7801.matrixPercent.txt", header=T)
 rownames(allShared) = allShared[,1]
 allShared = allShared[,2:length(allShared)]
 
 # Import normal taxonomy file from mothur
 
-allTax = read.table('all.nodeReps.taxonomy', header=T, sep='\t')
+allTax = read.table('all.7801.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
 rownames(allTax) = allTax[,1]
 allTax = allTax[,3:9]
 allTax = as.matrix(allTax)
@@ -160,38 +160,44 @@ plot_bar(pVerrEndoFilt, fill="catglab", x="names") +
 
 theme_set(theme_bw())
 pocOrd <- ordinate(poc, "NMDS", "bray")
-plot_ordination(poc, pocOrd, type = 'samples', color='pocType', title='poc')
+plot_ordination(poc, pocOrd, type='samples', color='pocType', title='poc') +
+  scale_color_manual(values=cols) 
 
 # not many patterns apparent
 # subset based on poc type and re-draw
 
 pocType3 <- subset_samples(poc, pocType=='type3')
 pocType3Ord <- ordinate(pocType3, "NMDS", "bray")
-plot_ordination(pocType3, pocType3Ord, type = 'samples', color='site', title='pocType3', label='names')
+plot_ordination(pocType3, pocType3Ord, type = 'samples', color='site', title='pocType3') +
+  scale_color_manual(values=cols) 
 
 pocTypeUnknown <- subset_samples(poc, pocType=='type?')
 pocTypeUnknownOrd <- ordinate(pocTypeUnknown, "NMDS", "bray")
-plot_ordination(pocTypeUnknown, pocTypeUnknownOrd, type = 'samples', color='site', title='pocTypeUnknown', label='reef')
+plot_ordination(pocTypeUnknown, pocTypeUnknownOrd, type = 'samples', color='site', title='pocTypeUnknown') +
+  scale_color_manual(values=cols) 
 
 pocType5 <- subset_samples(poc, pocType=='type5')
 pocType5Ord <- ordinate(pocType5, "NMDS", "bray")
-plot_ordination(pocType5, pocType5Ord, type = 'samples', color='site', title='pocType5', label='reef')
+plot_ordination(pocType5, pocType5Ord, type = 'samples', color='site', title='pocType5') +
+  scale_color_manual(values=cols) 
 
 pocType1 <- subset_samples(poc, pocType=='type1')
 
-pocType5andUnknown <- merge_phyloseq(pocTypeUnknown, pocType3)
+pocType5andUnknown <- merge_phyloseq(pocTypeUnknown, pocType5, pocType1)
 pocType5andUnknownOrd <- ordinate(pocType5andUnknown, "NMDS", "bray")
-plot_ordination(pocType5andUnknown, pocType5andUnknownOrd, type = 'samples', color='site', title='pocType5andUnknown', label='names')
+plot_ordination(pocType5andUnknown, pocType5andUnknownOrd, type = 'samples', color='site', title='pocType5andUnknown', label='names') +
+  scale_color_manual(values=cols) 
 
+# SAVE AS 700 x 532
 
 # check what happens with Endos across poc Types
 
-pocEndoFilt = filter_taxa(pocEndo, function(x) mean(x) > 0.2, TRUE)
+pocEndoFilt = filter_taxa(pocEndo, function(x) mean(x) > 0.1, TRUE)
 
 theme_set(theme_bw())
 plot_bar(pocEndoFilt, fill="catglab", x="names") +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
-  scale_fill_brewer(type='qual', palette = 'Set1') +
+  #scale_fill_brewer(type='qual', palette = 'Set1') +
   facet_grid(~pocType+site, scales='free', space='free_x')
 
 

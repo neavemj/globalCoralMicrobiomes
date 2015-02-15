@@ -10,6 +10,7 @@ library("ggplot2")
 library("plyr")
 library("vegan")
 library('ape')
+library('grid')
 library(RColorBrewer)
 setwd("./data")
 
@@ -36,9 +37,9 @@ allTax = as.matrix(allTax)
 
 # import meta data
 
-metaFile = read.table('metaData2.MED', header=T, sep='\t')
+metaFile = read.table('metaData2.csv', header=T, sep=',')
 rownames(metaFile) = metaFile[,1]
-metaFile = metaFile[,2:7]
+metaFile = metaFile[,2:8]
 
 ### Create phyloseq object
 
@@ -154,6 +155,45 @@ plot_bar(pVerrEndoFilt, fill="catglab", x="names") +
   facet_grid(~site, scales='free', space='free_x')
 
 # SAVE EPS 1500 x 700
+
+# ordination for the pocillopora samples
+
+theme_set(theme_bw())
+pocOrd <- ordinate(poc, "NMDS", "bray")
+plot_ordination(poc, pocOrd, type = 'samples', color='pocType', title='poc')
+
+# not many patterns apparent
+# subset based on poc type and re-draw
+
+pocType3 <- subset_samples(poc, pocType=='type3')
+pocType3Ord <- ordinate(pocType3, "NMDS", "bray")
+plot_ordination(pocType3, pocType3Ord, type = 'samples', color='site', title='pocType3', label='names')
+
+pocTypeUnknown <- subset_samples(poc, pocType=='type?')
+pocTypeUnknownOrd <- ordinate(pocTypeUnknown, "NMDS", "bray")
+plot_ordination(pocTypeUnknown, pocTypeUnknownOrd, type = 'samples', color='site', title='pocTypeUnknown', label='reef')
+
+pocType5 <- subset_samples(poc, pocType=='type5')
+pocType5Ord <- ordinate(pocType5, "NMDS", "bray")
+plot_ordination(pocType5, pocType5Ord, type = 'samples', color='site', title='pocType5', label='reef')
+
+pocType1 <- subset_samples(poc, pocType=='type1')
+
+pocType5andUnknown <- merge_phyloseq(pocTypeUnknown, pocType3)
+pocType5andUnknownOrd <- ordinate(pocType5andUnknown, "NMDS", "bray")
+plot_ordination(pocType5andUnknown, pocType5andUnknownOrd, type = 'samples', color='site', title='pocType5andUnknown', label='names')
+
+
+# check what happens with Endos across poc Types
+
+pocEndoFilt = filter_taxa(pocEndo, function(x) mean(x) > 0.2, TRUE)
+
+theme_set(theme_bw())
+plot_bar(pocEndoFilt, fill="catglab", x="names") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
+  scale_fill_brewer(type='qual', palette = 'Set1') +
+  facet_grid(~pocType+site, scales='free', space='free_x')
+
 
 # ordination for the pocillopora verrucosa
 

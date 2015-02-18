@@ -152,6 +152,11 @@ nutPCArotation <- data.frame(PCA.res$rotation)
 multi <- vegan:::ordiArrowMul(nutPCArotation)
 nutPCAarrows <- multi*nutPCArotation
 
+# fix site coloring
+
+siteCols <- c("MaggieIs", "MaggieIs", "MaggieIs", "Ningaloo", "Ningaloo", "Ningaloo", "Ningaloo", "AmericanSamoa", "AmericanSamoa", "Maldives", "Maldives", "Maldives", "Maldives", "Maldives", "Maldives", "RedSea", "RedSea", "RedSea", "RedSea", "RedSea", "RedSea")
+nutPCAggdata <- cbind(nutPCAggdata, siteCols)
+
 # create arrow info
 
 arrowmap <- aes(xend = PC1, yend = PC2, x = 0, y = 0, alpha=0.5, shape = NULL, color = NULL, label = rownames(nutPCAarrows))
@@ -159,11 +164,20 @@ labelmap <- aes(x = PC1, y = PC2 + 0.04, shape = NULL, color = NULL, size=1.5, l
 arrowhead = arrow(length = unit(0.02, "npc"))
 
 nutPCA <- ggplot(nutPCAggdata, title='PCA of the nutrient data') +
-  geom_point(aes(x=PC1, y=PC2)) 
+  geom_point(aes(x=PC1, y=PC2, color=siteCols), size=3) +
+  scale_color_manual(values=c(cols)) 
 nutPCA 
 
 nutPCA + geom_segment(arrowmap, size = 0.5, data = nutPCAarrows, color = "black",  arrow = arrowhead, show_guide = FALSE) +
   geom_text(labelmap, size = 3, data = nutPCAarrows)
+
+
+
+
+
+
+
+
 
 
 # can also use Mothur to get Pearson correlations

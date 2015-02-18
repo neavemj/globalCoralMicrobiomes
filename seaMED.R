@@ -123,62 +123,48 @@ plot_bar(seaEndoFilt, fill="catglab", x="names") +
   facet_grid(~site, scales='free', space='free_x')
 
 
-
-
-
-
-
-
-
 # ordination for the seawater samples
 
 theme_set(theme_bw())
 seaOrd <- ordinate(sea, "NMDS", "bray")
 plot_ordination(sea, seaOrd, type = 'samples', color='site', title='seawater')
 
-# overlay the OTUs onto this
-  
-seaFilt = filter_taxa(sea, function(x) mean(x) > 0.1, TRUE)
+# let's see if the chemistry is correlated with this
+# first do PCA of just chemical data - can do this using R base packages
+# import nutrient data
 
-#Top10OTUs = names(sort(taxa_sums(seaFilt), TRUE)[1:10])
-#seaFilt10 = prune_taxa(Top10OTUs, seaFilt)
-  
-seaOrd <- ordinate(sea, "NMDS", "bray")
-plot_ordination(sea, seaOrd, type = 'split', color='site', title='seawater', label="Genus")
+nutFile = read.table('Nutrients.txt', header=T, sep='\t')
+rownames(nutFile) = nutFile[,1]
+nutFile = nutFile[,2:(length(nutFile))]
 
-# calculate indicator species
-  
-seaDist <- vegdist(otu_table(sea), method="bray")
-seaInd <- indspc(otu_table(sea), seaDist, numitr=1000)
+PCA.res <- prcomp(nutFile, scale.=T)
+biplot(PCA.res)
+summary(PCA.res)
 
-# generate some colors to be consistent
+# better to plot this in ggplot
+# extract x (sample location) and rotation (arrow location)
 
-#display.brewer.all()
-#display.brewer.pal(n = 8, name = 'Dark2')
-#brewer.pal(n = 8, name = "Dark2")
+nutPCAggdata <- data.frame(PCA.res$x)
+nutPCArotation <- data.frame(PCA.res$rotation)
 
-cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#66A61E", "Maldives" = "#E6AB02", "Micronesia" = "#1B9E77", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
+# get correct multiplier value for arrows
 
-# sort by most important indicator species
-  
-seaIndVals <- seaInd$vals
-seaIndValsSorted <- seaIndVals[order(-seaIndVals$indval),,drop=FALSE]
+multi <- vegan:::ordiArrowMul(nutPCArotation)
+nutPCAarrows <- multi*nutPCArotation
 
-indval numocc  pval
-MED000006898 0.82280849      2 0.027
-MED000001740 0.79870842      2 0.046
-MED000004938 0.78373661      2 0.054
-MED000007874 0.75106607     14 0.001
-MED000005832 0.74325044      2 0.080
-MED000003752 0.73354346      9 0.001
-MED000006835 0.73130608      6 0.001
-MED000002578 0.70127820     22 0.001
-MED000007846 0.70127820     22 0.001
-MED000000600 0.69992476     23 0.001
+# create arrow info
 
-# overlay these onto ordination
-  
-seaOrdTop10 <- seaOrd$species[c(rownames(seaIndValsSorted)[1:10]),]
+arrowmap <- aes(xend = PC1, yend = PC2, x = 0, y = 0, alpha=0.5, shape = NULL, color = NULL, label = rownames(nutPCAarrows))
+labelmap <- aes(x = PC1, y = PC2 + 0.04, shape = NULL, color = NULL, size=1.5, label = rownames(nutPCAarrows))
+arrowhead = arrow(length = unit(0.02, "npc"))
+
+nutPCA <- ggplot(nutPCAggdata, title='PCA of the nutrient data') +
+  geom_point(aes(x=PC1, y=PC2)) 
+nutPCA 
+
+nutPCA + geom_segment(arrowmap, size = 0.5, data = nutPCAarrows, color = "black",  arrow = arrowhead, show_guide = FALSE) +
+  geom_text(labelmap, size = 3, data = nutPCAarrows)
+
 
 # can also use Mothur to get Pearson correlations
 

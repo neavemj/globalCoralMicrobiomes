@@ -37,7 +37,7 @@ allTax = as.matrix(allTax)
 
 # import meta data
 
-metaFile = read.table('metaData2.MED', header=T, sep='\t')
+metaFile = read.table('metaData2.test.txt', header=T, sep='\t')
 rownames(metaFile) = metaFile[,1]
 
 ### Create phyloseq object
@@ -50,9 +50,7 @@ allPhylo = phyloseq(OTU, TAX, META)
 # bar chart of s.pistillata phyla or class - the names parameter preserves order
 
 sea <- subset_samples(allPhylo, species=='seawater')
-
 sample_data(sea)$names <- factor(sample_names(sea), levels=rownames(metaFile), ordered = TRUE)
-
 seaFilt = filter_taxa(sea, function(x) mean(x) > 0.1, TRUE)
 
 taxLevel <- "Class"
@@ -126,7 +124,8 @@ plot_bar(seaEndoFilt, fill="catglab", x="names") +
 
 theme_set(theme_bw())
 seaOrd <- ordinate(sea, "NMDS", "bray")
-plot_ordination(sea, seaOrd, type = 'samples', color='site', title='seawater')
+seaOrdPlot <- plot_ordination(sea, seaOrd, type = 'samples', color='site', title='seawater')
+seaOrdPlot
 
 # let's see if the chemistry is correlated with this
 # first do PCA of just chemical data - can do this using R base packages
@@ -171,14 +170,28 @@ nutPCA + geom_segment(arrowmap, size = 0.5, data = nutPCAarrows, color = "black"
   geom_text(labelmap, size = 3, data = nutPCAarrows)
 
 
+# fit chemistry data to my seawater bacteria ordinations
 
-nutFile <- cbind(nutFile, site)
+waterQual <- c("temp", "salinity", "Doperc", "Domg", "pH")
+nutrients <- c("PO4", "N.N", "silicate", "N02", "NH4")
+FCM <- c("prok", "syn", "peuk", "pe.peuk", "Hbact")
 
-newMetaFile <- merge(metaFile, nutFile, by = "site", all.y = FALSE)
+chemFit <- envfit(seaOrd$points, env = metaFile[sample_names(sea),], na.rm=TRUE)
 
+chemFit.scores <- as.data.frame(scores(chemFit, display= "vectors"))
+chemFit.scores <- cbind(chemFit.scores, Species = rownames(chemFit.scores))
 
+# create arrow info again
 
-envfit(seaOrd, tmp$N.N)
+arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=0.5, shape = NULL, color = NULL, label = rownames(chemFit.scores))
+labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, size=1.5, label = rownames(chemFit.scores))
+arrowhead = arrow(length = unit(0.25, "cm"))
+
+seaOrdPlot + 
+  coord_fixed() +
+  geom_segment(arrowmap, size = 0.5, data = chemFit.scores, color = "black",  arrow = arrowhead, show_guide = FALSE) +
+  geom_text(labelmap, size = 3, data = chemFit.scores)
+
 
 
 

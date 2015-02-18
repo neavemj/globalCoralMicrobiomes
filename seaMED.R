@@ -39,7 +39,6 @@ allTax = as.matrix(allTax)
 
 metaFile = read.table('metaData2.MED', header=T, sep='\t')
 rownames(metaFile) = metaFile[,1]
-metaFile = metaFile[,2:7]
 
 ### Create phyloseq object
 
@@ -154,8 +153,8 @@ nutPCAarrows <- multi*nutPCArotation
 
 # fix site coloring
 
-siteCols <- c("MaggieIs", "MaggieIs", "MaggieIs", "Ningaloo", "Ningaloo", "Ningaloo", "Ningaloo", "AmericanSamoa", "AmericanSamoa", "Maldives", "Maldives", "Maldives", "Maldives", "Maldives", "Maldives", "RedSea", "RedSea", "RedSea", "RedSea", "RedSea", "RedSea")
-nutPCAggdata <- cbind(nutPCAggdata, siteCols)
+site <- c("MaggieIs", "MaggieIs", "MaggieIs", "Ningaloo", "Ningaloo", "Ningaloo", "Ningaloo", "AmericanSamoa", "AmericanSamoa", "Maldives", "Maldives", "Maldives", "Maldives", "Maldives", "Maldives", "RedSea", "RedSea", "RedSea", "RedSea", "RedSea", "RedSea")
+nutPCAggdata <- cbind(nutPCAggdata, site)
 
 # create arrow info
 
@@ -164,7 +163,7 @@ labelmap <- aes(x = PC1, y = PC2 + 0.04, shape = NULL, color = NULL, size=1.5, l
 arrowhead = arrow(length = unit(0.02, "npc"))
 
 nutPCA <- ggplot(nutPCAggdata, title='PCA of the nutrient data') +
-  geom_point(aes(x=PC1, y=PC2, color=siteCols), size=3) +
+  geom_point(aes(x=PC1, y=PC2, color=site), size=3) +
   scale_color_manual(values=c(cols)) 
 nutPCA 
 
@@ -173,10 +172,13 @@ nutPCA + geom_segment(arrowmap, size = 0.5, data = nutPCAarrows, color = "black"
 
 
 
+nutFile <- cbind(nutFile, site)
+
+newMetaFile <- merge(metaFile, nutFile, by = "site", all.y = FALSE)
 
 
 
-
+envfit(seaOrd, tmp$N.N)
 
 
 

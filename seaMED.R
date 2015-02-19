@@ -124,18 +124,30 @@ plot_bar(seaEndoFilt, fill="catglab", x="names") +
 
 theme_set(theme_bw())
 seaOrd <- ordinate(sea, "NMDS", "bray")
-seaOrdPlot <- plot_ordination(sea, seaOrd, type = 'samples', color='site', title='seawater')
+seaOrdPlot <- plot_ordination(sea, seaOrd, type = 'samples', color='site', title='seawater') +
+  geom_point(size=3) +
+  scale_color_manual(values=c(cols)) 
 seaOrdPlot
 
 # let's see if the chemistry is correlated with this
 # first do PCA of just chemical data - can do this using R base packages
-# import nutrient data
+# extract chemistry data from data frame
+
 
 nutFile = read.table('Nutrients.txt', header=T, sep='\t')
 rownames(nutFile) = nutFile[,1]
-nutFile = nutFile[,2:(length(nutFile))]
+nutFile2 = nutFile[,3:(length(nutFile))]
 
-PCA.res <- prcomp(nutFile, scale.=T)
+nutFile = na.omit(read.table('FCMeditedSites.txt', header=T, sep='\t'))
+rownames(nutFile) = nutFile[,1]
+nutFile2 = nutFile[,3:(length(nutFile))]
+
+nutFile = read.table('waterQual.txt', header=T, sep='\t')
+nutFile = nutFile[c("sample", "site", "temp", "salinity", "Domg", "pH")]
+rownames(nutFile) = nutFile[,1]
+nutFile2 = nutFile[,3:(length(nutFile))]
+
+PCA.res <- prcomp(na.omit(nutFile2), scale.=T, center=TRUE)
 biplot(PCA.res)
 summary(PCA.res)
 
@@ -152,12 +164,14 @@ nutPCAarrows <- multi*nutPCArotation
 
 # fix site coloring
 
-site <- c("MaggieIs", "MaggieIs", "MaggieIs", "Ningaloo", "Ningaloo", "Ningaloo", "Ningaloo", "AmericanSamoa", "AmericanSamoa", "Maldives", "Maldives", "Maldives", "Maldives", "Maldives", "Maldives", "RedSea", "RedSea", "RedSea", "RedSea", "RedSea", "RedSea")
-nutPCAggdata <- cbind(nutPCAggdata, site)
+#site <- c("MaggieIs", "MaggieIs", "MaggieIs", "Ningaloo", "Ningaloo", "Ningaloo", "Ningaloo", "AmericanSamoa", "AmericanSamoa", "Maldives", "Maldives", "Maldives", "Maldives", "Maldives", "Maldives", "RedSea", "RedSea", "RedSea", "RedSea", "RedSea", "RedSea")
+#nutPCAggdata <- cbind(nutPCAggdata, site)
+
+nutPCAggdata <- cbind(nutPCAggdata, nutFile[2])
 
 # create arrow info
 
-arrowmap <- aes(xend = PC1, yend = PC2, x = 0, y = 0, alpha=0.5, shape = NULL, color = NULL, label = rownames(nutPCAarrows))
+arrowmap <- aes(xend = PC1, yend = PC2, x = 0, y = 0, shape = NULL, color = NULL, label = rownames(nutPCAarrows))
 labelmap <- aes(x = PC1, y = PC2 + 0.04, shape = NULL, color = NULL, size=1.5, label = rownames(nutPCAarrows))
 arrowhead = arrow(length = unit(0.02, "npc"))
 
@@ -169,33 +183,106 @@ nutPCA
 nutPCA + geom_segment(arrowmap, size = 0.5, data = nutPCAarrows, color = "black",  arrow = arrowhead, show_guide = FALSE) +
   geom_text(labelmap, size = 3, data = nutPCAarrows)
 
+# SAVE AS 700 x 532
 
+# nutrients
+Importance of components:
+  PC1    PC2    PC3    PC4    PC5
+Standard deviation     1.5436 0.9727 0.9093 0.8045 0.4438
+Proportion of Variance 0.4766 0.1893 0.1654 0.1294 0.0394
+Cumulative Proportion  0.4766 0.6658 0.8312 0.9606 1.0000
+
+# FCM
+Importance of components:
+  PC1    PC2    PC3     PC4     PC5
+Standard deviation     1.8279 0.9107 0.8127 0.32416 0.25255
+Proportion of Variance 0.6682 0.1659 0.1321 0.02102 0.01276
+Cumulative Proportion  0.6682 0.8341 0.9662 0.98724 1.00000
+
+# water qual
+Importance of components:
+  PC1    PC2     PC3     PC4
+Standard deviation     1.6603 0.8550 0.59512 0.39790
+Proportion of Variance 0.6891 0.1827 0.08854 0.03958
+Cumulative Proportion  0.6891 0.8719 0.96042 1.00000
+
+
+#########################################################
 # fit chemistry data to my seawater bacteria ordinations
+#########################################################
 
-waterQual <- c("temp", "salinity", "Doperc", "Domg", "pH")
+waterQual <- c("temp", "salinity", "Domg", "pH")
 nutrients <- c("PO4", "N.N", "silicate", "N02", "NH4")
 FCM <- c("prok", "syn", "peuk", "pe.peuk", "Hbact")
 
-chemFit <- envfit(seaOrd$points, env = metaFile[sample_names(sea),], na.rm=TRUE)
+chemNoNA <- na.omit(metaFile[sample_names(sea),nutrients])
+seaNoNA <- prune_samples(rownames(chemNoNA), sea)
+
+sample_names(sea)
+sample_names(seaNoNA)
+
+theme_set(theme_bw())
+seaOrdNoNA <- ordinate(seaNoNA, "NMDS", "bray")
+seaOrdNoNAPlot <- plot_ordination(seaNoNA, seaOrdNoNA, type = 'samples', color='site', title='seawater') +
+  geom_point(size=3) +
+  scale_color_manual(values=c(cols)) 
+seaOrdNoNAPlot
+
+pointsNoNA <- seaOrdNoNA$points[rownames(chemNoNA),]
+
+chemFit <- envfit(pointsNoNA, env = chemNoNA, na.rm=TRUE)
 
 chemFit.scores <- as.data.frame(scores(chemFit, display= "vectors"))
 chemFit.scores <- cbind(chemFit.scores, Species = rownames(chemFit.scores))
 
 # create arrow info again
 
-arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, alpha=0.5, shape = NULL, color = NULL, label = rownames(chemFit.scores))
+arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NULL, label = rownames(chemFit.scores))
 labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, size=1.5, label = rownames(chemFit.scores))
 arrowhead = arrow(length = unit(0.25, "cm"))
 
-seaOrdPlot + 
+seaOrdNoNAPlot + 
   coord_fixed() +
   geom_segment(arrowmap, size = 0.5, data = chemFit.scores, color = "black",  arrow = arrowhead, show_guide = FALSE) +
   geom_text(labelmap, size = 3, data = chemFit.scores)
 
+# SAVE AS 700 x 532
+
+        MDS1      MDS2     r2 Pr(>r)   
+prok    -0.164138  0.986440 0.1063  0.099 . 
+syn      0.202584 -0.979260 0.2228  0.007 **
+peuk     0.273535 -0.961860 0.2637  0.006 **
+pe.peuk  0.020191 -0.999800 0.0048  0.907   
+Hbact    0.128122 -0.991760 0.0986  0.130   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+P values based on 999 permutations.
+
+        MDS1     MDS2     r2 Pr(>r)    
+temp      0.95414  0.29937 0.5323  0.001 ***
+salinity -0.95573 -0.29424 0.5172  0.001 ***
+Domg     -0.42780 -0.90387 0.1527  0.092 .  
+pH       -0.84785 -0.53023 0.4743  0.002 ** 
+  ---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+P values based on 999 permutations.
+
+MDS1     MDS2     r2 Pr(>r)    
+PO4       0.90349 -0.42861 0.4581  0.001 ***
+N.N       0.86178 -0.50728 0.2030  0.016 *  
+silicate  0.48720 -0.87329 0.3933  0.002 ** 
+N02       0.68859 -0.72516 0.7457  0.001 ***
+NH4       0.88976 -0.45643 0.1836  0.036 *  
+  ---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+P values based on 999 permutations.
 
 
 
+
+#########################################################
 # can also use Mothur to get Pearson correlations
+#########################################################
 
 # sample_names(sea)
 
@@ -227,9 +314,7 @@ seaFiltPlotArrow <- seaFiltPlot +
   geom_segment(arrowmap, size = 1, data = arrowdf, color = "grey",  arrow = arrowhead, show_guide = FALSE) + 
   scale_color_manual(values=cols) +
   geom_text(labelmap, size = 2, data = arrowdf)
-
 seaFiltPlotArrow
-
 
 
 # see if SIMPER works

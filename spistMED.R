@@ -143,11 +143,21 @@ length(unique(coralEndos))
 
 # now get enough colors for each endo type
 #display.brewer.all()
-#display.brewer.pal(n = 8, name = 'Dark2')
-#brewer.pal(n = 8, name = "Dark2")
+#display.brewer.pal(n = 12, name = 'Set3')
+#brewer.pal(n = 12, name = 'Set3')
+#display.brewer.pal(n = 8, name = 'Set1')
+#brewer.pal(n = 8, name = 'Set1')
 
-cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#666666", "Maldives" = "#E6AB02", "Micronesia" = "#66A61E", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
+ggCols2 <- gg_color_hue(length(unique(coralEndos)))
 
+cols2 <- c("Endozoicomonas_MED000010125" = "#F8766D", "Endozoicomonas_MED000009228"="#E38900", "Endozoicomonas_MED000009251"="#C49A00", "Endozoicomonas_MED000010206"="#A58AFF", "Endozoicomonas_MED000008196"="#53B400", "Endozoicomonas_MED000009620"="#00BC56", "Endozoicomonas_MED000007266"="#00C094", "Endozoicomonas_MED000005378"="#00BFC4", "Endozoicomonas_MED000010299"="#FF66A8", "Endozoicomonas_MED000009176"="#06A4FF", "Endozoicomonas_MED000009211"="#99A800", "Endozoicomonas_MED000009303"="#DF70F8", "Endozoicomonas_MED000001801"="#FB61D7", "Endozoicomonas_MED000009212"="#00B6EB")
+
+
+theme_set(theme_bw())
+plot_bar(spistEndoFilt, fill="catglab", x="names") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
+  scale_fill_manual(values=cols2) +
+  facet_grid(~site, scales='free', space='free_x')
 
 
 # SAVE PLOT: EPS 1500 x 600. Greater than 0.2%

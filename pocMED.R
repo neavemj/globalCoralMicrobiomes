@@ -130,7 +130,7 @@ pocEndoFilt = filter_taxa(pocEndo, function(x) mean(x) > 0.2, TRUE)
 theme_set(theme_bw())
 plot_bar(pocEndoFilt, fill="catglab", x="names") +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
-  scale_fill_brewer(type='qual', palette = 'Set1') +
+  scale_fill_manual(values=cols2) +
   facet_grid(~site, scales='free', space='free_x')
 
 # let's check what's happening with different Endozoicomonas OTUs (Pocillopora verrucosa)

@@ -198,7 +198,7 @@ theme_set(theme_bw())
 plot_bar(pocEndoFilt, fill="catglab", x="names") +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   #scale_fill_brewer(type='qual', palette = 'Set1') +
-  facet_grid(~pocType+site, scales='free', space='free_x')
+  facet_grid(~pocType, scales='free', space='free_x')
 
 
 # ordination for the pocillopora verrucosa

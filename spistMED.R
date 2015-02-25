@@ -135,6 +135,20 @@ plot_bar(spistEndoFilt, fill="catglab", x="names") +
   scale_fill_brewer(type='qual', palette = 'Dark2') +
   facet_grid(~site, scales='free', space='free_x')
 
+# want to get different colors for endos in spist v poc
+# first figure out how many diff endo types we have
+coralEndos <- rbind(tax_table(spistEndoFilt)[,"catglab"], tax_table(pocEndoFilt)[,"catglab"])
+unique(coralEndos)
+length(unique(coralEndos))
+
+# now get enough colors for each endo type
+#display.brewer.all()
+#display.brewer.pal(n = 8, name = 'Dark2')
+#brewer.pal(n = 8, name = "Dark2")
+
+cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#666666", "Maldives" = "#E6AB02", "Micronesia" = "#66A61E", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
+
+
 
 # SAVE PLOT: EPS 1500 x 600. Greater than 0.2%
 

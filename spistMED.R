@@ -251,7 +251,7 @@ waterQual <- c("temp", "salinity", "Domg", "pH")
 nutrients <- c("PO4", "N.N", "silicate", "NO2", "NH4")
 FCM <- c("prok", "syn", "peuk", "pe.peuk", "Hbact")
 
-chemNoNA <- na.omit(metaFile[sample_names(spist),waterQual])
+chemNoNA <- na.omit(metaFile[sample_names(spist),FCM])
 spistNoNA <- prune_samples(rownames(chemNoNA), spist)
 
 sample_names(spist)
@@ -308,4 +308,12 @@ silicate -0.75651  0.65398 0.5160  0.001 ***
   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 P values based on 999 permutations.
 
-
+MDS1     MDS2     r2 Pr(>r)    
+prok    -0.04407 -0.99903 0.2544  0.001 ***
+  syn      0.51477  0.85733 0.1171  0.033 *  
+  peuk     0.50215  0.86478 0.0906  0.065 .  
+pe.peuk  0.95731  0.28907 0.0527  0.257    
+Hbact   -0.73361  0.67957 0.0436  0.344    
+---
+  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+P values based on 999 permutations.

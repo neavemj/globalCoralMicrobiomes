@@ -40,7 +40,7 @@ allTax = as.matrix(allTax)
 
 metaFile = read.table('metaData2.MED', header=T, sep='\t')
 rownames(metaFile) = metaFile[,1]
-metaFile = metaFile[,2:7]
+metaFile = metaFile[,2:8]
 
 # import phylogenetic tree of Endozoicomonas types
 
@@ -95,15 +95,15 @@ plot_bar(allPhyloFilt, fill="Phylum") +
 
 # plot a tree of all endozoicomonas MED nodes
 
-plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='species', size='abundance', label.tips = 'taxa_names', base.spacing = 0.005)
+plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='pocType', size='abundance', label.tips = 'taxa_names', base.spacing = 0.005)
 
 # SAVE AS EPS 1500 x 1200
+
 
 theme_set(theme_bw())
 plot_bar(endoTree) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x')
-
 
 # mess around with merging etc.
 

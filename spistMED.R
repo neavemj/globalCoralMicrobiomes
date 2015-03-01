@@ -37,9 +37,9 @@ allTax = as.matrix(allTax)
 
 # import meta data
 
-metaFile = read.table('metaData2.MED', header=T, sep='\t')
+metaFile = read.table('metaDataChem.txt', header=T, sep='\t')
 rownames(metaFile) = metaFile[,1]
-metaFile = metaFile[,2:7]
+metaFile = metaFile[,2:22]
 
 ### Create phyloseq object
 
@@ -243,9 +243,69 @@ spistFiltPlotArrow <- spistFiltPlot +
 spistFiltPlotArrow
 
 
+####################################################################
+### fit chemistry to the coral microbiomes
+####################################################################
+
+waterQual <- c("temp", "salinity", "Domg", "pH")
+nutrients <- c("PO4", "N.N", "silicate", "NO2", "NH4")
+FCM <- c("prok", "syn", "peuk", "pe.peuk", "Hbact")
+
+chemNoNA <- na.omit(metaFile[sample_names(spist),waterQual])
+spistNoNA <- prune_samples(rownames(chemNoNA), spist)
+
+sample_names(spist)
+sample_names(spistNoNA)
+
+theme_set(theme_bw())
+spistOrdNoNA <- ordinate(spistNoNA, "NMDS", "bray")
+spistOrdNoNAPlot <- plot_ordination(spistNoNA, spistOrdNoNA, type = 'samples', color='site', title='spist') +
+  geom_point(size=3) +
+  scale_color_manual(values=c(cols)) 
+spistOrdNoNAPlot
+
+pointsNoNA <- spistOrdNoNA$points[rownames(chemNoNA),]
+
+chemFit <- envfit(pointsNoNA, env = chemNoNA, na.rm=TRUE)
+
+chemFit.scores <- as.data.frame(scores(chemFit, display= "vectors"))
+chemFit.scores <- cbind(chemFit.scores, Species = rownames(chemFit.scores))
+
+# create arrow info again
+
+arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NULL, label = rownames(chemFit.scores))
+labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, size=1.5, label = rownames(chemFit.scores))
+arrowhead = arrow(length = unit(0.25, "cm"))
+
+spistOrdNoNAPlot + 
+  coord_fixed() +
+  geom_segment(arrowmap, size = 0.5, data = chemFit.scores, color = "black",  arrow = arrowhead, show_guide = FALSE) +
+  geom_text(labelmap, size = 3, data = chemFit.scores)
+
+# SAVE AS 700 x 532
 
 
+***VECTORS
 
+MDS1     MDS2     r2 Pr(>r)    
+temp      0.88707  0.46164 0.4174  0.001 ***
+  salinity -0.15092 -0.98855 0.2369  0.005 ** 
+  Domg     -0.71695 -0.69712 0.1044  0.057 .  
+pH       -0.43162 -0.90206 0.3253  0.001 ***
+  ---
+  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+P values based on 999 permutations.
 
+***VECTORS
+
+MDS1     MDS2     r2 Pr(>r)    
+PO4      -0.40364  0.91492 0.1460  0.027 *  
+  N.N       0.81490 -0.57960 0.0922  0.079 .  
+silicate -0.75651  0.65398 0.5160  0.001 ***
+  NO2      -0.55247  0.83353 0.4323  0.001 ***
+  NH4       0.15821 -0.98740 0.1623  0.012 *  
+  ---
+  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+P values based on 999 permutations.
 
 

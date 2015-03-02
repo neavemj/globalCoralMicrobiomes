@@ -55,9 +55,9 @@ spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
 
 sample_data(spist)$names <- factor(sample_names(spist), levels=rownames(metaFile), ordered = TRUE)
 
-spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
+spistFilt = filter_taxa(spist, function(x) mean(x) > 0.2, TRUE)
 
-taxLevel <- "Phylum"
+taxLevel <- "Class"
 
 spistFiltGlom <- tax_glom(spistFilt, taxrank=taxLevel)
 physeqdf <- psmelt(spistFiltGlom)
@@ -92,7 +92,7 @@ ggCols <- head(ggCols, n=-1)
 physeqdfOther$names <- factor(physeqdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
 
 theme_set(theme_bw())
-ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Phylum, order = as.factor(Phylum))) +
+ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Class))) +
   geom_bar(stat="identity", colour="black") +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
@@ -100,7 +100,7 @@ ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Phylum, order = as.factor(P
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
-# SAVE PLOT: EPS 1500 x 800
+# SAVE PLOT: EPS 1500 x 600
 
 #Top100OTUs = names(sort(taxa_sums(spist), TRUE)[1:100])
 #spist100 = prune_taxa(Top50OTUs, spist)

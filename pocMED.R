@@ -58,14 +58,14 @@ sample_data(poc)$names <- factor(sample_names(poc), levels=unique(sample_names(p
 sample_data(pVerr)$names <- factor(sample_names(pVerr), levels=unique(sample_names(pVerr)))
 sample_data(pDami)$names <- factor(sample_names(pDami), levels=unique(sample_names(pDami)))
 
-pocFilt = filter_taxa(poc, function(x) mean(x) > 0.2, TRUE)
+pocFilt = filter_taxa(poc, function(x) mean(x) > 0.5, TRUE)
 pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.2, TRUE)
 pDamiFilt = filter_taxa(pDami, function(x) mean(x) > 1, TRUE)
 
 # phylum / class bars
 # transforming to normal matix and as.factor keeps taxa stacked consistently
 
-taxLevel <- "Class"
+taxLevel <- "Genus"
 
 pocFiltGlom <- tax_glom(pocFilt, taxrank=taxLevel)
 pocdf <- psmelt(pocFiltGlom)
@@ -101,7 +101,7 @@ ggCols <- head(ggCols, n=-1)
 pocdfOther$names <- factor(pocdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
 
 theme_set(theme_bw())
-ggplot(pocdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Class))) +
+ggplot(pocdfOther, aes(x=names, y=Abundance, fill=Genus, order = as.factor(Genus))) +
   geom_bar(stat="identity", colour="black") +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +

@@ -53,7 +53,7 @@ sea <- subset_samples(allPhylo, species=='seawater')
 sample_data(sea)$names <- factor(sample_names(sea), levels=rownames(metaFile), ordered = TRUE)
 seaFilt = filter_taxa(sea, function(x) mean(x) > 0.1, TRUE)
 
-taxLevel <- "Phylum"
+taxLevel <- "Class"
 
 seaFiltGlom <- tax_glom(seaFilt, taxrank=taxLevel)
 physeqdf <- psmelt(seaFiltGlom)
@@ -88,14 +88,14 @@ ggCols <- head(ggCols, n=-1)
 physeqdfOther$names <- factor(physeqdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
 
 theme_set(theme_bw())
-ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Phylum, order = as.factor(Phylum))) +
+ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Class))) +
   geom_bar(stat="identity", colour="black") +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-# SAVE EPS 1500 x 800
+# SAVE EPS 1500 x 600
 
 # let's check what's happening with different Endozoicomonas OTUs
 

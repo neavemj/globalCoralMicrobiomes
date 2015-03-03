@@ -10,6 +10,7 @@ library("ggplot2")
 library("plyr")
 library("vegan")
 library('ape')
+library('labdsv')
 library('grid')
 library('RColorBrewer')
 library("clustsig")
@@ -378,8 +379,8 @@ wanted <- c("2", "3",  "5",  "8",  "10", "16", "21", "26", "27")
 
 df_ell2 <- subset(df_ell, site==wanted)
 
-nMDSsimprof +
-  geom_path(data=df_ell, aes(x=x, y=y, color=site), size=0.5, linetype=2, show_guide=FALSE) +
+spistFiltPlot +
+  geom_path(data=df_ell, aes(x=x, y=y), color='black', size=0.5, linetype=2, show_guide=FALSE) +
   annotate("text", x=nMDS.mean$x, y=nMDS.mean$y, label=nMDS.mean$Group.1)
 
 # SAVE AS 700 x 532

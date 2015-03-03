@@ -160,7 +160,7 @@ plot_bar(pVerrEndoFilt, fill="catglab", x="names") +
 
 theme_set(theme_bw())
 pocOrd <- ordinate(poc, "NMDS", "bray")
-plot_ordination(poc, pocOrd, type='samples', color='pocType', title='poc') +
+pocOrdPlot <- plot_ordination(poc, pocOrd, type='samples', color='site', title='poc') +
   scale_color_manual(values=cols) 
 
 # not many patterns apparent
@@ -311,5 +311,68 @@ Hbact   -0.79815  0.60247 0.1914  0.026 *
   ---
   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 P values based on 999 permutations.
-  
+
+
+####################################################################
+### SIMPROF analysis to check which samples fall into 'groups' without any *a priori* assumptions
+####################################################################
+
+# Need to import the shared file containing just poc OTUs, then calcualte the simprof clusters based on the braycurtis metric. 
+
+pocShared = otu_table(poc)
+class(pocShared) <- "numeric"
+
+pocSIMPROF <- simprof(pocShared, num.expected=10, num.simulated=9, method.cluster='average', method.distance='braycurtis', method.transform='identity', alpha=0.05, sample.orientation='row', silent=FALSE)
+
+simprof.plot(pocSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+
+
+# I'll try and overlay the significant clusters on top of the nMDS. 
+# After calculating the clusters, make a data frame of the results and add to previous nMDS plot. Need to add these groups to the nMDS data.frame - I'll do a loop for this.
+
+simprofCLUSTERS = data.frame()
+
+for(j in 1:length(pocSIMPROF$significantclusters)){
+  if(length(pocSIMPROF$significantclusters[[j]]) > 2){
+    simprofCLUSTERS <- rbind(simprofCLUSTERS, cbind(j, pocSIMPROF$significantclusters[[j]]))
+  }
+}
+
+rownames(simprofCLUSTERS) <- simprofCLUSTERS[,2]
+colnames(simprofCLUSTERS) <- c("simprofCLUSTER", "group")
+pocFiltDF <- as.data.frame(pocOrdPlot$data)
+metaSIMP <- merge(pocFiltDF, simprofCLUSTERS, by="row.names")
+
+#plot over nMDS
+
+df_ell <- data.frame()
+for(g in levels(metaSIMP$simprofCLUSTER)){
+  df_ell <- rbind(df_ell, cbind(as.data.frame(with(metaSIMP[metaSIMP$simprofCLUSTER==g,], ellipse(cor(NMDS1, NMDS2), scale=c(sd(NMDS1), sd(NMDS2)), centre=c(mean(NMDS1), mean(NMDS2))))),site=g))
+}
+
+nMDSsimprof <- ggplot(data=metaSIMP, aes(x=NMDS1, y=NMDS2, color=site)) +
+  geom_point() +
+  scale_color_hue(limits=levels(droplevels(metaSIMP$site)))
+nMDSsimprof
+
+nMDS.mean <- aggregate(df_ell, list(df_ell$site), FUN=mean)
+
+#write.table(df_ell, file="simpBrayIdent.txt")
+#write.table(nMDS.mean, file="simpBrayIdentMean.txt")
+
+#df_ell_saved <- (read.table("simpBrayIdent.txt"))
+#df_ell_saved$site <- factor(df_ell_saved$site)
+#nMDS.mean.saved <- read.table("simpBrayIdentMean.txt")
+
+#unique(df_ell$site)
+
+#wanted <- c("2", "3",  "5",  "8",  "10", "16", "21", "26", "27")
+
+#df_ell2 <- subset(df_ell, site==wanted)
+
+pocOrdPlot +
+  geom_path(data=df_ell, aes(x=x, y=y), color='black', size=0.5, linetype=2, show_guide=FALSE) +
+  annotate("text", x=nMDS.mean$x, y=nMDS.mean$y, label=nMDS.mean$Group.1)
+
+# SAVE AS 700 x 532
 

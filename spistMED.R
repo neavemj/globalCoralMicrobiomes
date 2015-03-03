@@ -12,6 +12,8 @@ library("vegan")
 library('ape')
 library('grid')
 library('RColorBrewer')
+library("clustsig")
+library("ellipse")
 setwd("./data")
 
 # generate some colors to be consistent
@@ -193,16 +195,16 @@ spistIndVals <- spistInd$vals
 spistIndValsSorted <- spistIndVals[order(-spistIndVals$indval),,drop=FALSE]
 
 indval numocc  pval
-MED000007667 0.5318256470      7 0.001
-MED000007525 0.4988038081      4 0.001
-MED000002495 0.4936241515      2 0.006
-MED000002426 0.4936241515      2 0.006
-MED000005726 0.4634710015      2 0.009
-MED000005721 0.4160763361      5 0.001
-MED000007914 0.4160763361      5 0.001
-MED000005203 0.4133567153      2 0.015
-MED000005495 0.4133567153      2 0.015
-MED000006562 0.3998108740      5 0.001
+MED000008130 0.5957302      2 0.003
+MED000009492 0.5118680      4 0.001
+MED000000375 0.5057752      2 0.008
+MED000000581 0.4760191      2 0.011
+MED000008713 0.4760191      2 0.011
+MED000009640 0.4262102      5 0.001
+MED000001212 0.4170521      2 0.021
+MED000009470 0.4111436      4 0.001
+MED000006552 0.4109851      3 0.001
+MED000003841 0.3940892      9 0.001
 
 # overlay these onto ordination
 
@@ -212,8 +214,8 @@ spistOrdTop10 <- spistOrd$species[c(rownames(spistIndValsSorted)[1:10]),]
 spistMothurSpearman <- c("MED000006776",  "MED000009228",  "MED000005973",  "MED000009485",  "MED000005839",  "MED000007679",  "MED000009504",  "MED000009644", "MED000010328",  "MED000009696")
 
 
-arrowmatrix <- data.frame(labels = spistMothurSpearman)
-rownames(arrowmatrix) <- arrowmatrix[,1]
+arrowmatrix <- data.frame(labels = spistOrdTop10)
+#rownames(arrowmatrix) <- arrowmatrix[,1]
 arrowdf <- data.frame(arrowmatrix)
 
 # get taxonomic information from the original tax file
@@ -228,8 +230,8 @@ arrowdf <- cbind(arrowdf, catglab=mylabels)
 
 # now create labels, arrows, etc.
 
-arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NULL, label = labels)
-labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = catglab, size=1.5)
+arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NULL, label = arrowdf$labels)
+labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, label = arrowdf$labels, size=1.5)
 arrowhead = arrow(length = unit(0.02, "npc"))
 
 spistFiltPlot <- plot_ordination(spist, spistOrd, type = 'samples', color='site', title='spist') +
@@ -317,3 +319,68 @@ Hbact   -0.73361  0.67957 0.0436  0.344
 ---
   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 P values based on 999 permutations.
+
+
+####################################################################
+### SIMPROF analysis to check which samples fall into 'groups' without any *a priori* assumptions
+####################################################################
+
+Need to import the shared file containing just spist OTUs, then calcualte the simprof clusters based on the braycurtis metric. 
+
+spistShared = otu_table(spist)
+class(spistShared) <- "numeric"
+
+spistSIMPROF <- simprof(spistShared, num.expected=10, num.simulated=9, method.cluster='average', method.distance='braycurtis', method.transform='identity', alpha=0.05, sample.orientation='row', silent=FALSE)
+
+simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+
+
+# I'll try and overlay the significant clusters on top of the nMDS. 
+# After calculating the clusters, make a data frame of the results and add to previous nMDS plot. Need to add these groups to the nMDS data.frame - I'll do a loop for this.
+
+simprofCLUSTERS = data.frame()
+
+for(j in 1:length(spistSIMPROF$significantclusters)){
+  if(length(spistSIMPROF$significantclusters[[j]]) > 2){
+    simprofCLUSTERS <- rbind(simprofCLUSTERS, cbind(j, spistSIMPROF$significantclusters[[j]]))
+  }
+}
+
+rownames(simprofCLUSTERS) <- simprofCLUSTERS[,2]
+colnames(simprofCLUSTERS) <- c("simprofCLUSTER", "group")
+spistFiltDF <- as.data.frame(spistFiltPlotArrow$data)
+metaSIMP <- merge(spistFiltDF, simprofCLUSTERS, by="row.names")
+
+#plot over nMDS
+
+df_ell <- data.frame()
+for(g in levels(metaSIMP$simprofCLUSTER)){
+  df_ell <- rbind(df_ell, cbind(as.data.frame(with(metaSIMP[metaSIMP$simprofCLUSTER==g,], ellipse(cor(NMDS1, NMDS2), scale=c(sd(NMDS1), sd(NMDS2)), centre=c(mean(NMDS1), mean(NMDS2))))),site=g))
+}
+
+nMDSsimprof <- ggplot(data=metaSIMP, aes(x=NMDS1, y=NMDS2, color=site)) +
+  geom_point() +
+  scale_color_hue(limits=levels(droplevels(metaSIMP$site)))
+nMDSsimprof
+
+nMDS.mean <- aggregate(df_ell, list(df_ell$site), FUN=mean)
+
+#write.table(df_ell, file="simpBrayIdent.txt")
+#write.table(nMDS.mean, file="simpBrayIdentMean.txt")
+
+df_ell_saved <- (read.table("simpBrayIdent.txt"))
+df_ell_saved$site <- factor(df_ell_saved$site)
+nMDS.mean.saved <- read.table("simpBrayIdentMean.txt")
+
+unique(df_ell$site)
+
+wanted <- c("2", "3",  "5",  "8",  "10", "16", "21", "26", "27")
+
+df_ell2 <- subset(df_ell, site==wanted)
+
+nMDSsimprof +
+  geom_path(data=df_ell, aes(x=x, y=y, color=site), size=0.5, linetype=2, show_guide=FALSE) +
+  annotate("text", x=nMDS.mean$x, y=nMDS.mean$y, label=nMDS.mean$Group.1)
+
+# SAVE AS 700 x 532
+

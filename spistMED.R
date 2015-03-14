@@ -166,10 +166,18 @@ plot_bar(spistEndoFilt, fill="catglab", x="names") +
 
 # plot a heat map to show these differences a bit better
 
+coralPhyloEndo = subset_samples(allPhyloEndo, species!='seawater')
+spistPhyloEndo <- subset_samples(allPhyloEndo, species=='Stylophora pistillata')
+pVerrPhyloEndo <- subset_samples(allPhyloEndo, species=='Pocillopora verrucosa')
+spistPverrEndo <- merge_phyloseq(spistPhyloEndo, pVerrPhyloEndo)
 
+spistPverrEndoFilt = filter_taxa(spistPverrEndo, function(x) mean(x) > 0.0, TRUE)
 
+plot_heatmap(spistPverrEndoFilt, "RDA", "none", "species", "catglab", sample.order='species')
+#plot_heatmap(spistPhyloEndo, "RDA", "none", "site", "catglab", sample.order='site')
+#plot_heatmap(pVerrPhyloEndo, "RDA", "none", "site", "catglab", sample.order='site')
 
-plot_heatmap(allPhyloEndoFilt, "RDA", "none")
+plot_heatmap(allPhylo, "RDA", "none", "species", "none")
 
 
 # ordination for the spist samples

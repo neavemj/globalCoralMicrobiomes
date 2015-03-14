@@ -166,19 +166,26 @@ plot_bar(spistEndoFilt, fill="catglab", x="names") +
 
 # plot a heat map to show these differences a bit better
 
+plot_heatmap(allPhylo, "RDA", "none", "species", "none")
+
 coralPhyloEndo = subset_samples(allPhyloEndo, species!='seawater')
 spistPhyloEndo <- subset_samples(allPhyloEndo, species=='Stylophora pistillata')
 pVerrPhyloEndo <- subset_samples(allPhyloEndo, species=='Pocillopora verrucosa')
 spistPverrEndo <- merge_phyloseq(spistPhyloEndo, pVerrPhyloEndo)
 
 spistPverrEndoFilt = filter_taxa(spistPverrEndo, function(x) mean(x) > 0.0, TRUE)
+spistPverrEndoFiltPrune = prune_samples(sample_sums(spistPverrEndoFilt) > 0, spistPverrEndoFilt)
 
-plot_heatmap(spistPverrEndoFilt, "RDA", "none", "species", "catglab", sample.order='species')
-#plot_heatmap(spistPhyloEndo, "RDA", "none", "site", "catglab", sample.order='site')
-#plot_heatmap(pVerrPhyloEndo, "RDA", "none", "site", "catglab", sample.order='site')
+theme_set(theme_bw())
+plot_heatmap(spistPverrEndoFiltPrune, "NMDS", "bray", "site", "catglab", sample.order='species')
 
-plot_heatmap(allPhylo, "RDA", "none", "species", "none")
+# take a quick look at the Archaea samples
 
+archaeaPhylo <- subset_taxa(allPhylo, Domain=="Archaea")
+tmp = prune_samples(sample_sums(archaeaPhylo) > 0, archaeaPhylo)
+plot_heatmap(archaeaPhylo, "RDA", "none", 'species')
+
+plot_heatmap(tmp)
 
 # ordination for the spist samples
 

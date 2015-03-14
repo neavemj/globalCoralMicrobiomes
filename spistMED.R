@@ -27,13 +27,13 @@ cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#6
 
 # import normal percent matrix
 
-allShared = read.table("all.7801.matrixPercent.txt", header=T)
+allShared = read.table("all.7974.matrixPercent.txt", header=T)
 rownames(allShared) = allShared[,1]
 allShared = allShared[,2:length(allShared)]
 
 # Import normal taxonomy file from mothur
 
-allTax = read.table('all.7801.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
+allTax = read.table('all.7974.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
 rownames(allTax) = allTax[,1]
 allTax = allTax[,3:9]
 allTax = as.matrix(allTax)
@@ -162,8 +162,15 @@ plot_bar(spistEndoFilt, fill="catglab", x="names") +
   scale_fill_manual(values=cols2) +
   facet_grid(~site, scales='free', space='free_x')
 
-
 # SAVE PLOT: EPS 1500 x 600. Greater than 0.2%
+
+# plot a heat map to show these differences a bit better
+
+
+
+
+plot_heatmap(allPhyloEndoFilt, "RDA", "none")
+
 
 # ordination for the spist samples
 

@@ -13,7 +13,7 @@ setwd("./data")
 
 # import normal percent matrix
 
-allShared = read.table("all.7801.matrixPercent.txt", header=T)
+allShared = read.table("all.7974.matrixPercent.txt", header=T)
 rownames(allShared) = allShared[,1]
 allShared = allShared[,2:length(allShared)]
 
@@ -31,7 +31,7 @@ allSharedDiv = allSharedDiv[,2:length(allSharedDiv)]
 
 # Import normal taxonomy file from mothur
 
-allTax = read.table('all.7801.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
+allTax = read.table('all.7974.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
 rownames(allTax) = allTax[,1]
 allTax = allTax[,3:9]
 allTax = as.matrix(allTax)

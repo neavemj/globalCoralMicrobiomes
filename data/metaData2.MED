@@ -26,7 +26,7 @@ samples	reef	species	site	warmed	replicates	morphology	pocType
 76-2	Ning4	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
 77-2	Ning4	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
 86	AM1	Pocillopora damicornis	AmericanSamoa	FALSE	FALSE		
-99	AM2	Pocillopora damicornis	AmericanSamoa	FALSE	FALSE		type3
+99	AM2	Pocillopora verrucosa	AmericanSamoa	FALSE	FALSE		type3
 100	AM2	Pocillopora damicornis	AmericanSamoa	FALSE	FALSE		
 101	AM2	Stylophora pistillata	AmericanSamoa	FALSE	FALSE	very thick	
 102	AM2	Stylophora pistillata	AmericanSamoa	FALSE	FALSE	very thick	
@@ -37,7 +37,7 @@ samples	reef	species	site	warmed	replicates	morphology	pocType
 107	Maldives1	Pocillopora verrucosa	Maldives	FALSE	FALSE		type3
 121	Maldives2	Pocillopora damicornis	Maldives	FALSE	FALSE		type5
 127	Maldives1b	Pocillopora damicornis	Maldives	FALSE	FALSE		type5
-138	Maldives4	Pocillopora verrucosa	Maldives	FALSE	FALSE		type1
+138	Maldives4	Pocillopora damicornis	Maldives	FALSE	FALSE		type1
 153	Maldives5	Pocillopora verrucosa	Maldives	FALSE	FALSE		type1
 154	Maldives5	Pocillopora verrucosa	Maldives	FALSE	FALSE		type1
 173	Yanbu1	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
@@ -62,10 +62,10 @@ samples	reef	species	site	warmed	replicates	morphology	pocType
 219	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		type?
 220	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		
 221	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
-222	Al-Lith1	Pocillopora damicornis	RedSea	FALSE	FALSE		type3
+222	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
 223	Al-Lith1	Pocillopora damicornis	RedSea	FALSE	FALSE		
-224	Al-Lith1	Pocillopora damicornis	RedSea	FALSE	FALSE		type3
-225	Al-Lith1	Pocillopora damicornis	RedSea	FALSE	FALSE		type3
+224	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
+225	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
 226	Al-Lith1	Stylophora pistillata	RedSea	FALSE	FALSE	thin	
 227	Al-Lith1	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
 228	Al-Lith1	Stylophora pistillata	RedSea	FALSE	FALSE	thick	

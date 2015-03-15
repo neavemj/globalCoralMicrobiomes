@@ -131,8 +131,7 @@ plot_heatmap(spistPverrEndoFilt, "RDA", "none", "site", sample.order='species')
 # take a quick look at the Archaea samples
 
 archaeaPhylo <- subset_taxa(allPhylo, Domain=="Archaea")
-tmp = prune_samples(sample_sums(archaeaPhylo) > 0, archaeaPhylo)
-plot_heatmap(archaeaPhylo, "RDA", "none", 'species')
+archaeaPhyloPrune = prune_samples(sample_sums(archaeaPhylo) > 0, archaeaPhylo)
+plot_heatmap(archaeaPhyloPrune, "NMDS", "bray", 'species')
 
-plot_heatmap(tmp)
 

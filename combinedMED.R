@@ -36,11 +36,15 @@ rownames(allTax) = allTax[,1]
 allTax = allTax[,3:9]
 allTax = as.matrix(allTax)
 
-# import meta data
+# import meta data (and metaData3 for heatmap ordering)
 
 metaFile = read.table('metaData2.MED', header=T, sep='\t')
 rownames(metaFile) = metaFile[,1]
 metaFile = metaFile[,2:8]
+
+metaFile3 = read.table('metaData3.txt', header=T, sep='\t')
+rownames(metaFile3) = metaFile3[,1]
+metaFile3 = metaFile3[,2:8]
 
 # import phylogenetic tree of Endozoicomonas types
 
@@ -72,7 +76,6 @@ allPhyloDivTmp3 <- subset_samples(allPhyloDiv, species=="Pocillopora verrucosa")
 allPhyloDivTmp4 <- subset_samples(allPhyloDiv, species=="Pocillopora damicornis")
 allPhyloDiv2 <- merge_phyloseq(allPhyloDivTmp, allPhyloDivTmp2, allPhyloDivTmp3, allPhyloDivTmp4)
 
-
 # The predicted number of OTUs and diversity indecies look similar across the different coral species. I'll add some whisker plots to make this easier to see. 
 
 allDivPlot2 <- plot_richness(allPhyloDiv2, x = 'species', measures = c('Chao1', 'Shannon', 'observed'), color = 'site')
@@ -99,22 +102,37 @@ plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='pocType'
 
 # SAVE AS EPS 1500 x 1200
 
-
 theme_set(theme_bw())
 plot_bar(endoTree) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x')
 
-# mess around with merging etc.
+# plot a heat map to show these differences a bit better
 
-#endoTreeSite = merge_samples(endoTree, "site", fun=)
-#endoTreeSpecies = merge_samples(endoTree, 'species', fun=mean)
+plot_heatmap(allPhylo, "RDA", "none", "species", "none")
 
-# for some reason this just sums the taxa abundances - doesn't calculate the mean! Ahh...
+allPhyloEndo = subset_taxa(allPhylo, Genus=='Endozoicomonas')
 
-#sample_data(endoTreeSite)$site <- factor(sample_names(endoTreeSite))
-#sample_data(endoTreeSpecies)$species <- factor(sample_names(endoTreeSpecies))
-#get_taxa(endoTreeSite)
-#get_taxa(endoTree)
-#endoTreeSiteRel = transform_sample_counts(endoTreeSite, function(x) x / sum(x) )
-#endoTreeFilt= filter_taxa(endoTree, function(x) mean(x) > 0.1, TRUE)
+coralPhyloEndo = subset_samples(allPhyloEndo, species!='seawater')
+spistPhyloEndo <- subset_samples(allPhyloEndo, species=='Stylophora pistillata')
+pVerrPhyloEndo <- subset_samples(allPhyloEndo, species=='Pocillopora verrucosa')
+spistPverrEndo <- merge_phyloseq(spistPhyloEndo, pVerrPhyloEndo)
+
+spistPverrEndoFilt = filter_taxa(spistPverrEndo, function(x) mean(x) > 0.0, TRUE)
+spistPverrEndoFiltPrune = prune_samples(sample_sums(spistPverrEndoFilt) > 0, spistPverrEndoFilt)
+
+spistPverrEndoFiltPrune$names <- factor(spistPverrEndoFiltPrune$Sample, levels=rownames(metaFile), ordered = TRUE)
+
+plot_heatmap(spistPverrEndoFiltPrune, "NMDS", "bray", sample.order=rownames(metaFile3))
+
+plot_heatmap(spistPverrEndoFilt, "RDA", "none", "site", sample.order='species')
+
+# SAVE AS 1500 X 700
+# take a quick look at the Archaea samples
+
+archaeaPhylo <- subset_taxa(allPhylo, Domain=="Archaea")
+tmp = prune_samples(sample_sums(archaeaPhylo) > 0, archaeaPhylo)
+plot_heatmap(archaeaPhylo, "RDA", "none", 'species')
+
+plot_heatmap(tmp)
+

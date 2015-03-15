@@ -11,6 +11,8 @@ library('ape')
 library('RColorBrewer')
 setwd("./data")
 
+cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#666666", "Maldives" = "#E6AB02", "Micronesia" = "#66A61E", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A", "other" = "black")
+
 # import normal percent matrix
 
 allShared = read.table("all.7974.matrixPercent.txt", header=T)
@@ -19,7 +21,7 @@ allShared = allShared[,2:length(allShared)]
 
 # import percent matrix modified for phylogenetic tree
 
-allSharedTree = read.table("all.matrixPercentTree.txt", header=T)
+allSharedTree = read.table("all.7974.matrixPercent.tree.txt", header=T)
 rownames(allSharedTree) = allSharedTree[,1]
 allSharedTree = allSharedTree[,2:length(allSharedTree)]
 
@@ -48,7 +50,7 @@ metaFile3 = metaFile3[,2:8]
 
 # import phylogenetic tree of Endozoicomonas types
 
-endoTree = read.tree(file='MEDNJ4.tree')
+endoTreeFile = read.tree(file='MEDNJ5.tree')
 
 ### Create phyloseq object
 
@@ -57,7 +59,7 @@ OTUdiv = otu_table(allSharedDiv, taxa_are_rows = FALSE)
 OTUtree = otu_table(allSharedTree, taxa_are_rows = FALSE)
 TAX = tax_table(allTax) 
 META = sample_data(metaFile)
-TREE = phy_tree(endoTree)
+TREE = phy_tree(endoTreeFile)
 allPhylo = phyloseq(OTU, TAX, META)
 allPhyloDiv = phyloseq(OTUdiv, TAX, META)
 endoTree = phyloseq(OTUtree, META, TREE)
@@ -98,7 +100,21 @@ plot_bar(allPhyloFilt, fill="Phylum") +
 
 # plot a tree of all endozoicomonas MED nodes
 
-plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='pocType', size='abundance', label.tips = 'taxa_names', base.spacing = 0.005)
+plot_tree(endoTree, nodelabf = nodeplotboot(), ladderize='left', color='species', size='abundance', label.tips = 'taxa_names', base.spacing = 0.005)
+
+# now tree of nodes from the main two corals (plus seawater and the other seqs)
+
+endoTreeSpist <- subset_samples(endoTree, species=='Stylophora pistillata')
+endoTreePverr <- subset_samples(endoTree, species=='Pocillopora verrucosa')
+endoTreeSea <- subset_samples(endoTree, species=='seawater')
+endoTreeOther <- subset_samples(endoTree, species=='other')
+
+endoTreeCorals <- merge_phyloseq(endoTreeSpist, endoTreePverr, endoTreeSea, endoTreeOther)
+
+plot_tree(endoTreeCorals, label.tips = 'taxa_names', color='site', shape='species', size='abundance', nodelabf = nodeplotboot(100, 50, 3), ladderize='left', base.spacing = 0.01) +
+  scale_color_manual(values=cols) +
+  scale_shape_manual(values = c("other" = 1, "Pocillopora verrucosa" = 17, "Stylophora pistillata" = 16, "seawater" = 15)) 
+
 
 # SAVE AS EPS 1500 x 1200
 
@@ -120,8 +136,6 @@ spistPverrEndo <- merge_phyloseq(spistPhyloEndo, pVerrPhyloEndo)
 
 spistPverrEndoFilt = filter_taxa(spistPverrEndo, function(x) mean(x) > 0.0, TRUE)
 spistPverrEndoFiltPrune = prune_samples(sample_sums(spistPverrEndoFilt) > 0, spistPverrEndoFilt)
-
-spistPverrEndoFiltPrune$names <- factor(spistPverrEndoFiltPrune$Sample, levels=rownames(metaFile), ordered = TRUE)
 
 plot_heatmap(spistPverrEndoFiltPrune, "NMDS", "bray", sample.order=rownames(metaFile3))
 

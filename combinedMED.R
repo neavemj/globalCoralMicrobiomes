@@ -137,7 +137,7 @@ spistPverrEndo <- merge_phyloseq(spistPhyloEndo, pVerrPhyloEndo)
 spistPverrEndoFilt = filter_taxa(spistPverrEndo, function(x) mean(x) > 0.0, TRUE)
 spistPverrEndoFiltPrune = prune_samples(sample_sums(spistPverrEndoFilt) > 0, spistPverrEndoFilt)
 
-plot_heatmap(spistPverrEndoFiltPrune, "NMDS", "bray", sample.order=rownames(metaFile3))
+plot_heatmap(spistPverrEndoFiltPrune, "NMDS", "bray", "site", sample.order=rownames(metaFile3))
 
 plot_heatmap(spistPverrEndoFilt, "RDA", "none", "site", sample.order='species')
 

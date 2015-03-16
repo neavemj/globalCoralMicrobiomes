@@ -20,16 +20,16 @@ cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#6
 
 # import normal percent matrix
 
-pocMED = read.table("poc.7801.matrixPercent", header=T)
-rownames(pocMED) = pocMED[,1]
-pocMED = pocMED[,2:length(pocMED)]
+allMED = read.table("all.7974.matrixPercent.txt", header=T)
+rownames(allMED) = allMED[,1]
+allMED = allMED[,2:length(allMED)]
 
 # Import normal taxonomy file from mothur
 
-pocMEDTax = read.table('poc.7801.MED.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
-rownames(pocMEDTax) = pocMEDTax[,1]
-pocMEDTax = pocMEDTax[,3:9]
-pocMEDTax = as.matrix(pocMEDTax)
+allMEDTax = read.table('all.7974.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
+rownames(allMEDTax) = allMEDTax[,1]
+allMEDTax = allMEDTax[,3:9]
+allMEDTax = as.matrix(allMEDTax)
 
 # import meta data
 
@@ -39,69 +39,83 @@ metaFile = metaFile[,2:7]
 
 # 3% OTU and 1% OTU data for comparison
 
-poc3OTUshared = read.table("poc.7801.0.03.0.03.pick.shared", header=T)
-rownames(poc3OTUshared) = poc3OTUshared[,2]
-poc3OTUshared = poc3OTUshared[,4:length(poc3OTUshared)]
+all3OTUshared = read.table("all.7974.0.03.pick.shared", header=T)
+rownames(all3OTUshared) = all3OTUshared[,2]
+all3OTUshared = all3OTUshared[,4:length(all3OTUshared)]
 
-poc1OTUshared = read.table("poc.7801.0.01.0.01.pick.shared", header=T)
-rownames(poc1OTUshared) = poc1OTUshared[,2]
-poc1OTUshared = poc1OTUshared[,4:length(poc1OTUshared)]
+all1OTUshared = read.table("all.7974.0.01.pick.shared", header=T)
+rownames(all1OTUshared) = all1OTUshared[,2]
+all1OTUshared = all1OTUshared[,4:length(all1OTUshared)]
 
 # Import taxonomy file from mothur
 
-poc3OTUtax = read.table('poc.7801.unique.good.filter.precluster.an.0.03.cons.taxonomy', header=T, sep='\t')
-rownames(poc3OTUtax) = poc3OTUtax[,1]
-poc3OTUtax = poc3OTUtax[,3:9]
-poc3OTUtax = as.matrix(poc3OTUtax)
+all3OTUtax = read.table('all.7974.0.03.taxonomy', header=T, sep='\t')
+rownames(all3OTUtax) = all3OTUtax[,1]
+all3OTUtax = all3OTUtax[,3:9]
+all3OTUtax = as.matrix(all3OTUtax)
 
-poc1OTUtax = read.table('poc.7801.unique.good.filter.precluster.an.0.01.cons.taxonomy', header=T, sep='\t')
-rownames(poc1OTUtax) = poc1OTUtax[,1]
-poc1OTUtax = poc1OTUtax[,3:9]
-poc1OTUtax = as.matrix(poc1OTUtax)
+all1OTUtax = read.table('all.7974.0.01.taxonomy', header=T, sep='\t')
+rownames(all1OTUtax) = all1OTUtax[,1]
+all1OTUtax = all1OTUtax[,3:9]
+all1OTUtax = as.matrix(all1OTUtax)
 
 ### Create phyloseq object
 
-OTU = otu_table(pocMED, taxa_are_rows = FALSE)
-TAX = tax_table(pocMEDTax) 
+OTU = otu_table(allMED, taxa_are_rows = FALSE)
+TAX = tax_table(allMEDTax) 
 META = sample_data(metaFile)
-pocPhylo = phyloseq(OTU, TAX, META)
+allPhylo = phyloseq(OTU, TAX, META)
 
-OTUs3 = otu_table(poc3OTUshared, taxa_are_rows = FALSE)
-OTUs1 = otu_table(poc1OTUshared, taxa_are_rows = FALSE)
+OTUs3 = otu_table(all3OTUshared, taxa_are_rows = FALSE)
+OTUs1 = otu_table(all1OTUshared, taxa_are_rows = FALSE)
 
-TAX3 = tax_table(poc3OTUtax)
-TAX1 = tax_table(poc1OTUtax)
+TAX3 = tax_table(all3OTUtax)
+TAX1 = tax_table(all1OTUtax)
 
-poc3OTUphylo = phyloseq(OTUs3, TAX3, META)
-poc1OTUphylo = phyloseq(OTUs1, TAX1, META)
+all3OTUphylo = phyloseq(OTUs3, TAX3, META)
+all1OTUphylo = phyloseq(OTUs1, TAX1, META)
 
+pVerrPhylo <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
+pVerrPhylo = filter_taxa(pVerrPhylo, function(x) mean(x) > 0, TRUE)
+
+pVerr3OTUphylo <- subset_samples(all3OTUphylo, species=='Pocillopora verrucosa')
+pVerr3OTUphylo = filter_taxa(pVerr3OTUphylo, function(x) mean(x) > 0, TRUE)
+
+pVerr1OTUphylo <- subset_samples(all1OTUphylo, species=='Pocillopora verrucosa')
+pVerr1OTUphylo = filter_taxa(pVerr1OTUphylo, function(x) mean(x) > 0, TRUE)
+
+
+# make mothur files into relative abundance
+
+pVerr3OTUphyloRel = transform_sample_counts(pVerr3OTUphylo, function(x) x / sum(x) )
+pVerr1OTUphyloRel = transform_sample_counts(pVerr1OTUphylo, function(x) x / sum(x) )
 
 # ordination comparing MED nodes and 3% OTUs
 
 theme_set(theme_bw())
-pocMEDord <- ordinate(pocPhylo, "NMDS", "bray")
-plot_ordination(pocPhylo, pocMEDord, type = 'samples', color='site', title='MED nodes') +
+pocMEDord <- ordinate(pVerrPhylo, "NMDS", "bray")
+plot_ordination(pVerrPhylo, pocMEDord, type = 'samples', color='site', title='MED nodes') +
   geom_point(size=2) +
   scale_color_manual(values=cols)
 
 # SAVE AS 700 x 532
-# Best solution 0.25, 733 nodes
+# Best solution 0.24, 762 nodes
 
-poc3OTUord <- ordinate(poc3OTUphylo, "NMDS", "bray")
-plot_ordination(poc3OTUphylo, poc3OTUord, type = 'samples', color='site', title='3% OTUs') +
+poc3OTUord <- ordinate(pVerr3OTUphylo, "NMDS", "bray")
+plot_ordination(pVerr3OTUphylo, poc3OTUord, type = 'samples', color='site', title='3% OTUs') +
   geom_point(size=2) +
   scale_color_manual(values=cols)
 
-# Best solution 0.27, 550 OTUs
+# Best solution 0.25, 680 OTUs
 
-poc1OTUord <- ordinate(poc1OTUphylo, "NMDS", "bray")
-plot_ordination(poc1OTUphylo, poc1OTUord, type = 'samples', color='site', title='1% OTUs') +
+poc1OTUord <- ordinate(pVerr1OTUphylo, "NMDS", "bray")
+plot_ordination(pVerr1OTUphylo, poc1OTUord, type = 'samples', color='site', title='1% OTUs') +
   geom_point(size=2) +
   coord_flip() +
   scale_color_manual(values=cols)
 
 # SAVE AS 700 x 532
-# Best solution 0.26, 721 OTUs
+# Best solution 0.25, 833 OTUs
 
 # do some bar plots to check if MED nodes resolve endozoic types better than OTUs
 

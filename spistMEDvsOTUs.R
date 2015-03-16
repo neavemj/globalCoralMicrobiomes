@@ -77,8 +77,13 @@ all3OTUphylo = phyloseq(OTUs3, TAX3, META)
 all1OTUphylo = phyloseq(OTUs1, TAX1, META)
 
 spistPhylo <- subset_samples(allPhylo, species=='Stylophora pistillata')
+spistPhylo = filter_taxa(spistPhylo, function(x) mean(x) > 0, TRUE)
+
 spist3OTUphylo <- subset_samples(all3OTUphylo, species=='Stylophora pistillata')
+spist3OTUphylo = filter_taxa(spist3OTUphylo, function(x) mean(x) > 0, TRUE)
+
 spist1OTUphylo <- subset_samples(all1OTUphylo, species=='Stylophora pistillata')
+spist1OTUphylo = filter_taxa(spist1OTUphylo, function(x) mean(x) > 0, TRUE)
 
 # make mothur files into relative abundance
 
@@ -220,9 +225,9 @@ spistOTUphyloEndo1_1Mic = subset_samples(spistOTUphyloEndo1_1, site=='Micronesia
 spistOTUphyloEndo1_1RS = subset_samples(spistOTUphyloEndo1_1, site=='RedSea')
 spistOTUphyloEndo1_1MicRS = merge_phyloseq(spistOTUphyloEndo1_1RS, spistOTUphyloEndo1_1Mic)
 
-spistOTUphyloEndo1_1MicRSBar <- plot_bar(spistOTUphyloEndo1_1MicRS, title='OTU3')
+spistOTUphyloEndo1_1MicRSBar <- plot_bar(spistOTUphyloEndo1_1MicRS, title='OTU1')
 
-ggplot(spistOTUphyloEndo1_1MicRSBar$data, aes(x=site, y=Abundance, title='OTU3')) +
+ggplot(spistOTUphyloEndo1_1MicRSBar$data, aes(x=site, y=Abundance, title='OTU7')) +
   geom_boxplot(aes(fill = site)) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
   scale_fill_manual(values=cols) +
@@ -236,9 +241,9 @@ spistOTUphyloEndo1_2Mic = subset_samples(spistOTUphyloEndo1_2, site=='Micronesia
 spistOTUphyloEndo1_2RS = subset_samples(spistOTUphyloEndo1_2, site=='RedSea')
 spistOTUphyloEndo1_2MicRS = merge_phyloseq(spistOTUphyloEndo1_2RS, spistOTUphyloEndo1_2Mic)
 
-spistOTUphyloEndo1_2MicRSBar <- plot_bar(spistOTUphyloEndo1_2MicRS, title='OTU6')
+spistOTUphyloEndo1_2MicRSBar <- plot_bar(spistOTUphyloEndo1_2MicRS)
 
-ggplot(spistOTUphyloEndo1_2MicRSBar$data, aes(x=site, y=Abundance, title='OTU6')) +
+ggplot(spistOTUphyloEndo1_2MicRSBar$data, aes(x=site, y=Abundance, title='OTU10')) +
   geom_boxplot(aes(fill = site)) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
   scale_fill_manual(values=cols) +
@@ -252,9 +257,9 @@ spistOTUphyloEndo1_3Mic = subset_samples(spistOTUphyloEndo1_3, site=='Micronesia
 spistOTUphyloEndo1_3RS = subset_samples(spistOTUphyloEndo1_3, site=='RedSea')
 spistOTUphyloEndo1_3MicRS = merge_phyloseq(spistOTUphyloEndo1_3RS, spistOTUphyloEndo1_3Mic)
 
-spistOTUphyloEndo1_3MicRSBar <- plot_bar(spistOTUphyloEndo1_3MicRS, title='OTU7')
+spistOTUphyloEndo1_3MicRSBar <- plot_bar(spistOTUphyloEndo1_3MicRS)
 
-ggplot(spistOTUphyloEndo1_3MicRSBar$data, aes(x=site, y=Abundance, title='OTU7')) +
+ggplot(spistOTUphyloEndo1_3MicRSBar$data, aes(x=site, y=Abundance, title='OTU13')) +
   geom_boxplot(aes(fill = site)) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
   scale_fill_manual(values=cols) +
@@ -299,7 +304,7 @@ spistMEDEndoRel1_1MicRS = merge_phyloseq(spistMEDEndoRel1_1RS, spistMEDEndoRel1_
 
 spistMEDEndoRel1_1MicRSBar <- plot_bar(spistMEDEndoRel1_1MicRS, title='MED nodes')
 
-ggplot(spistMEDEndoRel1_1MicRSBar$data, aes(x=site, y=Abundance, title='MED1')) +
+ggplot(spistMEDEndoRel1_1MicRSBar$data, aes(x=site, y=Abundance, title='MED5672')) +
   geom_boxplot(aes(fill = site)) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
   scale_fill_manual(values=cols) +
@@ -315,7 +320,7 @@ spistMEDEndoRel1_2MicRS = merge_phyloseq(spistMEDEndoRel1_2RS, spistMEDEndoRel1_
 
 spistMEDEndoRel1_2MicRSBar <- plot_bar(spistMEDEndoRel1_2MicRS, title='MED nodes')
 
-ggplot(spistMEDEndoRel1_2MicRSBar$data, aes(x=site, y=Abundance, title='MED2')) +
+ggplot(spistMEDEndoRel1_2MicRSBar$data, aes(x=site, y=Abundance, title='MED5693')) +
   geom_boxplot(aes(fill = site)) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
   scale_fill_manual(values=cols) +
@@ -331,7 +336,7 @@ spistMEDEndoRel1_3MicRS = merge_phyloseq(spistMEDEndoRel1_3RS, spistMEDEndoRel1_
 
 spistMEDEndoRel1_3MicRSBar <- plot_bar(spistMEDEndoRel1_3MicRS, title='MED nodes')
 
-ggplot(spistMEDEndoRel1_3MicRSBar$data, aes(x=site, y=Abundance, title='MED3')) +
+ggplot(spistMEDEndoRel1_3MicRSBar$data, aes(x=site, y=Abundance, title='MED8661')) +
   geom_boxplot(aes(fill = site)) +
   geom_point(position=position_jitter(width=0.2), aes(group=catglab, fill=site), size=5, pch=21, colour = 'black') +
   scale_fill_manual(values=cols) +

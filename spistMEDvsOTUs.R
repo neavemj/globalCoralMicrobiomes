@@ -21,16 +21,16 @@ cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#6
 
 # import normal percent matrix
 
-spistMED = read.table("spist.7801.MED.matrixPercent", header=T)
-rownames(spistMED) = spistMED[,1]
-spistMED = spistMED[,2:length(spistMED)]
+allMED = read.table("all.7974.matrixPercent.txt", header=T)
+rownames(allMED) = allMED[,1]
+allMED = allMED[,2:length(allMED)]
 
 # Import normal taxonomy file from mothur
 
-spistMEDTax = read.table('spist.7801.MED.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
-rownames(spistMEDTax) = spistMEDTax[,1]
-spistMEDTax = spistMEDTax[,3:9]
-spistMEDTax = as.matrix(spistMEDTax)
+allMEDTax = read.table('all.7974.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
+rownames(allMEDTax) = allMEDTax[,1]
+allMEDTax = allMEDTax[,3:9]
+allMEDTax = as.matrix(allMEDTax)
 
 # import meta data
 
@@ -40,42 +40,50 @@ metaFile = metaFile[,2:7]
 
 # 3% OTU and 1% OTU data for comparison
 
-spist3OTUshared = read.table("spist.7801.0.03.0.03.pick.shared", header=T)
-rownames(spist3OTUshared) = spist3OTUshared[,2]
-spist3OTUshared = spist3OTUshared[,4:length(spist3OTUshared)]
+all3OTUshared = read.table("all.7974.0.03.pick.shared", header=T)
+rownames(all3OTUshared) = all3OTUshared[,2]
+all3OTUshared = all3OTUshared[,4:length(all3OTUshared)]
 
-spist1OTUshared = read.table("spist.7801.0.01.0.01.pick.shared", header=T)
-rownames(spist1OTUshared) = spist1OTUshared[,2]
-spist1OTUshared = spist1OTUshared[,4:length(spist1OTUshared)]
+all1OTUshared = read.table("all.7974.0.01.pick.shared", header=T)
+rownames(all1OTUshared) = all1OTUshared[,2]
+all1OTUshared = all1OTUshared[,4:length(all1OTUshared)]
 
 # Import taxonomy file from mothur
 
-spist3OTUtax = read.table('spist.7801.unique.good.filter.precluster.an.0.03.cons.taxonomy', header=T, sep='\t')
-rownames(spist3OTUtax) = spist3OTUtax[,1]
-spist3OTUtax = spist3OTUtax[,3:9]
-spist3OTUtax = as.matrix(spist3OTUtax)
+all3OTUtax = read.table('all.7974.0.03.taxonomy', header=T, sep='\t')
+rownames(all3OTUtax) = all3OTUtax[,1]
+all3OTUtax = all3OTUtax[,3:9]
+all3OTUtax = as.matrix(all3OTUtax)
 
-spist1OTUtax = read.table('spist.7801.unique.good.filter.precluster.an.0.01.cons.taxonomy', header=T, sep='\t')
-rownames(spist1OTUtax) = spist1OTUtax[,1]
-spist1OTUtax = spist1OTUtax[,3:9]
-spist1OTUtax = as.matrix(spist1OTUtax)
+all1OTUtax = read.table('all.7974.0.01.taxonomy', header=T, sep='\t')
+rownames(all1OTUtax) = all1OTUtax[,1]
+all1OTUtax = all1OTUtax[,3:9]
+all1OTUtax = as.matrix(all1OTUtax)
 
 ### Create phyloseq object
 
-OTU = otu_table(spistMED, taxa_are_rows = FALSE)
-TAX = tax_table(spistMEDTax) 
+OTU = otu_table(allMED, taxa_are_rows = FALSE)
+TAX = tax_table(allMEDTax) 
 META = sample_data(metaFile)
-spistPhylo = phyloseq(OTU, TAX, META)
+allPhylo = phyloseq(OTU, TAX, META)
 
-OTUs3 = otu_table(spist3OTUshared, taxa_are_rows = FALSE)
-OTUs1 = otu_table(spist1OTUshared, taxa_are_rows = FALSE)
+OTUs3 = otu_table(all3OTUshared, taxa_are_rows = FALSE)
+OTUs1 = otu_table(all1OTUshared, taxa_are_rows = FALSE)
 
-TAX3 = tax_table(spist3OTUtax)
-TAX1 = tax_table(spist1OTUtax)
+TAX3 = tax_table(all3OTUtax)
+TAX1 = tax_table(all1OTUtax)
 
-spist3OTUphylo = phyloseq(OTUs3, TAX3, META)
-spist1OTUphylo = phyloseq(OTUs1, TAX1, META)
+all3OTUphylo = phyloseq(OTUs3, TAX3, META)
+all1OTUphylo = phyloseq(OTUs1, TAX1, META)
 
+spistPhylo <- subset_samples(allPhylo, species=='Stylophora pistillata')
+spist3OTUphylo <- subset_samples(all3OTUphylo, species=='Stylophora pistillata')
+spist1OTUphylo <- subset_samples(all1OTUphylo, species=='Stylophora pistillata')
+
+# make mothur files into relative abundance
+
+spist3OTUphyloRel = transform_sample_counts(spist3OTUphylo, function(x) x / sum(x) )
+spist1OTUphyloRel = transform_sample_counts(spist1OTUphylo, function(x) x / sum(x) )
 
 # ordination comparing MED nodes and 3% OTUs
 
@@ -86,14 +94,14 @@ plot_ordination(spistPhylo, spistMEDord, type = 'samples', color='site', title='
   scale_color_manual(values=cols)
 
 # SAVE AS 700 x 532
-# Best solution 0.23, 786 nodes
+# Best solution 0.24, 762 nodes
 
 spist3OTUord <- ordinate(spist3OTUphylo, "NMDS", "bray")
 plot_ordination(spist3OTUphylo, spist3OTUord, type = 'samples', color='site', title='3% OTUs') +
   geom_point(size=2) +
   scale_color_manual(values=cols)
 
-# Best solution 0.23, 673 OTUs
+# Best solution 0.24, 680 OTUs
 
 spist1OTUord <- ordinate(spist1OTUphylo, "NMDS", "bray")
 plot_ordination(spist1OTUphylo, spist1OTUord, type = 'samples', color='site', title='1% OTUs') +
@@ -101,13 +109,13 @@ plot_ordination(spist1OTUphylo, spist1OTUord, type = 'samples', color='site', ti
   scale_color_manual(values=cols)
 
 # SAVE AS 700 x 532
-# Best solution 0.23, 791 OTUs
+# Best solution 0.22, 833 OTUs
 
 # do some bar plots to check if MED nodes resolve endozoic types better than OTUs
 
 spistPhyloEndo = subset_taxa(spistPhylo, Genus=='Endozoicomonas')
-spist3OTUphyloEndo = subset_taxa(spist3OTUphylo, Genus=='Endozoicomonas(100)')
-spist1OTUphyloEndo = subset_taxa(spist1OTUphylo, Genus=='Endozoicomonas(100)')
+spist3OTUphyloEndo = subset_taxa(spist3OTUphyloRel, Genus=='Endozoicomonas(100)')
+spist1OTUphyloEndo = subset_taxa(spist1OTUphyloRel, Genus=='Endozoicomonas(100)')
 
 spistPhyloEndoBar <- plot_bar(spistPhyloEndo, fill="Genus")
 spistPhyloEndoBar + facet_wrap(~site, scales='free')
@@ -152,8 +160,9 @@ plot_bar(spistPhyloEndoFilt, fill="catglab") +
 
 # 3% OTUs - OTU0001
 
-spist3OTUphyloEndoRel = transform_sample_counts(spist3OTUphyloEndo, function(x) x / sum(x) )
-spist3OTUphyloEndo1 = subset_taxa(spist3OTUphyloEndoRel, catglab=='Endozoicomonas(100)_Otu0001')
+#spist3OTUphyloEndoRel = transform_sample_counts(spist3OTUphyloEndo, function(x) x / sum(x) )
+
+spist3OTUphyloEndo1 = subset_taxa(spist3OTUphyloEndo, catglab=='Endozoicomonas(100)_Otu00001')
 end1bar <- plot_bar(spist3OTUphyloEndo1, title='3% OTUs')
 
 ggplot(end1bar$data, aes(x=site, y=Abundance)) +

@@ -123,46 +123,46 @@ END74-rep2	Metagenome study	Stylophora pistillata	RedSea	FALSE	TRUE
 END59-rep2	Metagenome study	Pocillopora verrucosa	RedSea	FALSE	TRUE		
 END62-rep2	Metagenome study	Acropora humilis	RedSea	FALSE	TRUE		
 SPaq	Kept in aquarium (coll. Red Sea)	Stylophora pistillata	RedSea	FALSE	FALSE		
-RP1	i6-1	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP2	i6-3	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
-RP4	i7-15	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP5	i17-16	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP6	i14-16	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP7	i14-17	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP8	i14-20	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP9	i14-21	Pocillopora verrucosa	Indonesia	FALSE	FALSE		
-RP10	i14-22	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP11	i14-23	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP12	i14-24	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
-RP13	i14-25	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
-RP15	i14-27	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP16	i14-28	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP17	i14-29	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP18	i14-30	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP19	i6-6	Pocillopora verrucosa	Indonesia	FALSE	FALSE		
-RP20	i6-7	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP21	i6-8	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
-RP22	i7-14	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
-RP23	i7-17	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
-RP24	i7-18	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
-RP25	i7-19	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
-RP27	i7-21	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP28	i7-22	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RP29	i7-23	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
-RP30	i7-24	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
-RS1	RA	Stylophora pistillata	Indonesia	FALSE	FALSE		
-RS2	RA	Stylophora pistillata	Indonesia	FALSE	FALSE		
-RS3	RA	Stylophora pistillata	Indonesia	FALSE	FALSE		
-RS5	RA	Stylophora pistillata	Indonesia	FALSE	FALSE		
-RS6	RJ	Stylophora pistillata	Indonesia	FALSE	FALSE		
-RS7	RJ	Stylophora pistillata	Indonesia	FALSE	FALSE		
-RS10	RW	Stylophora pistillata	Indonesia	FALSE	FALSE		
-RS12	RW	Stylophora pistillata	Indonesia	FALSE	FALSE		
-RS13	RK	Stylophora pistillata	Indonesia	FALSE	FALSE		
-RS15	RK	Stylophora pistillata	Indonesia	FALSE	FALSE		
-RS16	RK	Stylophora pistillata	Indonesia	FALSE	FALSE		
-RS17	RK	Stylophora pistillata	Indonesia	FALSE	FALSE		
-RS18	RK	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RP1	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP2	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP4	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP5	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP6	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP7	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP8	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP9	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		
+RP10	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP11	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP12	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP13	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP15	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP16	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP17	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP18	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP22	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP23	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP24	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP19	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		
+RP20	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP21	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP25	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP27	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP28	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP29	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP30	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RS1	RA	Stylophora pistillata farmed	farmed	FALSE	FALSE		
+RS2	RA	Stylophora pistillata farmed	farmed	FALSE	FALSE		
+RS3	RA	Stylophora pistillata farmed	farmed	FALSE	FALSE		
+RS5	RA	Stylophora pistillata farmed	farmed	FALSE	FALSE		
+RS6	RJ	Stylophora pistillata farmed	farmed	FALSE	FALSE		
+RS7	RJ	Stylophora pistillata farmed	farmed	FALSE	FALSE		
+RS10	Wakatobi	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RS12	Wakatobi	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RS13	Komodo	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RS15	Komodo	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RS16	Komodo	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RS17	Komodo	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RS18	Komodo	Stylophora pistillata	Indonesia	FALSE	FALSE		
 Yanbu1A	Yanbu1A	seawater	RedSea	FALSE	FALSE		
 Yanbu1B	Yanbu1B	seawater	RedSea	FALSE	FALSE		
 Yanbu2A	Yanbu2A	seawater	RedSea	FALSE	FALSE		

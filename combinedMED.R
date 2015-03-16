@@ -19,17 +19,17 @@ allShared = read.table("all.7974.matrixPercent.txt", header=T)
 rownames(allShared) = allShared[,1]
 allShared = allShared[,2:length(allShared)]
 
+# non-subsampled mothur shared file for alpha diversity
+
+all3OTUshared = read.table("all.7974.0.01.shared", header=T)
+rownames(all3OTUshared) = all3OTUshared[,2]
+all3OTUshared = all3OTUshared[,4:length(all3OTUshared)]
+
 # import percent matrix modified for phylogenetic tree
 
 allSharedTree = read.table("all.7974.matrixPercent.tree.txt", header=T)
 rownames(allSharedTree) = allSharedTree[,1]
 allSharedTree = allSharedTree[,2:length(allSharedTree)]
-
-# import NoSubsampling count matrix for alpha diversity measures
-
-allSharedDiv = read.table("all.NoSubsampling.matrixCount", header=T)
-rownames(allSharedDiv) = allSharedDiv[,1]
-allSharedDiv = allSharedDiv[,2:length(allSharedDiv)]
 
 # Import normal taxonomy file from mothur
 
@@ -55,35 +55,36 @@ endoTreeFile = read.tree(file='MEDNJ5.tree')
 ### Create phyloseq object
 
 OTU = otu_table(allShared, taxa_are_rows = FALSE)
-OTUdiv = otu_table(allSharedDiv, taxa_are_rows = FALSE)
+OTUalpha = otu_table(all3OTUshared, taxa_are_rows = FALSE)
 OTUtree = otu_table(allSharedTree, taxa_are_rows = FALSE)
 TAX = tax_table(allTax) 
 META = sample_data(metaFile)
 TREE = phy_tree(endoTreeFile)
 allPhylo = phyloseq(OTU, TAX, META)
-allPhyloDiv = phyloseq(OTUdiv, TAX, META)
 endoTree = phyloseq(OTUtree, META, TREE)
+allAlpha = phyloseq(OTUalpha, META)
 
 # Alpha diversity measures first
 
 theme_set(theme_bw())
-allDivPlot <- plot_richness(allPhyloDiv, x = 'species', measures = c('Chao1', 'Shannon', 'observed'), color = 'site')
+allDivPlot <- plot_richness(allAlpha, x = 'species', measures = c('Chao1', 'Shannon', 'observed'), color = 'site')
 allDivPlot
 
 # get rid of a few of those low corals
 
-allPhyloDivTmp <- subset_samples(allPhyloDiv, species=="seawater")
-allPhyloDivTmp2 <- subset_samples(allPhyloDiv, species=="Stylophora pistillata")
-allPhyloDivTmp3 <- subset_samples(allPhyloDiv, species=="Pocillopora verrucosa")
-allPhyloDivTmp4 <- subset_samples(allPhyloDiv, species=="Pocillopora damicornis")
-allPhyloDiv2 <- merge_phyloseq(allPhyloDivTmp, allPhyloDivTmp2, allPhyloDivTmp3, allPhyloDivTmp4)
+allAlphaTmp <- subset_samples(allAlpha, species=="seawater")
+allAlphaTmp2 <- subset_samples(allAlpha, species=="Stylophora pistillata")
+allAlphaTmp3 <- subset_samples(allAlpha, species=="Pocillopora verrucosa")
+
+allAlpha2 <- merge_phyloseq(allAlphaTmp, allAlphaTmp2, allAlphaTmp3)
 
 # The predicted number of OTUs and diversity indecies look similar across the different coral species. I'll add some whisker plots to make this easier to see. 
 
-allDivPlot2 <- plot_richness(allPhyloDiv2, x = 'species', measures = c('Chao1', 'Shannon', 'observed'), color = 'site')
-allDivPlot2
+allAlphaPlot2 <- plot_richness(allAlpha2, x = 'species', measures = c('Chao1', 'Shannon', 'observed'), color = 'site')
+allAlphaPlot2
 
-allDivPlot2 + geom_boxplot(data = allDivPlot2$data, aes(x = species, y = value, color = NULL), alpha = 0.1)
+allAlphaPlot2 + geom_boxplot(data = allAlphaPlot2$data, aes(x = species, y = value, color = NULL), alpha = 0.1) +
+  scale_color_manual(values=cols)
 
 # some transformations - top line is to keep sample order in bar graphs
 

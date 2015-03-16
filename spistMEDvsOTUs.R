@@ -81,34 +81,41 @@ all1OTUphylo = phyloseq(OTUs1, TAX1, META)
 spistPhylo <- subset_samples(allPhylo, species=='Stylophora pistillata')
 spistPhylo = filter_taxa(spistPhylo, function(x) mean(x) > 0, TRUE)
 spistPhyloRel = transform_sample_counts(spistPhylo, function(x) x / sum(x) )
+spistPhyloRelSqrt = transform_sample_counts(spistPhyloRel, function(x) sqrt(x) )
 
 spist3OTUphylo <- subset_samples(all3OTUphylo, species=='Stylophora pistillata')
 spist3OTUphylo = filter_taxa(spist3OTUphylo, function(x) mean(x) > 0, TRUE)
 spist3OTUphyloRel = transform_sample_counts(spist3OTUphylo, function(x) x / sum(x) )
+spist3OTUphyloRelSqrt = transform_sample_counts(spist3OTUphyloRel, function(x) sqrt(x) )
 
 spist1OTUphylo <- subset_samples(all1OTUphylo, species=='Stylophora pistillata')
 spist1OTUphylo = filter_taxa(spist1OTUphylo, function(x) mean(x) > 0, TRUE)
 spist1OTUphyloRel = transform_sample_counts(spist1OTUphylo, function(x) x / sum(x) )
+spist1OTUphyloRelSqrt = transform_sample_counts(spist1OTUphyloRel, function(x) sqrt(x) )
+
+head(rowSums(otu_table(spistPhyloRel)))
+head(rowSums(otu_table(spist3OTUphyloRel)))
+head(rowSums(otu_table(spist1OTUphyloRel)))
 
 # ordination comparing MED nodes and 3% OTUs
 
 theme_set(theme_bw())
-spistMEDord <- ordinate(spistPhyloRel, "NMDS", "bray")
-plot_ordination(spistPhyloRel, spistMEDord, type = 'samples', color='site', title='MED nodes') +
+spistMEDord <- ordinate(spistPhyloRelSqrt, "NMDS", "bray")
+plot_ordination(spistPhyloRelSqrt, spistMEDord, type = 'samples', color='site', title='MED nodes') +
   geom_point(size=2) +
   scale_color_manual(values=cols)
 
 # SAVE AS 700 x 532
-# Best solution 0.25, 662 nodes
+# Best solution 0.22, 662 nodes
 
-spist3OTUord <- ordinate(spist3OTUphyloRel, "NMDS", "bray")
-plot_ordination(spist3OTUphyloRel, spist3OTUord, type = 'samples', color='site', title='3% OTUs') +
+spist3OTUord <- ordinate(spist3OTUphyloRelSqrt, "NMDS", "bray")
+plot_ordination(spist3OTUphyloRelSqrt, spist3OTUord, type = 'samples', color='site', title='3% OTUs') +
   geom_point(size=2) +
   scale_color_manual(values=cols)
 
 # Best solution 0.26, 607 OTUs
 
-spist1OTUord <- ordinate(spist1OTUphyloRel, "NMDS", "bray")
+spist1OTUord <- ordinate(spist1OTUphyloRelSqrt, "NMDS", "bray")
 plot_ordination(spist1OTUphyloRel, spist1OTUord, type = 'samples', color='site', title='1% OTUs') +
   geom_point(size=2) +
   scale_color_manual(values=cols)

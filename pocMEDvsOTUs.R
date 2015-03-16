@@ -75,43 +75,46 @@ TAX1 = tax_table(all1OTUtax)
 all3OTUphylo = phyloseq(OTUs3, TAX3, META)
 all1OTUphylo = phyloseq(OTUs1, TAX1, META)
 
-pVerrPhylo <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
-pVerrPhylo = filter_taxa(pVerrPhylo, function(x) mean(x) > 0, TRUE)
+pverrPhylo <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
+pverrPhylo = filter_taxa(pverrPhylo, function(x) mean(x) > 0, TRUE)
+pverrPhyloRel = transform_sample_counts(pverrPhylo, function(x) x / sum(x) )
+pverrPhyloRelSqrt = transform_sample_counts(pverrPhyloRel, function(x) sqrt(x) )
 
-pVerr3OTUphylo <- subset_samples(all3OTUphylo, species=='Pocillopora verrucosa')
-pVerr3OTUphylo = filter_taxa(pVerr3OTUphylo, function(x) mean(x) > 0, TRUE)
+pverr3OTUphylo <- subset_samples(all3OTUphylo, species=='Pocillopora verrucosa')
+pverr3OTUphylo = filter_taxa(pverr3OTUphylo, function(x) mean(x) > 0, TRUE)
+pverr3OTUphyloRel = transform_sample_counts(pverr3OTUphylo, function(x) x / sum(x) )
+pverr3OTUphyloRelSqrt = transform_sample_counts(pverr3OTUphyloRel, function(x) sqrt(x) )
 
-pVerr1OTUphylo <- subset_samples(all1OTUphylo, species=='Pocillopora verrucosa')
-pVerr1OTUphylo = filter_taxa(pVerr1OTUphylo, function(x) mean(x) > 0, TRUE)
+pverr1OTUphylo <- subset_samples(all1OTUphylo, species=='Pocillopora verrucosa')
+pverr1OTUphylo = filter_taxa(pverr1OTUphylo, function(x) mean(x) > 0, TRUE)
+pverr1OTUphyloRel = transform_sample_counts(pverr1OTUphylo, function(x) x / sum(x) )
+pverr1OTUphyloRelSqrt = transform_sample_counts(pverr1OTUphyloRel, function(x) sqrt(x) )
 
-
-# make mothur files into relative abundance
-
-pVerr3OTUphyloRel = transform_sample_counts(pVerr3OTUphylo, function(x) x / sum(x) )
-pVerr1OTUphyloRel = transform_sample_counts(pVerr1OTUphylo, function(x) x / sum(x) )
+head(rowSums(otu_table(pverrPhyloRel)))
+head(rowSums(otu_table(pverr3OTUphyloRel)))
+head(rowSums(otu_table(pverr1OTUphyloRel)))
 
 # ordination comparing MED nodes and 3% OTUs
 
 theme_set(theme_bw())
-pocMEDord <- ordinate(pVerrPhylo, "NMDS", "bray")
-plot_ordination(pVerrPhylo, pocMEDord, type = 'samples', color='site', title='MED nodes') +
+pocMEDord <- ordinate(pverrPhyloRelSqrt, "NMDS", "bray")
+plot_ordination(pverrPhyloRelSqrt, pocMEDord, type = 'samples', color='site', title='MED nodes') +
   geom_point(size=2) +
   scale_color_manual(values=cols)
 
 # SAVE AS 700 x 532
 # Best solution 0.24, 762 nodes
 
-poc3OTUord <- ordinate(pVerr3OTUphylo, "NMDS", "bray")
-plot_ordination(pVerr3OTUphylo, poc3OTUord, type = 'samples', color='site', title='3% OTUs') +
+poc3OTUord <- ordinate(pverr3OTUphyloRelSqrt, "NMDS", "bray")
+plot_ordination(pverr3OTUphyloRelSqrt, poc3OTUord, type = 'samples', color='site', title='3% OTUs') +
   geom_point(size=2) +
   scale_color_manual(values=cols)
 
 # Best solution 0.25, 680 OTUs
 
-poc1OTUord <- ordinate(pVerr1OTUphylo, "NMDS", "bray")
-plot_ordination(pVerr1OTUphylo, poc1OTUord, type = 'samples', color='site', title='1% OTUs') +
+poc1OTUord <- ordinate(pverr1OTUphyloRelSqrt, "NMDS", "bray")
+plot_ordination(pverr1OTUphyloRelSqrt, poc1OTUord, type = 'samples', color='site', title='1% OTUs') +
   geom_point(size=2) +
-  coord_flip() +
   scale_color_manual(values=cols)
 
 # SAVE AS 700 x 532

@@ -76,49 +76,49 @@ TAX1 = tax_table(all1OTUtax)
 all3OTUphylo = phyloseq(OTUs3, TAX3, META)
 all1OTUphylo = phyloseq(OTUs1, TAX1, META)
 
+# subset samples for pistillata, remove taxa with 0s and make into relative abundance
+
 spistPhylo <- subset_samples(allPhylo, species=='Stylophora pistillata')
 spistPhylo = filter_taxa(spistPhylo, function(x) mean(x) > 0, TRUE)
+spistPhyloRel = transform_sample_counts(spistPhylo, function(x) x / sum(x) )
 
 spist3OTUphylo <- subset_samples(all3OTUphylo, species=='Stylophora pistillata')
 spist3OTUphylo = filter_taxa(spist3OTUphylo, function(x) mean(x) > 0, TRUE)
+spist3OTUphyloRel = transform_sample_counts(spist3OTUphylo, function(x) x / sum(x) )
 
 spist1OTUphylo <- subset_samples(all1OTUphylo, species=='Stylophora pistillata')
 spist1OTUphylo = filter_taxa(spist1OTUphylo, function(x) mean(x) > 0, TRUE)
-
-# make mothur files into relative abundance
-
-spist3OTUphyloRel = transform_sample_counts(spist3OTUphylo, function(x) x / sum(x) )
 spist1OTUphyloRel = transform_sample_counts(spist1OTUphylo, function(x) x / sum(x) )
 
 # ordination comparing MED nodes and 3% OTUs
 
 theme_set(theme_bw())
-spistMEDord <- ordinate(spistPhylo, "NMDS", "bray")
-plot_ordination(spistPhylo, spistMEDord, type = 'samples', color='site', title='MED nodes') +
+spistMEDord <- ordinate(spistPhyloRel, "NMDS", "bray")
+plot_ordination(spistPhyloRel, spistMEDord, type = 'samples', color='site', title='MED nodes') +
   geom_point(size=2) +
   scale_color_manual(values=cols)
 
 # SAVE AS 700 x 532
-# Best solution 0.24, 762 nodes
+# Best solution 0.25, 662 nodes
 
-spist3OTUord <- ordinate(spist3OTUphylo, "NMDS", "bray")
-plot_ordination(spist3OTUphylo, spist3OTUord, type = 'samples', color='site', title='3% OTUs') +
+spist3OTUord <- ordinate(spist3OTUphyloRel, "NMDS", "bray")
+plot_ordination(spist3OTUphyloRel, spist3OTUord, type = 'samples', color='site', title='3% OTUs') +
   geom_point(size=2) +
   scale_color_manual(values=cols)
 
-# Best solution 0.24, 680 OTUs
+# Best solution 0.26, 607 OTUs
 
-spist1OTUord <- ordinate(spist1OTUphylo, "NMDS", "bray")
-plot_ordination(spist1OTUphylo, spist1OTUord, type = 'samples', color='site', title='1% OTUs') +
+spist1OTUord <- ordinate(spist1OTUphyloRel, "NMDS", "bray")
+plot_ordination(spist1OTUphyloRel, spist1OTUord, type = 'samples', color='site', title='1% OTUs') +
   geom_point(size=2) +
   scale_color_manual(values=cols)
 
 # SAVE AS 700 x 532
-# Best solution 0.22, 833 OTUs
+# Best solution 0.26, 697 OTUs
 
 # do some bar plots to check if MED nodes resolve endozoic types better than OTUs
 
-spistPhyloEndo = subset_taxa(spistPhylo, Genus=='Endozoicomonas')
+spistPhyloEndo = subset_taxa(spistPhyloRel, Genus=='Endozoicomonas')
 spist3OTUphyloEndo = subset_taxa(spist3OTUphyloRel, Genus=='Endozoicomonas(100)')
 spist1OTUphyloEndo = subset_taxa(spist1OTUphyloRel, Genus=='Endozoicomonas(100)')
 
@@ -156,7 +156,7 @@ spist1OTUphyloEndoFilt = filter_taxa(spist1OTUphyloEndo, function(x) mean(x) > 0
 plot_bar(spist1OTUphyloEndoFilt, fill="catglab") +
   facet_wrap(~site, scales='free')
 
-spistPhyloEndoFilt = filter_taxa(spistPhyloEndo, function(x) mean(x) > 0.1, TRUE)
+spistPhyloEndoFilt = filter_taxa(spistPhyloEndo, function(x) mean(x) > 0, TRUE)
 plot_bar(spistPhyloEndoFilt, fill="catglab") +
   facet_wrap(~site, scales='free')
 

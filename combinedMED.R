@@ -78,6 +78,10 @@ allAlphaTmp3 <- subset_samples(allAlpha, species=="Pocillopora verrucosa")
 
 allAlpha2 <- merge_phyloseq(allAlphaTmp, allAlphaTmp2, allAlphaTmp3)
 
+#serio <- subset_samples(allPhylo, species=="Seriatopora sp.")
+#serio <- filter_taxa(serio, function(x) mean(x) > 0.1, TRUE)
+#plot_bar(serio, fill='Genus')
+
 # The predicted number of OTUs and diversity indecies look similar across the different coral species. I'll add some whisker plots to make this easier to see. 
 
 allAlphaPlot2 <- plot_richness(allAlpha2, x = 'species', measures = c('Chao1', 'Shannon', 'observed'), color = 'site')

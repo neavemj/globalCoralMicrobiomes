@@ -195,14 +195,14 @@ Maggie-Island-2A	Maggie-Island-2A	seawater	MaggieIs	FALSE	FALSE
 Maggie-Island-2B	Maggie-Island-2B	seawater	MaggieIs	FALSE	FALSE		
 Maggie-Island-3A	Maggie-Island-3A	seawater	MaggieIs	FALSE	FALSE		
 Maggie-Island-3B	Maggie-Island-3B	seawater	MaggieIs	FALSE	FALSE		
-Ningaloo-1A	Ningaloo-1A	seawater	Ningaloo	FALSE	FALSE		
-Ningaloo-1B	Ningaloo-1B	seawater	Ningaloo	FALSE	FALSE		
-Ningaloo-2A	Ningaloo-2A	seawater	Ningaloo	FALSE	FALSE		
-Ningaloo-2B	Ningaloo-2B	seawater	Ningaloo	FALSE	FALSE		
-Ningaloo-3A	Ningaloo-3A	seawater	Ningaloo	FALSE	FALSE		
-Ningaloo-3B	Ningaloo-3B	seawater	Ningaloo	FALSE	FALSE		
-Ningaloo-4A	Ningaloo-4A	seawater	Ningaloo	FALSE	FALSE		
-Ningaloo-4B	Ningaloo-4B	seawater	Ningaloo	FALSE	FALSE		
+Ningaloo-1A	Ningaloo-1A	warmed	Ningaloo	FALSE	FALSE		
+Ningaloo-1B	Ningaloo-1B	warmed	Ningaloo	FALSE	FALSE		
+Ningaloo-2A	Ningaloo-2A	warmed	Ningaloo	FALSE	FALSE		
+Ningaloo-2B	Ningaloo-2B	warmed	Ningaloo	FALSE	FALSE		
+Ningaloo-3A	Ningaloo-3A	warmed	Ningaloo	FALSE	FALSE		
+Ningaloo-3B	Ningaloo-3B	warmed	Ningaloo	FALSE	FALSE		
+Ningaloo-4A	Ningaloo-4A	warmed	Ningaloo	FALSE	FALSE		
+Ningaloo-4B	Ningaloo-4B	warmed	Ningaloo	FALSE	FALSE		
 END72	Metagenome study	Stylophora pistillata	RedSea	FALSE	FALSE		
 END74	Metagenome study	Stylophora pistillata	RedSea	FALSE	FALSE		
 END76	Metagenome study	Stylophora pistillata	RedSea	FALSE	FALSE		

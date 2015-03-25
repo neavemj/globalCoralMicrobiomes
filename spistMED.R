@@ -384,3 +384,46 @@ spistFiltPlot +
 
 # SAVE AS 700 x 532
 
+
+####################################################################
+### fit chemistry specifically to Endozoicomonas nodes
+####################################################################
+
+waterQual <- c("temp", "salinity", "Domg", "pH")
+nutrients <- c("PO4", "N.N", "silicate", "NO2", "NH4")
+FCM <- c("prok", "syn", "peuk", "pe.peuk", "Hbact")
+
+spistEndoPrune = prune_samples(sample_sums(spistEndo) > 0, spistEndo)
+chemNoNA <- na.omit(metaFile[sample_names(spistEndoPrune),nutrients])
+spistNoNA <- prune_samples(rownames(chemNoNA), spistEndoPrune)
+
+sample_names(spistEndo)
+sample_names(spistNoNA)
+
+theme_set(theme_bw())
+spistOrdNoNA <- ordinate(spistNoNA, "NMDS", "bray")
+spistOrdNoNAPlot <- plot_ordination(spistNoNA, spistOrdNoNA, type = 'samples', color='site', title='spist') +
+  geom_point(size=3) +
+  scale_color_manual(values=c(cols)) 
+spistOrdNoNAPlot
+
+pointsNoNA <- spistOrdNoNA$points[rownames(chemNoNA),]
+
+chemFit <- envfit(pointsNoNA, env = chemNoNA, na.rm=TRUE)
+
+chemFit.scores <- as.data.frame(scores(chemFit, display= "vectors"))
+chemFit.scores <- cbind(chemFit.scores, Species = rownames(chemFit.scores))
+
+# create arrow info again
+
+arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NULL, label = rownames(chemFit.scores))
+labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, size=1.5, label = rownames(chemFit.scores))
+arrowhead = arrow(length = unit(0.25, "cm"))
+
+spistOrdNoNAPlot + 
+  coord_fixed() +
+  geom_segment(arrowmap, size = 0.5, data = chemFit.scores, color = "black",  arrow = arrowhead, show_guide = FALSE) +
+  geom_text(labelmap, size = 3, data = chemFit.scores)
+
+# SAVE AS 700 x 532
+

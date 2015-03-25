@@ -21,9 +21,9 @@ allShared = allShared[,2:length(allShared)]
 
 # non-subsampled mothur shared file for alpha diversity
 
-all3OTUshared = read.table("all.7974.0.01.shared", header=T)
-rownames(all3OTUshared) = all3OTUshared[,2]
-all3OTUshared = all3OTUshared[,4:length(all3OTUshared)]
+all1OTUshared = read.table("all.7974.0.01.shared", header=T)
+rownames(all1OTUshared) = all1OTUshared[,2]
+all1OTUshared = all1OTUshared[,4:length(all1OTUshared)]
 
 # import percent matrix modified for phylogenetic tree
 
@@ -55,7 +55,7 @@ endoTreeFile = read.tree(file='MEDNJ5.tree')
 ### Create phyloseq object
 
 OTU = otu_table(allShared, taxa_are_rows = FALSE)
-OTUalpha = otu_table(all3OTUshared, taxa_are_rows = FALSE)
+OTUalpha = otu_table(all1OTUshared, taxa_are_rows = FALSE)
 OTUtree = otu_table(allSharedTree, taxa_are_rows = FALSE)
 TAX = tax_table(allTax) 
 META = sample_data(metaFile)
@@ -78,17 +78,25 @@ allAlphaTmp3 <- subset_samples(allAlpha, species=="Pocillopora verrucosa")
 
 allAlpha2 <- merge_phyloseq(allAlphaTmp, allAlphaTmp2, allAlphaTmp3)
 
+# The predicted number of OTUs and diversity indecies look similar across the different coral species. I'll add some whisker plots to make this easier to see. 
+
+allAlphaPlot2 <- plot_richness(allAlpha2, x = 'species', measures = c('Chao1', 'Simpson', 'observed'), color = 'site', sortby = 'Chao1')
+allAlphaPlot2
+
+ggplot(data = allAlphaPlot2$data) +
+  geom_point(aes(x = species, y = value, color = site), position=position_jitter(width=0.1, height=0)) +
+  geom_boxplot(aes(x = species, y = value, color = NULL), alpha = 0.1, outlier.shape = NA) +
+  scale_color_manual(values=cols) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  facet_wrap(~variable, scales='free_y')
+
+
+## SAVE AS 900 x 700
+
+## quick check on the seriatopora - they have 10-20% endos..
 #serio <- subset_samples(allPhylo, species=="Seriatopora sp.")
 #serio <- filter_taxa(serio, function(x) mean(x) > 0.1, TRUE)
 #plot_bar(serio, fill='Genus')
-
-# The predicted number of OTUs and diversity indecies look similar across the different coral species. I'll add some whisker plots to make this easier to see. 
-
-allAlphaPlot2 <- plot_richness(allAlpha2, x = 'species', measures = c('Chao1', 'Shannon', 'observed'), color = 'site')
-allAlphaPlot2
-
-allAlphaPlot2 + geom_boxplot(data = allAlphaPlot2$data, aes(x = species, y = value, color = NULL), alpha = 0.1) +
-  scale_color_manual(values=cols)
 
 # some transformations - top line is to keep sample order in bar graphs
 
@@ -142,15 +150,19 @@ spistPverrEndo <- merge_phyloseq(spistPhyloEndo, pVerrPhyloEndo)
 spistPverrEndoFilt = filter_taxa(spistPverrEndo, function(x) mean(x) > 0.0, TRUE)
 spistPverrEndoFiltPrune = prune_samples(sample_sums(spistPverrEndoFilt) > 0, spistPverrEndoFilt)
 
-plot_heatmap(spistPverrEndoFiltPrune, "NMDS", "bray", "site", sample.order=rownames(metaFile3))
+plot_heatmap(spistPverrEndoFiltPrune, "NMDS", "bray", "site", low="#000033", high="#FF3300", sample.order=rownames(metaFile3))
 
-plot_heatmap(spistPverrEndoFilt, "RDA", "none", "site", sample.order='species')
+#plot_heatmap(spistPverrEndoFilt, "RDA", "none", "site", sample.order='species')
 
 # SAVE AS 1500 X 700
 # take a quick look at the Archaea samples
 
 archaeaPhylo <- subset_taxa(allPhylo, Domain=="Archaea")
 archaeaPhyloPrune = prune_samples(sample_sums(archaeaPhylo) > 0, archaeaPhylo)
-plot_heatmap(archaeaPhyloPrune, "NMDS", "bray", 'species')
+plot_heatmap(archaeaPhyloPrune, "NMDS", "bray", "species", sample.order=rownames(metaFile3))
 
+theme_set(theme_bw())
+plot_bar(archaeaPhylo, fill="Phylum") +
+  scale_y_continuous(expand = c(0,0)) +
+  facet_grid(~species, scales='free', space='free_x')
 

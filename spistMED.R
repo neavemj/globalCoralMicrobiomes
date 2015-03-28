@@ -330,9 +330,10 @@ Need to import the shared file containing just spist OTUs, then calcualte the si
 spistShared = otu_table(spist)
 class(spistShared) <- "numeric"
 
-spistSIMPROF <- simprof(spistShared, num.expected=10, num.simulated=9, method.cluster='average', method.distance='braycurtis', method.transform='identity', alpha=0.05, sample.orientation='row', silent=FALSE)
+spistSIMPROF <- simprof(spistShared, num.expected=1000, num.simulated=999, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=FALSE)
 
 simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+
 
 
 # I'll try and overlay the significant clusters on top of the nMDS. 

@@ -21,9 +21,9 @@ allShared = allShared[,2:length(allShared)]
 
 # non-subsampled mothur shared file for alpha diversity
 
-all1OTUshared = read.table("all.7974.0.01.shared", header=T)
-rownames(all1OTUshared) = all1OTUshared[,2]
-all1OTUshared = all1OTUshared[,4:length(all1OTUshared)]
+#all1OTUshared = read.table("all.7974.0.01.shared", header=T)
+#rownames(all1OTUshared) = all1OTUshared[,2]
+#all1OTUshared = all1OTUshared[,4:length(all1OTUshared)]
 
 # import percent matrix modified for phylogenetic tree
 
@@ -63,6 +63,19 @@ TREE = phy_tree(endoTreeFile)
 allPhylo = phyloseq(OTU, TAX, META)
 endoTree = phyloseq(OTUtree, META, TREE)
 allAlpha = phyloseq(OTUalpha, META)
+
+
+# check at how many reefs we sampled corals
+
+allPhyloTmp2 <- subset_samples(allPhylo, species=="Stylophora pistillata")
+allPhyloTmp3 <- subset_samples(allPhylo, species=="Pocillopora verrucosa")
+allPhyloCorals <- merge_phyloseq(allPhyloTmp2, allPhyloTmp3)
+
+unique(sample_data(allPhyloCorals)$reef)
+
+# check which samples we included for spsit
+
+write.table(sample_data(allPhyloTmp2), "spistMicrobiomeSamples.txt", quote=FALSE, sep="\t")
 
 # Alpha diversity measures first
 

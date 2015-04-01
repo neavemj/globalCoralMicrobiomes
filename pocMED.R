@@ -11,7 +11,7 @@ library("plyr")
 library("vegan")
 library('ape')
 library('grid')
-library(RColorBrewer)
+library('RColorBrewer')
 setwd("./data")
 
 # generate some colors to be consistent
@@ -375,4 +375,116 @@ pocOrdPlot +
   annotate("text", x=nMDS.mean$x, y=nMDS.mean$y, label=nMDS.mean$Group.1)
 
 # SAVE AS 700 x 532
+
+
+####################################################################
+### do adonis / PERMANOVA sig testing 1.4.15
+####################################################################
+
+# use an NMDS distance matrix for significance testing
+
+pVerrDist <-  phyloseq::distance(pVerr, "bray")
+pVerrNMDS <- ordinate(pVerr, "NMDS", pVerrDist)
+
+pVerrADONIS <- adonis(pVerrDist ~ site, as(sample_data(pVerr), "data.frame"))
+
+adonis(formula = pVerrDist ~ site, data = as(sample_data(pVerr),      "data.frame")) 
+
+Terms added sequentially (first to last)
+
+Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)    
+site       3    2.6398 0.87995    2.31 0.13093  0.001 ***
+  Residuals 46   17.5225 0.38092         0.86907           
+Total     49   20.1624                 1.00000           
+---
+  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+# could also check pairwise using a reduced dataset
+# Red Sea vs Indonesia
+
+pVerrRed <- subset_samples(pVerr, site=="RedSea")
+pVerrIndon <- subset_samples(pVerr, site=="Indonesia")
+pVerrRedIndon <- merge_phyloseq(pVerrRed, pVerrIndon)
+
+pVerrRedIndonDist <-  phyloseq::distance(pVerrRedIndon, "bray")
+pVerrRedIndonNMDS <- ordinate(pVerrRedIndon, "NMDS", pVerrRedIndonDist)
+
+adonis(pVerrRedIndonDist ~ site, as(sample_data(pVerrRedIndon), "data.frame"))
+
+Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)    
+site       1    1.5204 1.52043  4.1981 0.09948  0.001 ***
+  Residuals 38   13.7626 0.36217         0.90052           
+Total     39   15.2830                 1.00000   
+
+# Indo vs Micro
+
+pVerrMicro <- subset_samples(pVerr, site=="Micronesia")
+pVerrIndon <- subset_samples(pVerr, site=="Indonesia")
+pVerrMicroIndon <- merge_phyloseq(pVerrMicro, pVerrIndon)
+
+pVerrMicroIndonDist <-  phyloseq::distance(pVerrMicroIndon, "bray")
+pVerrMicroIndonNMDS <- ordinate(pVerrMicroIndon, "NMDS", pVerrMicroIndonDist)
+
+adonis(pVerrMicroIndonDist ~ site, as(sample_data(pVerrMicroIndon), "data.frame"))
+
+Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)  
+site       1     0.738 0.73804  2.0101 0.06089  0.013 *
+  Residuals 31    11.382 0.36717         0.93911         
+Total     32    12.120                 1.00000 
+
+# Mal vs Micro
+
+pVerrMicro <- subset_samples(pVerr, site=="Micronesia")
+pVerrMal <- subset_samples(pVerr, site=="Maldives")
+pVerrMicroMal <- merge_phyloseq(pVerrMicro, pVerrMal)
+
+pVerrMicroMalDist <-  phyloseq::distance(pVerrMicroMal, "bray")
+pVerrMicroMalNMDS <- ordinate(pVerrMicroMal, "NMDS", pVerrMicroMalDist)
+
+adonis(pVerrMicroMalDist ~ site, as(sample_data(pVerrMicroMal), "data.frame"))
+
+Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)
+site       1    0.3710 0.37103 0.78944 0.08982  0.951
+Residuals  8    3.7599 0.46999         0.91018       
+Total      9    4.1310                 1.00000 
+
+
+## ok now to check which are different using Tukey tests
+
+# calculate multivariate dispersions
+
+siteFactor <- as(sample_data(pVerr), "data.frame")
+
+mod <- betadisper(pVerrDist, siteFactor$site)
+mod
+
+# perform test
+
+anova(mod)
+
+Analysis of Variance Table
+
+Response: Distances
+Df  Sum Sq   Mean Sq F value Pr(>F)
+Groups     3 0.01803 0.0060109   0.639 0.5938
+Residuals 46 0.43270 0.0094066                     
+---
+  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+# permutation test for F
+
+permutest(mod, pairwise = TRUE)
+
+Pairwise comparisons:
+  (Observed p-value below diagonal, permuted p-value above diagonal)
+            Indonesia Maldives Micronesia RedSea
+Indonesia             0.71900    0.20800  0.468
+Maldives     0.71090             0.12200  0.920
+Micronesia   0.18456  0.11800             0.556
+RedSea       0.47871  0.91891    0.52935        
+
+# Tukey's honest significance differences
+
+mod.HSD <- TukeyHSD(mod)
+plot(mod.HSD)
 

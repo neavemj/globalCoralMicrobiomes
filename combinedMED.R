@@ -73,9 +73,11 @@ allPhyloCorals <- merge_phyloseq(allPhyloTmp2, allPhyloTmp3)
 
 unique(sample_data(allPhyloCorals)$reef)
 
-# check which samples we included for spsit
+# check which samples we included for each coral
 
 write.table(sample_data(allPhyloTmp2), "spistMicrobiomeSamples.txt", quote=FALSE, sep="\t")
+
+write.table(sample_data(allPhyloTmp3), "pverrMicrobiomeSamples.txt", quote=FALSE, sep="\t")
 
 # Alpha diversity measures first
 

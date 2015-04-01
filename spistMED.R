@@ -428,3 +428,114 @@ spistOrdNoNAPlot +
 
 # SAVE AS 700 x 532
 
+
+####################################################################
+### do adonis / PERMANOVA sig testing 1.4.15
+####################################################################
+
+# use an NMDS distance matrix for significance testing
+
+spistDist <-  phyloseq::distance(spist, "bray")
+spistNMDS <- ordinate(spist, "NMDS", spistDist)
+
+spistADONIS <- adonis(spistDist ~ site, as(sample_data(spist), "data.frame"))
+
+adonis(formula = spistDist ~ site, data = as(sample_data(spist),      "data.frame")) 
+
+Terms added sequentially (first to last)
+
+Df SumsOfSqs MeanSqs F.Model     R2 Pr(>F)    
+site       5     9.028 1.80551  5.1217 0.2597  0.001 ***
+  Residuals 73    25.734 0.35252         0.7403           
+Total     78    34.761                 1.0000           
+---
+  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+# could also check pairwise using a reduced dataset
+# Red Sea vs Ningloo
+
+spistRed <- subset_samples(spist, site=="RedSea")
+spistNing <- subset_samples(spist, site=="Ningaloo")
+spistRedNing <- merge_phyloseq(spistRed, spistNing)
+
+spistRedNingDist <-  phyloseq::distance(spistRedNing, "bray")
+spistRedNingNMDS <- ordinate(spistRedNing, "NMDS", spistRedNingDist)
+
+spistADONIS <- adonis(spistRedNingDist ~ site, as(sample_data(spistRedNing), "data.frame"))
+
+# ningaloo vs Indonesia
+
+spistIndo <- subset_samples(spist, site=="Indonesia")
+spistNing <- subset_samples(spist, site=="Ningaloo")
+spistIndoNing <- merge_phyloseq(spistIndo, spistNing)
+
+spistIndoNingDist <-  phyloseq::distance(spistIndoNing, "bray")
+spistIndoNingNMDS <- ordinate(spistIndoNing, "NMDS", spistIndoNingDist)
+
+spistADONIS <- adonis(spistIndoNingDist ~ site, as(sample_data(spistIndoNing), "data.frame"))
+
+# samoa vs maldives
+
+spistAM <- subset_samples(spist, site=="AmericanSamoa")
+spistMicro <- subset_samples(spist, site=="Micronesia")
+spistAMMicro <- merge_phyloseq(spistAM, spistMicro)
+
+spistAMMicroDist <-  phyloseq::distance(spistAMMicro, "bray")
+spistAMMicroNMDS <- ordinate(spistAMMicro, "NMDS", spistAMMicroDist)
+
+adonis(spistAMMicroDist ~ site, as(sample_data(spistAMMicro), "data.frame"))
+
+# samoa vs Indonesia
+
+spistAM <- subset_samples(spist, site=="AmericanSamoa")
+spistIndon <- subset_samples(spist, site=="Indonesia")
+spistAMIndon <- merge_phyloseq(spistAM, spistIndon)
+
+spistAMIndonDist <-  phyloseq::distance(spistAMIndon, "bray")
+spistAMIndonNMDS <- ordinate(spistAMIndon, "NMDS", spistAMIndonDist)
+
+adonis(spistAMIndonDist ~ site, as(sample_data(spistAMIndon), "data.frame"))
+
+
+## ok now to check which are different using Tukey tests
+
+# calculate multivariate dispersions
+
+siteFactor <- as(sample_data(spist), "data.frame")
+
+mod <- betadisper(spistDist, siteFactor$site)
+mod
+
+# perform test
+
+anova(mod)
+
+Analysis of Variance Table
+
+Response: Distances
+          Df  Sum Sq  Mean Sq F value    Pr(>F)    
+Groups     5 0.59351 0.118701   12.51 8.866e-09 ***
+  Residuals 73 0.69266 0.009489                      
+---
+  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+# permutation test for F
+
+permutest(mod, pairwise = TRUE)
+
+Pairwise comparisons:
+(Observed p-value below diagonal, permuted p-value above diagonal)
+              AmericanSamoa  Indonesia MaggieIs Micronesia   Ningaloo RedSea
+AmericanSamoa               9.9400e-01          8.0000e-03 5.7200e-01  0.146
+Indonesia        9.8693e-01                     1.5000e-02 4.4400e-01  0.037
+MaggieIs                                                                    
+Micronesia       1.0191e-02 6.1721e-03                     1.0000e-03  0.018
+Ningaloo         5.8741e-01 4.1121e-01          5.8411e-07             0.001
+RedSea           1.5504e-01 3.6520e-02          1.5704e-02 4.1747e-05  
+
+# Tukey's honest significance differences
+
+mod.HSD <- TukeyHSD(mod)
+plot(mod.HSD)
+
+

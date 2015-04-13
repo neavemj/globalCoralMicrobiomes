@@ -104,8 +104,33 @@ ggplot(data = allAlphaPlot2$data) +
   facet_wrap(~variable, scales='free_y') +
   scale_x_discrete(limits=c("Stylophora pistillata", "Pocillopora verrucosa", "seawater"))
 
-
 ## SAVE AS 900 x 600
+
+## check for significant differences using a kruskal-wallis test
+# first get mean and se of the diversity esimates in new dataframe
+
+alphaObserved = (estimate_richness(allAlpha2, measures="Observed"))
+alphaSimpson = (estimate_richness(allAlpha2, measures="Simpson"))
+alphaChao = (estimate_richness(allAlpha2, measures="Chao1"))
+
+alpha.stats <- cbind(alphaObserved, sample_data(allAlpha2))
+alpha.stats2 <- cbind(alpha.stats, alphaSimpson)
+alpha.stats3 <- cbind(alpha.stats, alphaChao)
+
+kruskal.test(Chao1~species, data = alpha.stats3)
+
+Kruskal-Wallis rank sum test
+
+data:  Observed by species
+Kruskal-Wallis chi-squared = 83.5999, df = 2, p-value < 2.2e-16
+
+# do a dunn post hoc test to check which groups were different, plus bonferroni multiple testing adjustment
+
+library("dunn.test")
+dunn.test(alpha.stats3$Chao1, alpha.stats3$species, method="bonferroni")
+
+
+
 
 ## quick check on the seriatopora - they have 10-20% endos..
 #serio <- subset_samples(allPhylo, species=="Seriatopora sp.")

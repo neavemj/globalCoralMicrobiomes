@@ -21,9 +21,9 @@ allShared = allShared[,2:length(allShared)]
 
 # non-subsampled mothur shared file for alpha diversity
 
-#all1OTUshared = read.table("all.7974.0.01.shared", header=T)
-#rownames(all1OTUshared) = all1OTUshared[,2]
-#all1OTUshared = all1OTUshared[,4:length(all1OTUshared)]
+all3OTUshared = read.table("all.7974.0.03.shared", header=T)
+rownames(all3OTUshared) = all3OTUshared[,2]
+all3OTUshared = all3OTUshared[,4:length(all3OTUshared)]
 
 # import percent matrix modified for phylogenetic tree
 
@@ -55,7 +55,7 @@ endoTreeFile = read.tree(file='MEDNJ5.tree')
 ### Create phyloseq object
 
 OTU = otu_table(allShared, taxa_are_rows = FALSE)
-OTUalpha = otu_table(all1OTUshared, taxa_are_rows = FALSE)
+OTUalpha = otu_table(all3OTUshared, taxa_are_rows = FALSE)
 OTUtree = otu_table(allSharedTree, taxa_are_rows = FALSE)
 TAX = tax_table(allTax) 
 META = sample_data(metaFile)
@@ -74,10 +74,8 @@ allPhyloCorals <- merge_phyloseq(allPhyloTmp2, allPhyloTmp3)
 unique(sample_data(allPhyloCorals)$reef)
 
 # check which samples we included for each coral
-
-write.table(sample_data(allPhyloTmp2), "spistMicrobiomeSamples.txt", quote=FALSE, sep="\t")
-
-write.table(sample_data(allPhyloTmp3), "pverrMicrobiomeSamples.txt", quote=FALSE, sep="\t")
+#write.table(sample_data(allPhyloTmp2), "spistMicrobiomeSamples.txt", quote=FALSE, sep="\t")
+#write.table(sample_data(allPhyloTmp3), "pverrMicrobiomeSamples.txt", quote=FALSE, sep="\t")
 
 # Alpha diversity measures first
 
@@ -103,10 +101,11 @@ ggplot(data = allAlphaPlot2$data) +
   geom_boxplot(aes(x = species, y = value, color = NULL), alpha = 0.1, outlier.shape = NA) +
   scale_color_manual(values=cols) +
   theme(axis.text.x = element_text(angle = 90)) +
-  facet_wrap(~variable, scales='free_y')
+  facet_wrap(~variable, scales='free_y') +
+  scale_x_discrete(limits=c("Stylophora pistillata", "Pocillopora verrucosa", "seawater"))
 
 
-## SAVE AS 900 x 700
+## SAVE AS 900 x 600
 
 ## quick check on the seriatopora - they have 10-20% endos..
 #serio <- subset_samples(allPhylo, species=="Seriatopora sp.")

@@ -1,0 +1,54 @@
+reef	species	site	warmed	replicates	morphology	pocType
+107	Maldives1	Pocillopora verrucosa	Maldives	FALSE	FALSE		type3
+153	Maldives5	Pocillopora verrucosa	Maldives	FALSE	FALSE		type1
+154	Maldives5	Pocillopora verrucosa	Maldives	FALSE	FALSE		type1
+177	Yanbu1	Pocillopora verrucosa	RedSea	FALSE	FALSE		
+178	Yanbu1	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
+210	Yanbu2	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
+211	Yanbu2	Pocillopora verrucosa	RedSea	FALSE	FALSE		
+212	Yanbu2	Pocillopora verrucosa	RedSea	FALSE	FALSE		
+213	Yanbu2	Pocillopora verrucosa	RedSea	FALSE	FALSE		
+218	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		
+219	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		type?
+220	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		
+221	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
+222	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
+224	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
+225	Al-Lith1	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
+248	Al-Fahal	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
+249	Al-Fahal	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
+250	Al-Fahal	Pocillopora verrucosa	RedSea	FALSE	FALSE		type3
+99	AM2	Pocillopora verrucosa	AmericanSamoa	FALSE	FALSE		type3
+MIC-238	Kosrae, Dive 1	Pocillopora verrucosa	Micronesia	FALSE	FALSE		type3
+MIC-244	Kosrae, Dive 1	Pocillopora verrucosa	Micronesia	FALSE	FALSE		type?
+MIC-248	Kosrae, Dive 1	Pocillopora verrucosa	Micronesia	FALSE	FALSE		type?
+MIC-308	Kap-1 (Kapingamarangi, Dive 1)	Pocillopora verrucosa	Micronesia	FALSE	FALSE		type3
+MIC-334	Kap-2 (Kapingamarangi, Dive 2)	Pocillopora verrucosa	Micronesia	FALSE	FALSE		type3
+MIC-346	Kap-3 (Kapingamarangi, Dive 3)	Pocillopora verrucosa	Micronesia	FALSE	FALSE		type3
+RP1	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP10	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP11	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP12	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP13	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP15	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP16	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP17	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP18	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP19	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		
+RP2	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP20	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP21	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP22	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP23	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP24	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP25	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP27	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP28	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP29	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type?
+RP30	Amed	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP4	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP5	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP6	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP7	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP8	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		type3
+RP9	Manokwari	Pocillopora verrucosa	Indonesia	FALSE	FALSE		

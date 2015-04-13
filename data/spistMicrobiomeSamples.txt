@@ -1,0 +1,74 @@
+reef	species	site	warmed	replicates	morphology	pocType
+101	AM2	Stylophora pistillata	AmericanSamoa	FALSE	FALSE	very thick	
+103	AM2	Stylophora pistillata	AmericanSamoa	FALSE	FALSE	very thick	
+105	AM2	Stylophora pistillata	AmericanSamoa	FALSE	FALSE	very thick	
+173	Yanbu1	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+174	Yanbu1	Stylophora pistillata	RedSea	FALSE	FALSE	thin	
+175	Yanbu1	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+176	Yanbu1	Stylophora pistillata	RedSea	FALSE	FALSE	thin	
+19-rep2	Mag3	Stylophora pistillata	MaggieIs	FALSE	TRUE		
+205	Yanbu2	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+206	Yanbu2	Stylophora pistillata	RedSea	FALSE	FALSE	thin	
+207	Yanbu2	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+208	Yanbu2	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+209	Yanbu2	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+226	Al-Lith1	Stylophora pistillata	RedSea	FALSE	FALSE	thin	
+227	Al-Lith1	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+228	Al-Lith1	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+229	Al-Lith1	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+230	Al-Lith1	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+231	Al-Lith1	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+235	Al-Lith2	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+236	Al-Lith2	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+237	Al-Lith2	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+241	Al-Lith2	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+242	Al-Lith2	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+243	Al-Fahal	Stylophora pistillata	RedSea	FALSE	FALSE	thin	
+244	Al-Fahal	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+251	Al-Fahal	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+253	Al-Fahal	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+254	Al-Fahal	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+256	Inner Fsar	Stylophora pistillata	RedSea	FALSE	FALSE	thin	
+257	Inner Fsar	Stylophora pistillata	RedSea	FALSE	FALSE	thin	
+258	Inner Fsar	Stylophora pistillata	RedSea	FALSE	FALSE	thin	
+259	Inner Fsar	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+260	Inner Fsar	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+261	Inner Fsar	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+262	Inner Fsar	Stylophora pistillata	RedSea	FALSE	FALSE	thick	
+49-2	Ning1	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+50-2	Ning1	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+51-2	Ning1	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+52-2	Ning1	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+53-2	Ning2	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+54-2	Ning2	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+55-2	Ning2	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+56-2	Ning2	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+57-2	Ning2	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+63-2	Ning3	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+64-2	Ning3	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+65-2	Ning3	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+67-2	Ning3	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+75-2	Ning4	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+76-2	Ning4	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+77-2	Ning4	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+80-2	Ning3	Stylophora pistillata	Ningaloo	FALSE	FALSE	thick	
+MIC-145	Woleai, Dive 2	Stylophora pistillata	Micronesia	FALSE	FALSE		
+MIC-151	Woleai, Dive 2	Stylophora pistillata	Micronesia	FALSE	FALSE		
+MIC-220	Olimareo, Dive 2	Stylophora pistillata	Micronesia	FALSE	FALSE		type3
+MIC-226	Olimareo, Dive 2	Stylophora pistillata	Micronesia	FALSE	FALSE		
+MIC-229	Olimareo, Dive 2	Stylophora pistillata	Micronesia	FALSE	FALSE		
+MIC-25	Yap 1, Dive 1	Stylophora pistillata	Micronesia	FALSE	FALSE		
+MIC-424	Nak-1 (Nukuoro, Dive 1)	Stylophora pistillata	Micronesia	FALSE	FALSE		
+MIC-427	Nak-1 (Nukuoro, Dive 1)	Stylophora pistillata	Micronesia	FALSE	FALSE		
+MIC-453	Nak-2 (Nukuoro, Dive 2)	Stylophora pistillata	Micronesia	FALSE	FALSE		
+MIC-50	Yap 2, Dive 2	Stylophora pistillata	Micronesia	FALSE	FALSE		
+MIC-53-rep2	Yap 2, Dive 2	Stylophora pistillata	Micronesia	FALSE	TRUE		
+MIC-85	Woleai, Dive 1	Stylophora pistillata	Micronesia	FALSE	FALSE		
+MIC-91	Woleai, Dive 1	Stylophora pistillata	Micronesia	FALSE	FALSE		
+RS10	Wakatobi	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RS12	Wakatobi	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RS13	Komodo	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RS15	Komodo	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RS16	Komodo	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RS17	Komodo	Stylophora pistillata	Indonesia	FALSE	FALSE		
+RS18	Komodo	Stylophora pistillata	Indonesia	FALSE	FALSE		

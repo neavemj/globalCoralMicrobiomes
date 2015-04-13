@@ -9,6 +9,7 @@ library("plyr")
 library("vegan")
 library('ape')
 library('RColorBrewer')
+library("dunn.test")
 setwd("./data")
 
 cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#666666", "Maldives" = "#E6AB02", "Micronesia" = "#66A61E", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A", "other" = "black")
@@ -115,21 +116,48 @@ alphaChao = (estimate_richness(allAlpha2, measures="Chao1"))
 
 alpha.stats <- cbind(alphaObserved, sample_data(allAlpha2))
 alpha.stats2 <- cbind(alpha.stats, alphaSimpson)
-alpha.stats3 <- cbind(alpha.stats, alphaChao)
+alpha.stats3 <- cbind(alpha.stats2, alphaChao)
+
+# krustal-wallis test plus a dunn post hoc test to check which groups were different, including bonferroni multiple testing adjustment
+
+kruskal.test(Observed~species, data = alpha.stats3)
+dunn.test(alpha.stats3$Observed, alpha.stats3$species, method="bonferroni")
+
+Kruskal-Wallis chi-squared = 83.5999, df = 2, p-value = 0
+  Col Mean-|
+  Row Mean |   Pocillop   seawater
+---------+----------------------
+  seawater |   8.453137
+           |     0.0000
+           |
+  Stylopho |   1.307381  -7.797705
+           |     0.2866     0.0000
+
+kruskal.test(Simpson~species, data = alpha.stats3)
+dunn.test(alpha.stats3$Simpson, alpha.stats3$species, method="bonferroni")
+
+Kruskal-Wallis chi-squared = 18.8184, df = 2, p-value = 8.197e-05
+  Col Mean-|
+  Row Mean |   Pocillop   seawater
+---------+----------------------
+  seawater |   4.071168
+           |     0.0001
+           |
+  Stylopho |   0.784873  -3.609790
+           |     0.6488     0.0005
 
 kruskal.test(Chao1~species, data = alpha.stats3)
-
-Kruskal-Wallis rank sum test
-
-data:  Observed by species
-Kruskal-Wallis chi-squared = 83.5999, df = 2, p-value < 2.2e-16
-
-# do a dunn post hoc test to check which groups were different, plus bonferroni multiple testing adjustment
-
-library("dunn.test")
 dunn.test(alpha.stats3$Chao1, alpha.stats3$species, method="bonferroni")
 
-
+Kruskal-Wallis chi-squared = 87.4746, df = 2, p-value < 2.2e-16
+  Col Mean-|
+  Row Mean |   Pocillop   seawater
+---------+----------------------
+  seawater |   8.542250
+           |     0.0000
+           |
+  Stylopho |   1.074309  -8.111644
+           |     0.4240     0.0000
 
 
 ## quick check on the seriatopora - they have 10-20% endos..

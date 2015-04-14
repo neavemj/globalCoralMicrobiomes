@@ -319,12 +319,12 @@ P values based on 999 permutations.
 
 # Need to import the shared file containing just poc OTUs, then calcualte the simprof clusters based on the braycurtis metric. 
 
-pocShared = otu_table(poc)
-class(pocShared) <- "numeric"
+pVerrShared = otu_table(pVerr)
+class(pVerrShared) <- "numeric"
 
-pocSIMPROF <- simprof(pocShared, num.expected=10, num.simulated=9, method.cluster='average', method.distance='braycurtis', method.transform='identity', alpha=0.05, sample.orientation='row', silent=FALSE)
+pVerrSIMPROF <- simprof(pVerrShared, num.expected=1000, num.simulated=999, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=FALSE)
 
-simprof.plot(pocSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+simprof.plot(pVerrSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
 
 
 # I'll try and overlay the significant clusters on top of the nMDS. 

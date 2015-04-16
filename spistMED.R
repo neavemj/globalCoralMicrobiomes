@@ -58,9 +58,9 @@ spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
 
 sample_data(spist)$names <- factor(sample_names(spist), levels=rownames(metaFile), ordered = TRUE)
 
-spistFilt = filter_taxa(spist, function(x) mean(x) > 0.2, TRUE)
+spistFilt = filter_taxa(spist, function(x) mean(x) > 0.4, TRUE)
 
-taxLevel <- "Class"
+taxLevel <- "Genus"
 
 spistFiltGlom <- tax_glom(spistFilt, taxrank=taxLevel)
 physeqdf <- psmelt(spistFiltGlom)
@@ -95,7 +95,7 @@ ggCols <- head(ggCols, n=-1)
 physeqdfOther$names <- factor(physeqdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
 
 theme_set(theme_bw())
-ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Class))) +
+ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Genus, order = as.factor(Genus))) +
   geom_bar(stat="identity", colour="black") +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
@@ -103,7 +103,7 @@ ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Cl
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
-# SAVE PLOT: EPS 1500 x 600
+# SAVE PLOT: EPS 1500 x 700
 
 #Top100OTUs = names(sort(taxa_sums(spist), TRUE)[1:100])
 #spist100 = prune_taxa(Top50OTUs, spist)
@@ -334,7 +334,7 @@ spistSIMPROF <- simprof(spistShared, num.expected=1000, num.simulated=999, metho
 
 simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
 
-
+# SAVE EPS 1500 x 700
 
 # I'll try and overlay the significant clusters on top of the nMDS. 
 # After calculating the clusters, make a data frame of the results and add to previous nMDS plot. Need to add these groups to the nMDS data.frame - I'll do a loop for this.

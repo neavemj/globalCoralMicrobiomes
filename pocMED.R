@@ -59,31 +59,31 @@ sample_data(pVerr)$names <- factor(sample_names(pVerr), levels=unique(sample_nam
 sample_data(pDami)$names <- factor(sample_names(pDami), levels=unique(sample_names(pDami)))
 
 pocFilt = filter_taxa(poc, function(x) mean(x) > 0.5, TRUE)
-pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.2, TRUE)
-pDamiFilt = filter_taxa(pDami, function(x) mean(x) > 1, TRUE)
+
+pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.35, TRUE)
 
 # phylum / class bars
 # transforming to normal matix and as.factor keeps taxa stacked consistently
 
 taxLevel <- "Genus"
 
-pocFiltGlom <- tax_glom(pocFilt, taxrank=taxLevel)
-pocdf <- psmelt(pocFiltGlom)
+pVerrFiltGlom <- tax_glom(pVerrFilt, taxrank=taxLevel)
+pVerrdf <- psmelt(pVerrFiltGlom)
 
 # get total abundance so can make a 'other' column
 # had to add ^ and $ characters to make sure grep matches whole word
 
-pocdfOther <- pocdf
+pVerrdfOther <- pVerrdf
 
-for (j in unique(pocdf$Sample)) {
+for (j in unique(pVerrdf$Sample)) {
   jFirst = paste('^', j, sep='')
   jBoth = paste(jFirst, '$', sep='')
-  rowNumbers = grep(jBoth, pocdf$Sample)
-  otherValue = 100 - sum(pocdf[rowNumbers,"Abundance"])
-  newRow = (pocdf[rowNumbers,])[1,]
+  rowNumbers = grep(jBoth, pVerrdf$Sample)
+  otherValue = 100 - sum(pVerrdf[rowNumbers,"Abundance"])
+  newRow = (pVerrdf[rowNumbers,])[1,]
   newRow[,taxLevel] = "other"
   newRow[,"Abundance"] = otherValue
-  pocdfOther <- rbind(pocdfOther, newRow)
+  pVerrdfOther <- rbind(pVerrdfOther, newRow)
 }
 
 # need to create my own ggplot colors then replace the last one with gray
@@ -95,13 +95,13 @@ gg_color_hue <- function(n) {
   hcl(h=hues, l=65, c=100)[1:n]
 }
 
-ggCols <- gg_color_hue(length(unique(pocdfOther[,taxLevel])))
+ggCols <- gg_color_hue(length(unique(pVerrdfOther[,taxLevel])))
 ggCols <- head(ggCols, n=-1)
 
-pocdfOther$names <- factor(pocdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
+pVerrdfOther$names <- factor(pVerrdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
 
 theme_set(theme_bw())
-ggplot(pocdfOther, aes(x=names, y=Abundance, fill=Genus, order = as.factor(Genus))) +
+ggplot(pVerrdfOther, aes(x=names, y=Abundance, fill=Genus, order = as.factor(Genus))) +
   geom_bar(stat="identity", colour="black") +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
@@ -109,7 +109,7 @@ ggplot(pocdfOther, aes(x=names, y=Abundance, fill=Genus, order = as.factor(Genus
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
-# SAVE PLOT: EPS 1500 x 800
+# SAVE PLOT: EPS 1500 x 600
 
 
 # let's check what's happening with different Endozoicomonas OTUs (Pocillopora combined)
@@ -326,6 +326,7 @@ pVerrSIMPROF <- simprof(pVerrShared, num.expected=1000, num.simulated=999, metho
 
 simprof.plot(pVerrSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
 
+# SAVE EPS 1500 x 700
 
 # I'll try and overlay the significant clusters on top of the nMDS. 
 # After calculating the clusters, make a data frame of the results and add to previous nMDS plot. Need to add these groups to the nMDS data.frame - I'll do a loop for this.

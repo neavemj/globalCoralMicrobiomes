@@ -60,7 +60,15 @@ sample_data(pDami)$names <- factor(sample_names(pDami), levels=unique(sample_nam
 
 pocFilt = filter_taxa(poc, function(x) mean(x) > 0.5, TRUE)
 
-pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.35, TRUE)
+pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.1, TRUE)
+
+# which taxa are present at 1% overall abundance and at least 75% of samples
+pVerrGenusGlom <- tax_glom(pVerrFilt, taxrank="Genus")
+coreTaxa = filter_taxa(pVerrGenusGlom, function(x) sum(x > 1) > (0.75*length(x)), TRUE)
+plot_bar(coreTaxa, fill="Genus")
+tax_table(coreTaxa)
+sum(otu_table(coreTaxa) > 1) / nsamples(pVerr)
+# 0.8490
 
 # phylum / class bars
 # transforming to normal matix and as.factor keeps taxa stacked consistently

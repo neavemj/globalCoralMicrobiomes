@@ -38,9 +38,12 @@ rownames(allTax) = allTax[,1]
 allTax = allTax[,3:9]
 allTax = as.matrix(allTax)
 
-# import meta data
+# import meta data + for chem
+metaFile = read.table('metaData2.MED', header=T, sep='\t')
+rownames(metaFile) = metaFile[,1]
+metaFile = metaFile[,2:8]
 
-metaFile = read.table('metaDataChem.txt', header=T, sep='\t')
+metaFileChem = read.table('metaDataChem.txt', header=T, sep='\t')
 rownames(metaFile) = metaFile[,1]
 metaFile = metaFile[,2:22]
 
@@ -58,10 +61,19 @@ spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
 
 sample_data(spist)$names <- factor(sample_names(spist), levels=rownames(metaFile), ordered = TRUE)
 
-spistFilt = filter_taxa(spist, function(x) mean(x) > 0.4, TRUE)
+spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
+
+# check for 'core' microbiome members at the genus level
+# which taxa are present at 1% overall abundance and at least 75% of samples
+spistGenusGlom <- tax_glom(spistFilt, taxrank="Genus")
+coreTaxa = filter_taxa(spistGenusGlom, function(x) sum(x > 1) > (0.75*length(x)), TRUE)
+plot_bar(coreTaxa, fill="Genus")
+tax_table(coreTaxa)
+sum(otu_table(coreTaxa) > 1) / nsamples(spist)
+# 0.7945
+
 
 taxLevel <- "Genus"
-
 spistFiltGlom <- tax_glom(spistFilt, taxrank=taxLevel)
 physeqdf <- psmelt(spistFiltGlom)
 
@@ -104,9 +116,6 @@ ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Genus, order = as.factor(Ge
 
 
 # SAVE PLOT: EPS 1500 x 700
-
-#Top100OTUs = names(sort(taxa_sums(spist), TRUE)[1:100])
-#spist100 = prune_taxa(Top50OTUs, spist)
 
 # let's check what's happening with different Endozoicomonas OTUs
 

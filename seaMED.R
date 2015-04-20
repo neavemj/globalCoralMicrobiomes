@@ -24,20 +24,20 @@ cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#6
 
 # import normal percent matrix
 
-allShared = read.table("all.7801.matrixPercent.txt", header=T)
+allShared = read.table("all.7974.matrixPercent.txt", header=T)
 rownames(allShared) = allShared[,1]
 allShared = allShared[,2:length(allShared)]
 
 # Import normal taxonomy file from mothur
 
-allTax = read.table('all.7801.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
+allTax = read.table('all.7974.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
 rownames(allTax) = allTax[,1]
 allTax = allTax[,3:9]
 allTax = as.matrix(allTax)
 
 # import meta data
 
-metaFile = read.table('metaData2.test.txt', header=T, sep='\t')
+metaFile = read.table('metaData2.MED', header=T, sep='\t')
 rownames(metaFile) = metaFile[,1]
 
 ### Create phyloseq object
@@ -47,13 +47,13 @@ TAX = tax_table(allTax)
 META = sample_data(metaFile)
 allPhylo = phyloseq(OTU, TAX, META)
 
-# bar chart of s.pistillata phyla or class - the names parameter preserves order
+# bar chart of seawater phyla or class - the names parameter preserves order
 
 sea <- subset_samples(allPhylo, species=='seawater')
 sample_data(sea)$names <- factor(sample_names(sea), levels=rownames(metaFile), ordered = TRUE)
-seaFilt = filter_taxa(sea, function(x) mean(x) > 0.1, TRUE)
+seaFilt = filter_taxa(sea, function(x) mean(x) > 0.4, TRUE)
 
-taxLevel <- "Class"
+taxLevel <- "Family"
 
 seaFiltGlom <- tax_glom(seaFilt, taxrank=taxLevel)
 physeqdf <- psmelt(seaFiltGlom)
@@ -88,7 +88,7 @@ ggCols <- head(ggCols, n=-1)
 physeqdfOther$names <- factor(physeqdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
 
 theme_set(theme_bw())
-ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Class))) +
+ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Family, order = as.factor(Family))) +
   geom_bar(stat="identity", colour="black") +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +

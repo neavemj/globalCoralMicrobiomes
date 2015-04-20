@@ -95,7 +95,7 @@ ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Family, order = as.factor(F
   facet_grid(~site, scales='free', space='free_x') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-# SAVE EPS 1500 x 600
+# SAVE EPS 1200 x 600
 
 # let's check what's happening with different Endozoicomonas OTUs
 

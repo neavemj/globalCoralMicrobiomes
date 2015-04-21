@@ -44,20 +44,23 @@ rownames(metaFile) = metaFile[,1]
 metaFile = metaFile[,2:8]
 
 metaFileChem = read.table('metaDataChem.txt', header=T, sep='\t')
-rownames(metaFile) = metaFile[,1]
-metaFile = metaFile[,2:22]
+rownames(metaFileChem) = metaFileChem[,1]
+metaFileChem = metaFileChem [,2:22]
 
 ### Create phyloseq object
 
 OTU = otu_table(allShared, taxa_are_rows = FALSE)
 TAX = tax_table(allTax) 
 META = sample_data(metaFile)
+METAchem = sample_data(metaFileChem)
 allPhylo = phyloseq(OTU, TAX, META)
+allPhyloChem = phyloseq(OTU, TAX, METAchem)
 
 # bar chart of s.pistillata phyla or class - the names parameter preserves order
 # transforming to normal matix and as.factor keeps taxa stacked consistently
 
 spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
+spistChem <- subset_samples(allPhyloChem, species=='Stylophora pistillata')
 
 sample_data(spist)$names <- factor(sample_names(spist), levels=rownames(metaFile), ordered = TRUE)
 
@@ -262,10 +265,10 @@ waterQual <- c("temp", "salinity", "Domg", "pH")
 nutrients <- c("PO4", "N.N", "silicate", "NO2", "NH4")
 FCM <- c("prok", "syn", "peuk", "pe.peuk", "Hbact")
 
-chemNoNA <- na.omit(metaFile[sample_names(spist),FCM])
-spistNoNA <- prune_samples(rownames(chemNoNA), spist)
+chemNoNA <- na.omit(metaFileChem[sample_names(spist),FCM])
+spistNoNA <- prune_samples(rownames(chemNoNA), spistChem)
 
-sample_names(spist)
+sample_names(spistChem)
 sample_names(spistNoNA)
 
 theme_set(theme_bw())
@@ -299,10 +302,10 @@ spistOrdNoNAPlot +
 ***VECTORS
 
 MDS1     MDS2     r2 Pr(>r)    
-temp      0.88707  0.46164 0.4174  0.001 ***
-  salinity -0.15092 -0.98855 0.2369  0.005 ** 
-  Domg     -0.71695 -0.69712 0.1044  0.057 .  
-pH       -0.43162 -0.90206 0.3253  0.001 ***
+temp      0.75791 -0.65236 0.4823  0.001 ***
+  salinity -0.15147  0.98846 0.1613  0.018 *  
+  Domg     -0.91227  0.40958 0.0832  0.130    
+pH       -0.53166  0.84696 0.2202  0.003 ** 
   ---
   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 P values based on 999 permutations.
@@ -310,21 +313,23 @@ P values based on 999 permutations.
 ***VECTORS
 
 MDS1     MDS2     r2 Pr(>r)    
-PO4      -0.40364  0.91492 0.1460  0.027 *  
-  N.N       0.81490 -0.57960 0.0922  0.079 .  
-silicate -0.75651  0.65398 0.5160  0.001 ***
-  NO2      -0.55247  0.83353 0.4323  0.001 ***
-  NH4       0.15821 -0.98740 0.1623  0.012 *  
-  ---
+PO4      -0.24247  0.97016 0.2269  0.001 ***
+  N.N       0.85598 -0.51701 0.0671  0.190    
+silicate -0.80182  0.59757 0.4803  0.001 ***
+  NO2      -0.53788  0.84302 0.4272  0.001 ***
+  NH4       0.78601 -0.61821 0.0203  0.632    
+---
   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 P values based on 999 permutations.
 
+***VECTORS
+
 MDS1     MDS2     r2 Pr(>r)    
-prok    -0.04407 -0.99903 0.2544  0.001 ***
-  syn      0.51477  0.85733 0.1171  0.033 *  
-  peuk     0.50215  0.86478 0.0906  0.065 .  
-pe.peuk  0.95731  0.28907 0.0527  0.257    
-Hbact   -0.73361  0.67957 0.0436  0.344    
+prok    -0.05018 -0.99874 0.2675  0.001 ***
+  syn      0.54857  0.83611 0.1102  0.047 *  
+  peuk     0.53320  0.84599 0.0853  0.088 .  
+pe.peuk  0.95469  0.29761 0.0544  0.266    
+Hbact   -0.76800  0.64045 0.0421  0.377    
 ---
   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 P values based on 999 permutations.

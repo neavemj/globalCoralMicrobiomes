@@ -252,27 +252,27 @@ pVerrFiltPlotArrow
 
 
 ####################################################################
-### fit chemistry to the coral microbiomes
+### fit chemistry to the P. verrucosa microbiomes
 ####################################################################
 
 waterQual <- c("temp", "salinity", "Domg", "pH")
 nutrients <- c("PO4", "N.N", "silicate", "NO2", "NH4")
 FCM <- c("prok", "syn", "peuk", "pe.peuk", "Hbact")
 
-chemNoNA <- na.omit(metaFile[sample_names(poc),FCM])
-pocNoNA <- prune_samples(rownames(chemNoNA), poc)
+chemNoNA <- na.omit(metaFile[sample_names(pVerr),FCM])
+pVerrNoNA <- prune_samples(rownames(chemNoNA), pVerr)
 
-sample_names(poc)
-sample_names(pocNoNA)
+sample_names(pVerr)
+sample_names(pVerrNoNA)
 
 theme_set(theme_bw())
-pocOrdNoNA <- ordinate(pocNoNA, "NMDS", "bray")
-pocOrdNoNAPlot <- plot_ordination(pocNoNA, pocOrdNoNA, type = 'samples', color='site', title='poc') +
+pVerrOrdNoNA <- ordinate(pVerrNoNA, "NMDS", "bray")
+pVerrOrdNoNAPlot <- plot_ordination(pVerrNoNA, pVerrOrdNoNA, type = 'samples', color='site', title='pVerr') +
   geom_point(size=3) +
   scale_color_manual(values=c(cols)) 
-pocOrdNoNAPlot
+pVerrOrdNoNAPlot
 
-pointsNoNA <- pocOrdNoNA$points[rownames(chemNoNA),]
+pointsNoNA <- pVerrOrdNoNA$points[rownames(chemNoNA),]
 
 chemFit <- envfit(pointsNoNA, env = chemNoNA, na.rm=TRUE)
 
@@ -285,7 +285,7 @@ arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NU
 labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, size=1.5, label = rownames(chemFit.scores))
 arrowhead = arrow(length = unit(0.25, "cm"))
 
-pocOrdNoNAPlot + 
+pVerrOrdNoNAPlot + 
   coord_fixed() +
   geom_segment(arrowmap, size = 0.5, data = chemFit.scores, color = "black",  arrow = arrowhead, show_guide = FALSE) +
   geom_text(labelmap, size = 3, data = chemFit.scores)
@@ -295,28 +295,36 @@ pocOrdNoNAPlot +
 ***VECTORS
 
 MDS1     MDS2     r2 Pr(>r)   
-temp     -0.98044  0.19681 0.4273  0.002 **
-  salinity  0.84477 -0.53513 0.3543  0.002 **
-  Domg      0.27923 -0.96022 0.0077  0.911   
-pH        0.62615 -0.77971 0.2928  0.014 * 
+temp     -0.76261  0.64686 0.3904  0.006 **
+  salinity  0.45207 -0.89198 0.3894  0.006 **
+  Domg      0.82947  0.55854 0.1121  0.302   
+pH        0.62978 -0.77678 0.3228  0.009 **
   ---
   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 P values based on 999 permutations.
 
-MDS1     MDS2     r2 Pr(>r)  
-PO4      -0.05164  0.99867 0.0542  0.411  
-N.N      -0.02462  0.99970 0.0612  0.368  
-silicate -0.18433 -0.98286 0.0435  0.493  
-NO2       0.41953 -0.90774 0.1097  0.157  
-NH4      -0.50160 -0.86510 0.1784  0.036 *
+***VECTORS
 
-  MDS1     MDS2     r2 Pr(>r)  
-prok    -0.55526  0.83168 0.2551  0.011 *
-  syn     -0.88714  0.46151 0.1525  0.052 .
-peuk    -0.92447  0.38126 0.1080  0.150  
-pe.peuk -0.90889  0.41703 0.0684  0.332  
-Hbact   -0.79815  0.60247 0.1914  0.026 *
-  ---
+MDS1     MDS2     r2 Pr(>r)  
+PO4       0.01534  0.99988 0.0713  0.423  
+N.N       0.06235  0.99805 0.2365  0.050 *
+  silicate  0.86899  0.49483 0.2306  0.055 .
+NO2       0.91047  0.41358 0.0186  0.825  
+NH4      -0.74431  0.66784 0.1664  0.112  
+---
+  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+P values based on 999 permutations.
+
+
+***VECTORS
+
+MDS1     MDS2     r2 Pr(>r)    
+prok    -0.66845  0.74376 0.5754  0.001 ***
+  syn      0.11258  0.99364 0.0106  0.887    
+peuk     0.65357  0.75687 0.0644  0.450    
+pe.peuk -0.00391 -0.99999 0.0099  0.877    
+Hbact   -0.29778  0.95464 0.0850  0.360    
+---
   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 P values based on 999 permutations.
 

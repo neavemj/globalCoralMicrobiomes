@@ -215,6 +215,10 @@ END63	Metagenome study	Acropora humilis	RedSea	FALSE	FALSE
 30-cycles	Negative control	control	control	FALSE	FALSE		
 35-cycles	Negative control	control	control	FALSE	FALSE		
 40-cycles	Negative control	control	control	FALSE	FALSE		
+even-mock-pool1	even-mock-pool1	control	mock	FALSE	FALSE		
+even-mock-pool2	even-mock-pool2	control	mock	FALSE	FALSE		
+staggered-mock-pool1	staggered-mock-pool1	mock	control	FALSE	FALSE		
+staggered-mock-pool2	staggered-mock-pool2	mock	control	FALSE	FALSE		
 11-rep2	Mag3	Stylophora pistillata	MaggieIs	FALSE	TRUE		
 19-rep2	Mag3	Stylophora pistillata	MaggieIs	FALSE	TRUE		
 55-2-rep2	Ning2	Stylophora pistillata	Ningaloo	FALSE	TRUE		

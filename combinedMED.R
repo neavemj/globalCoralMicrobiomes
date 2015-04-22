@@ -16,9 +16,7 @@ cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#6
 
 # import normal percent matrix
 
-allShared = read.table("all.7974.matrixPercent.txt", header=T)
-rownames(allShared) = allShared[,1]
-allShared = allShared[,2:length(allShared)]
+allShared = read.table("all.7974.matrixPercent.txt", header=T, row.names=1)
 
 # non-subsampled mothur shared file for alpha diversity
 

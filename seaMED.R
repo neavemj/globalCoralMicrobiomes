@@ -51,7 +51,7 @@ allPhylo = phyloseq(OTU, TAX, META)
 
 sea <- subset_samples(allPhylo, species=='seawater')
 sample_data(sea)$names <- factor(sample_names(sea), levels=rownames(metaFile), ordered = TRUE)
-seaFilt = filter_taxa(sea, function(x) mean(x) > 0.4, TRUE)
+seaFilt = filter_taxa(sea, function(x) mean(x) > 0.6, TRUE)
 
 taxLevel <- "Family"
 

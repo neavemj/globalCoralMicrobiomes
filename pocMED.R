@@ -24,13 +24,13 @@ cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#6
 
 # import normal percent matrix
 
-allShared = read.table("all.7801.matrixPercent.txt", header=T)
+allShared = read.table("all.7974.matrixPercent.txt", header=T)
 rownames(allShared) = allShared[,1]
 allShared = allShared[,2:length(allShared)]
 
 # Import normal taxonomy file from mothur
 
-allTax = read.table('all.7801.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
+allTax = read.table('all.7974.nodeReps.nr_v119.knn.taxonomy', header=T, sep='\t')
 rownames(allTax) = allTax[,1]
 allTax = allTax[,3:9]
 allTax = as.matrix(allTax)
@@ -60,12 +60,12 @@ sample_data(pDami)$names <- factor(sample_names(pDami), levels=unique(sample_nam
 
 pocFilt = filter_taxa(poc, function(x) mean(x) > 0.5, TRUE)
 
-pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.1, TRUE)
+pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.3, TRUE)
 
 # which taxa are present at 1% overall abundance and at least 75% of samples
 pVerrGenusGlom <- tax_glom(pVerrFilt, taxrank="Genus")
 coreTaxa = filter_taxa(pVerrGenusGlom, function(x) sum(x > 1) > (0.75*length(x)), TRUE)
-plot_bar(coreTaxa, fill="Genus")
+#plot_bar(coreTaxa, fill="Genus")
 tax_table(coreTaxa)
 sum(otu_table(coreTaxa) > 1) / nsamples(pVerr)
 # 0.8490
@@ -73,7 +73,7 @@ sum(otu_table(coreTaxa) > 1) / nsamples(pVerr)
 # phylum / class bars
 # transforming to normal matix and as.factor keeps taxa stacked consistently
 
-taxLevel <- "Genus"
+taxLevel <- "Phylum"
 
 pVerrFiltGlom <- tax_glom(pVerrFilt, taxrank=taxLevel)
 pVerrdf <- psmelt(pVerrFiltGlom)
@@ -109,7 +109,7 @@ ggCols <- head(ggCols, n=-1)
 pVerrdfOther$names <- factor(pVerrdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
 
 theme_set(theme_bw())
-ggplot(pVerrdfOther, aes(x=names, y=Abundance, fill=Genus, order = as.factor(Genus))) +
+ggplot(pVerrdfOther, aes(x=names, y=Abundance, fill=Phylum, order = as.factor(Phylum))) +
   geom_bar(stat="identity", colour="black") +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +

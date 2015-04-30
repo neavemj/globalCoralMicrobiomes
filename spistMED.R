@@ -64,7 +64,7 @@ spistChem <- subset_samples(allPhyloChem, species=='Stylophora pistillata')
 
 sample_data(spist)$names <- factor(sample_names(spist), levels=rownames(metaFile), ordered = TRUE)
 
-spistFilt = filter_taxa(spist, function(x) mean(x) > 0.1, TRUE)
+spistFilt = filter_taxa(spist, function(x) mean(x) > 0.5, TRUE)
 
 # check for 'core' microbiome members at the genus level
 # which taxa are present at 1% overall abundance and at least 75% of samples
@@ -76,7 +76,7 @@ sum(otu_table(coreTaxa) > 1) / nsamples(spist)
 # 0.7945
 
 
-taxLevel <- "Genus"
+taxLevel <- "Class"
 spistFiltGlom <- tax_glom(spistFilt, taxrank=taxLevel)
 physeqdf <- psmelt(spistFiltGlom)
 
@@ -110,7 +110,7 @@ ggCols <- head(ggCols, n=-1)
 physeqdfOther$names <- factor(physeqdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
 
 theme_set(theme_bw())
-ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Genus, order = as.factor(Genus))) +
+ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Class))) +
   geom_bar(stat="identity", colour="black") +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +

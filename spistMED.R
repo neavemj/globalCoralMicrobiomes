@@ -350,6 +350,17 @@ simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpend
 
 # SAVE EPS 1500 x 700
 
+# also check what happens if I just put endos in..
+
+spistEndoFilt = filter_taxa(spistEndo, function(x) mean(x) > 0.1, TRUE)
+spistEndoFiltPrune = prune_samples(sample_sums(spistEndoFilt) > 0.1, spistEndoFilt)
+spistEndoShared = otu_table(spistEndoFiltPrune)
+class(spistEndoShared) <- "numeric"
+
+spistEndoSIMPROF <- simprof(spistEndoShared, num.expected=1000, num.simulated=999, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=FALSE)
+
+simprof.plot(spistEndoSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+
 # I'll try and overlay the significant clusters on top of the nMDS. 
 # After calculating the clusters, make a data frame of the results and add to previous nMDS plot. Need to add these groups to the nMDS data.frame - I'll do a loop for this.
 

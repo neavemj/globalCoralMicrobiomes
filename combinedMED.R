@@ -231,3 +231,34 @@ plot_bar(archaeaPhylo, fill="Phylum") +
   scale_y_continuous(expand = c(0,0)) +
   facet_grid(~species, scales='free', space='free_x')
 
+###########################################################################
+# see if SIMPER works 5.5.2015
+###########################################################################
+
+spistEndoSIMP <- subset_samples(spistPverrEndoFiltPrune, species=="Stylophora pistillata")
+spistEndoSIMPFilt = filter_taxa(spistEndoSIMP, function(x) mean(x) > 0.0, TRUE)
+spistEndoSIMPFiltPrune = prune_samples(sample_sums(spistEndoSIMPFilt) > 0, spistEndoSIMPFilt)
+
+pverrEndoSIMP <- subset_samples(spistPverrEndoFiltPrune, species=="Pocillopora verrucosa")
+pverrEndoSIMPFilt = filter_taxa(pverrEndoSIMP, function(x) mean(x) > 0.0, TRUE)
+pverrEndoSIMPFiltPrune = prune_samples(sample_sums(pverrEndoSIMPFilt) > 0, pverrEndoSIMPFilt)
+
+metaFileSIMP <- subset(metaFile, site != 'NA')
+
+SimpSpistEndo <- merge(otu_table(spistEndoSIMPFiltPrune), metaFileSIMP, by="row.names")
+rownames(SimpSpistEndo) <- SimpSpistEndo[,1]
+SimpSpistEndoSIMP <- SimpSpistEndo[c(1:6,8:71),2:46]
+factorsSimpSpistEndo <- SimpSpistEndo[c(1:6,8:71),47:53]
+
+spistSIMP <- simper(SimpSpistEndoSIMP, factorsSimpSpistEndo$site)
+
+
+SimppverrEndo <- merge(otu_table(pverrEndoSIMPFiltPrune), metaFileSIMP, by="row.names")
+rownames(SimppverrEndo) <- SimppverrEndo[,1]
+SimppverrEndoSIMP <- SimppverrEndo[c(1:18,20:50),2:38]
+factorsSimppverrEndo <- SimppverrEndo[c(1:18,20:50),39:45]
+
+pverrSIMP <- simper(SimppverrEndoSIMP, factorsSimppverrEndo$site)
+
+
+

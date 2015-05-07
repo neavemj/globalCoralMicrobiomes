@@ -14,7 +14,7 @@ Neave, M.J., Rachmawati, R., Bourne, D., McCullogh, M., Apprill, A., Voolstra, C
 ### Load required libraries  
 
 ```{r setup, message=FALSE}
-library("phyloseq")
+library("phyloseq"); packageVersion("phyloseq")
 library("ggplot2")
 library("plyr")
 library("vegan")

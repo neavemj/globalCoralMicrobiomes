@@ -20,7 +20,7 @@ allShared = read.table("all.7974.matrixPercent.txt", header=T, row.names=1)
 
 # non-subsampled mothur shared file for alpha diversity
 
-all3OTUshared = read.table("all.7974.0.03.shared", header=T)
+#all3OTUshared = read.table("all.7974.0.03.shared", header=T)
 rownames(all3OTUshared) = all3OTUshared[,2]
 all3OTUshared = all3OTUshared[,4:length(all3OTUshared)]
 
@@ -230,6 +230,60 @@ theme_set(theme_bw())
 plot_bar(archaeaPhylo, fill="Phylum") +
   scale_y_continuous(expand = c(0,0)) +
   facet_grid(~species, scales='free', space='free_x')
+
+###########################################################################
+# use DESeq2 plugin to calculate sig endos 7.5.2015
+###########################################################################
+
+library("DESeq2"); packageVersion("DESeq2")
+
+# DESeq requires count data not percentages, so need to import this
+
+allCounts = read.table("all.7974.matrixCount.txt", header=T, row.names=1)
+OTUcounts = otu_table(allCounts, taxa_are_rows = FALSE)
+countPhylo = phyloseq(OTUcounts, TAX, META)
+
+# subset and filter endozoicomonas OTUs
+
+countEndos = subset_taxa(countPhylo, Genus=='Endozoicomonas')
+
+spistCountEndo <- subset_samples(countEndos, species=='Stylophora pistillata')
+pVerrCountEndo <- subset_samples(countEndos, species=='Pocillopora verrucosa')
+coralCountEndo <- merge_phyloseq(spistCountEndo, pVerrCountEndo)
+
+testSpecies <- pVerrCountEndo
+
+coralCountEndoFilt = filter_taxa(testSpecies, function(x) mean(x) > 0.0, TRUE)
+coralCountEndoFiltPrune = prune_samples(sample_sums(coralCountEndoFilt) > 0, coralCountEndoFilt)
+
+# first convert phyloseq object to DESeq object, then run Deseq
+
+endoDeseq <- phyloseq_to_deseq2(coralCountEndoFiltPrune, ~ site)
+
+# need to calculate geometric means separately because there are zeros in the data
+
+gm_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+
+geomMeans <- apply(counts(endoDeseq), 1, gm_mean)
+endoDeseq <- estimateSizeFactors(endoDeseq, geoMeans = geomMeans)
+ 
+# now can run the DESeq tests
+
+endoDeseq <- DESeq(endoDeseq, fitType="local")
+
+# check the results
+
+resultsNames(endoDeseq)
+
+res <- results(endoDeseq, contrast=c("site", "Indonesia", "RedSea"))
+
+res = res[order(res$padj, na.last=NA), ]
+sigtab = res[(res$padj < 0.05), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(coralCountEndoFiltPrune)[rownames(sigtab), ], "matrix"))
+sigtab
+
 
 ###########################################################################
 # see if SIMPER works 5.5.2015

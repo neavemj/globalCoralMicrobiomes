@@ -251,7 +251,7 @@ spistCountEndo <- subset_samples(countEndos, species=='Stylophora pistillata')
 pVerrCountEndo <- subset_samples(countEndos, species=='Pocillopora verrucosa')
 coralCountEndo <- merge_phyloseq(spistCountEndo, pVerrCountEndo)
 
-testSpecies <- pVerrCountEndo
+testSpecies <- spistCountEndo
 
 coralCountEndoFilt = filter_taxa(testSpecies, function(x) mean(x) > 0.0, TRUE)
 coralCountEndoFiltPrune = prune_samples(sample_sums(coralCountEndoFilt) > 0, coralCountEndoFilt)
@@ -273,16 +273,93 @@ endoDeseq <- estimateSizeFactors(endoDeseq, geoMeans = geomMeans)
 
 endoDeseq <- DESeq(endoDeseq, fitType="local")
 
-# check the results
+# check the results for spistillata
 
 resultsNames(endoDeseq)
 
-res <- results(endoDeseq, contrast=c("site", "Indonesia", "RedSea"))
+res <- results(endoDeseq, contrast = c("site", "AmericanSamoa", "RedSea"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = as.data.frame(res[(res$padj < 0.05), ])
+sigtab
+res <- results(endoDeseq, contrast = c("site", "AmericanSamoa", "Ningaloo"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = as.data.frame(res[(res$padj < 0.05), ])
+sigtab
+res <- results(endoDeseq, contrast = c("site", "AmericanSamoa", "Micronesia"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = as.data.frame(res[(res$padj < 0.05), ])
+sigtab 
+res <- results(endoDeseq, contrast = c("site", "AmericanSamoa", "Indonesia"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = as.data.frame(res[(res$padj < 0.05), ])
+sigtab 
+res <- results(endoDeseq, contrast = c("site", "RedSea", "Ningaloo"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = as.data.frame(res[(res$padj < 0.05), ])
+sigtab 
+res <- results(endoDeseq, contrast = c("site", "RedSea", "Micronesia"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = as.data.frame(res[(res$padj < 0.05), ])
+sigtab 
+res <- results(endoDeseq, contrast = c("site", "RedSea", "Indonesia"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = as.data.frame(res[(res$padj < 0.05), ])
+sigtab 
+res <- results(endoDeseq, contrast = c("site", "Ningaloo", "Micronesia"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = as.data.frame(res[(res$padj < 0.05), ])
+sigtab 
+res <- results(endoDeseq, contrast = c("site", "Ningaloo", "Indonesia"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = as.data.frame(res[(res$padj < 0.05), ])
+sigtab 
+res <- results(endoDeseq, contrast = c("site", "Micronesia", "Indonesia"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = as.data.frame(res[(res$padj < 0.05), ])
+sigtab 
 
+
+## OK, now run these test for p.verrucosa
+
+testSpecies <- pVerrCountEndo
+
+coralCountEndoFilt = filter_taxa(testSpecies, function(x) mean(x) > 0.0, TRUE)
+coralCountEndoFiltPrune = prune_samples(sample_sums(coralCountEndoFilt) > 0, coralCountEndoFilt)
+
+# first convert phyloseq object to DESeq object, then run Deseq
+
+endoDeseq <- phyloseq_to_deseq2(coralCountEndoFiltPrune, ~ site)
+geomMeans <- apply(counts(endoDeseq), 1, gm_mean)
+endoDeseq <- estimateSizeFactors(endoDeseq, geoMeans = geomMeans)
+
+# now can run the DESeq tests
+
+endoDeseq <- DESeq(endoDeseq, fitType="local")
+
+res <- results(endoDeseq, contrast = c("site", "Maldives", "RedSea"))
 res = res[order(res$padj, na.last=NA), ]
 sigtab = res[(res$padj < 0.05), ]
-sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(coralCountEndoFiltPrune)[rownames(sigtab), ], "matrix"))
-sigtab
+sigtab 
+res <- results(endoDeseq, contrast = c("site", "Maldives", "Micronesia"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = res[(res$padj < 0.05), ]
+sigtab 
+res <- results(endoDeseq, contrast = c("site", "Maldives", "Indonesia"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = res[(res$padj < 0.05), ]
+sigtab 
+res <- results(endoDeseq, contrast = c("site", "RedSea", "Micronesia"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = res[(res$padj < 0.05), ]
+sigtab 
+res <- results(endoDeseq, contrast = c("site", "RedSea", "Indonesia"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = res[(res$padj < 0.05), ]
+sigtab 
+res <- results(endoDeseq, contrast = c("site", "Micronesia", "Indonesia"))
+res = res[order(res$padj, na.last=NA), ]
+sigtab = res[(res$padj < 0.05), ]
+sigtab 
 
 
 ###########################################################################

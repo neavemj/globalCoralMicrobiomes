@@ -8,22 +8,22 @@ output: html_document
 
 This is an R Markdown document detailing the statistical and graphical steps for reproducting the results in:
 
-Neave, M.J., Rachmawati, R., Bourne, D., McCullogh, M., Apprill, A., Voolstra, C.R. Fine-scale specificity detected between corals and symbiotic Endozoicomonas bacteria across global scales. 
-
+Neave, M.J., Rachmawati, R., Xun, L., Michell, C.T., Barber, P.H., Bourne, D.G., McCulloch, M.T., Apprill, A., Voolstra, C.R. A global microbiome analysis reveals that closely related corals exhibit fine-scale differences in their association with Endozoicomonas symbionts. 
 
 ### Load required libraries  
 
 ```{r setup, message=FALSE}
 library("phyloseq"); packageVersion("phyloseq")
-library("ggplot2")
-library("plyr")
-library("vegan")
-library("grid")
-library("knitr")
-library("clustsig")
-library('ape')
-library('RColorBrewer')
-library("dunn.test")
+library("ggplot2"); packageVersion("ggplot2")
+library("plyr"); packageVersion("plyr")
+library("vegan"); packageVersion("vegan")
+library("grid"); packageVersion("grid")
+library("knitr"); packageVersion("knitr")
+library("clustsig"); packageVersion("clustsig")
+library('ape'); packageVersion("ape")
+library('RColorBrewer'); packageVersion("RColorBrewer")
+library("dunn.test"); packageVersion("dunn.test")
+library("DESeq2"); packageVersion("DESeq2")
 setwd("./data")
 opts_knit$set(root.dir = "./data")
 ```

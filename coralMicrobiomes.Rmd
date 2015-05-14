@@ -76,7 +76,7 @@ metaFile3 = read.table('metaData3.txt', header=T, sep='\t', row.names=1)
 metaFileChem = read.table('metaDataChem.txt', header=T, sep='\t', row.names=1)
 ```
 
-### Create phyloseq objects
+### Create phyloseq objects and add consistent coloring for sites
 
 ```{r}
 OTU = otu_table(allShared, taxa_are_rows = FALSE)
@@ -97,10 +97,54 @@ all3OTUphylo = phyloseq(OTUs3, TAX3, META)
 all1OTUphylo = phyloseq(OTUs1, TAX1, META)
 allPhyloChem = phyloseq(OTU, TAX, METAchem)
 endoTree = phyloseq(OTUtree, META, TREE)
+
+cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#666666", "Maldives" = "#E6AB02", "Micronesia" = "#66A61E", "Ningaloo" = "#7570B3", "RedSea" = "#E7298A")
 ```
 
+### Ordinations to compare MED vs pairwise OTUs 
 
+Subset samples for the two corals, remove taxa with 0s, create relative abundance and squre-root sample counts
 
+```{r}
+filter_stylo_data <- function(initial_matrix){
+  initial_coral <- subset_samples(initial_matrix, species=="Stylophora pistillata")
+  coral_filt = filter_taxa(initial_coral, function(x) mean(x) > 0, TRUE)
+  coral_filt_rel = transform_sample_counts(coral_filt, function(x) x / sum(x) )
+  coral_filt_rel_sqrt = transform_sample_counts(coral_filt_rel, function(x) sqrt(x) ) 
+  return(coral_filt_rel_sqrt)
+}
 
+filter_pverr_data <- function(initial_matrix){
+  initial_coral <- subset_samples(initial_matrix, species=="Pocillopora verrucosa")
+  coral_filt = filter_taxa(initial_coral, function(x) mean(x) > 0, TRUE)
+  coral_filt_rel = transform_sample_counts(coral_filt, function(x) x / sum(x) )
+  coral_filt_rel_sqrt = transform_sample_counts(coral_filt_rel, function(x) sqrt(x) ) 
+  return(coral_filt_rel_sqrt)
+}
+
+spistPhyloRelSqrt <- filter_stylo_data(allPhylo)
+spist3OTUphyloRelSqrt <- filter_stylo_data(all3OTUphylo)
+spist1OTUphyloRelSqrt <- filter_stylo_data(all1OTUphylo)
+
+pverrPhyloRelSqrt <- filter_pverr_data(allPhylo)
+pverr3OTUphyloRelSqrt <- filter_pverr_data(all3OTUphylo)
+pverr1OTUphyloRelSqrt <- filter_pverr_data(all1OTUphylo)
+```
+
+Now do ordinations for each 
+
+```{r}
+compOrdinations <- function(sample_data, sample_name){
+theme_set(theme_bw())
+sample_dataOrd <- ordinate(sample_data, "NMDS", "bray")
+plot_ordination(sample_data, sample_dataOrd, type = 'samples', color='site', title=sample_name) +
+  geom_point(size=2) +
+  scale_color_manual(values=cols)
+}
+
+compOrdinations(spistPhyloRelSqrt, "S. pistillata MED OTUs")
+compOrdinations(spist3OTUphyloRelSqrt, "S. pistillata 3% OTUs")
+compOrdinations(spist1OTUphyloRelSqrt, "S. pistillata 1% OTUs")
+```
 
 

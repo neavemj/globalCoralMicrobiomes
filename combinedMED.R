@@ -68,14 +68,18 @@ allAlpha = phyloseq(OTUalpha, META)
 
 allPhyloTmp2 <- subset_samples(allPhylo, species=="Stylophora pistillata")
 allPhyloTmp3 <- subset_samples(allPhylo, species=="Pocillopora verrucosa")
+allPhyloTmp4 <- subset_samples(allPhylo, species=="seawater")
 allPhyloCorals <- merge_phyloseq(allPhyloTmp2, allPhyloTmp3)
+allSamples <- merge_phyloseq(allPhyloCorals, allPhyloTmp4)
 
 unique(sample_data(allPhyloCorals)$reef)
 
 rownames(otu_table(allPhyloCorals))
+rownames(otu_table(allPhyloTmp4))
+rownames(otu_table(allSamples))
 
 # check which samples we included for each coral
-#write.table(rownames(otu_table(allPhyloCorals)), "usedSamples.txt", quote=FALSE, row.names=FALSE)
+write.table(rownames(otu_table(allSamples)), "usedSamples.txt", quote=FALSE, row.names=FALSE)
 #write.table(sample_data(allPhyloTmp2), "spistMicrobiomeSamples.txt", quote=FALSE, sep="\t")
 #write.table(sample_data(allPhyloTmp3), "pverrMicrobiomeSamples.txt", quote=FALSE, sep="\t")
 

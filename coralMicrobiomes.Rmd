@@ -40,12 +40,16 @@ allTax = allTax[,2:8]
 allTax = as.matrix(allTax)
 ```
 
-Import the shared and taxonomy files generated in mothur for 3% and 1% pairwise similarity, in order to calculate alpha diversity measures and to compare to the MED procedure  
+Import the shared and taxonomy files generated in mothur for 3% and 1% pairwise similarity, in order to calculate alpha diversity measures and to compare to the MED procedure. Also import the 3% OTU file without any subsampling for alpha diversity calculations.   
 
 
 ```{r}
 all3OTUshared = read.table("all.7974.0.03.pick.shared", header=T, row.names=2)
 all3OTUshared = all3OTUshared[,3:length(all3OTUshared)]
+
+alpha3OTUshared = read.table("all.7974.0.03.shared", header=T)
+rownames(alpha3OTUshared) = alpha3OTUshared[,2]
+alpha3OTUshared = alpha3OTUshared[,4:length(alpha3OTUshared)]
 
 all1OTUshared = read.table("all.7974.0.01.pick.shared", header=T, row.names=2)
 all1OTUshared = all1OTUshared[,3:length(all1OTUshared)]
@@ -81,6 +85,7 @@ metaFileChem = read.table('metaDataChem.txt', header=T, sep='\t', row.names=1)
 ```{r}
 OTU = otu_table(allShared, taxa_are_rows = FALSE)
 OTUs3 = otu_table(all3OTUshared, taxa_are_rows = FALSE)
+OTUs3alpha = otu_table(alpha3OTUshared, taxa_are_rows = FALSE)
 OTUs1 = otu_table(all1OTUshared, taxa_are_rows = FALSE)
 OTUtree = otu_table(allSharedTree, taxa_are_rows = FALSE)
 
@@ -94,6 +99,7 @@ TREE = phy_tree(endoTreeFile)
 
 allPhylo = phyloseq(OTU, TAX, META)
 all3OTUphylo = phyloseq(OTUs3, TAX3, META)
+alpha3OTUphylo = phyloseq(OTUs3alpha, META)
 all1OTUphylo = phyloseq(OTUs1, TAX1, META)
 allPhyloChem = phyloseq(OTU, TAX, METAchem)
 endoTree = phyloseq(OTUtree, META, TREE)
@@ -103,7 +109,7 @@ cols <- c("AmericanSamoa" = "#D95F02", "Indonesia" = "#A6761D", "MaggieIs" = "#6
 
 ### Ordinations to compare MED vs pairwise OTUs 
 
-Subset samples for the two corals, remove taxa with 0s, create relative abundance and squre-root sample counts
+Subset samples for the two corals, remove taxa with 0s, create relative abundance and square-root sample counts
 
 ```{r}
 filter_stylo_data <- function(initial_matrix){
@@ -145,6 +151,134 @@ plot_ordination(sample_data, sample_dataOrd, type = 'samples', color='site', tit
 compOrdinations(spistPhyloRelSqrt, "S. pistillata MED OTUs")
 compOrdinations(spist3OTUphyloRelSqrt, "S. pistillata 3% OTUs")
 compOrdinations(spist1OTUphyloRelSqrt, "S. pistillata 1% OTUs")
+
+compOrdinations(pverrPhyloRelSqrt, "P. verrucosa MED OTUs")
+compOrdinations(pverr3OTUphyloRelSqrt, "P. verrucosa 3% OTUs")
+compOrdinations(pverr1OTUphyloRelSqrt, "P. verrucosa 1% OTUs")
 ```
+
+### Alpha diversity measures
+
+First subset the corals, then plot using phyloseq and ggplot2
+
+Note: I'll use unsubampled 3% pairwise OTUs for calculation of alpha diversity measures as this will make them more comparable to other studies, plus the MED pipeline is has not yet implemented alpha diversity
+
+```{r}
+allAlphaTmp <- subset_samples(alpha3OTUphylo, species=="seawater")
+allAlphaTmp2 <- subset_samples(alpha3OTUphylo, species=="Stylophora pistillata")
+allAlphaTmp3 <- subset_samples(alpha3OTUphylo, species=="Pocillopora verrucosa")
+allAlpha2 <- merge_phyloseq(allAlphaTmp, allAlphaTmp2, allAlphaTmp3)
+
+allAlphaPlot2 <- plot_richness(allAlpha2, x = 'species', measures = c('Chao1', 'Simpson', 'observed'), color = 'site', sortby = 'Chao1')
+
+ggplot(data = allAlphaPlot2$data) +
+  geom_point(aes(x = species, y = value, color = site), position=position_jitter(width=0.1, height=0)) +
+  geom_boxplot(aes(x = species, y = value, color = NULL), alpha = 0.1, outlier.shape = NA) +
+  scale_color_manual(values=cols) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  facet_wrap(~variable, scales='free_y') +
+  scale_x_discrete(limits=c("Stylophora pistillata", "Pocillopora verrucosa", "seawater"))
+```
+
+Check for significant differences in the alpha diversity measures using a kruskal-wallis test and a dunn post-hoc test to check which specific groups were different
+
+```{r}
+alphaObserved = estimate_richness(allAlpha2, measures="Observed")
+alphaSimpson = estimate_richness(allAlpha2, measures="Simpson")
+alphaChao = estimate_richness(allAlpha2, measures="Chao1")
+
+alpha.stats <- cbind(alphaObserved, sample_data(allAlpha2))
+alpha.stats2 <- cbind(alpha.stats, alphaSimpson)
+alpha.stats3 <- cbind(alpha.stats2, alphaChao)
+
+kruskal.test(Observed~species, data = alpha.stats3)
+dunn.test(alpha.stats3$Observed, alpha.stats3$species, method="bonferroni")
+
+kruskal.test(Simpson~species, data = alpha.stats3)
+dunn.test(alpha.stats3$Simpson, alpha.stats3$species, method="bonferroni")
+
+kruskal.test(Chao1~species, data = alpha.stats3)
+dunn.test(alpha.stats3$Chao1, alpha.stats3$species, method="bonferroni")
+```
+
+In each case, the seawater was signficiantly different to the corals, while the corals were not different to each other. This suggests the corals have a more 'selective' community of microbes compared to the surrounding seawater. 
+
+### Similarity Profile Analysis (SIMPROF)
+
+This will show how the samples cluster without any a priori assumptions regarding sample origin
+
+Need to import the shared file containing just spist OTUs, then calcualte the simprof clusters based on the braycurtis metric. 
+
+```{r}
+spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
+spistShared = otu_table(spist)
+class(spistShared) <- "numeric"
+
+spistSIMPROF <- simprof(spistShared, num.expected=1000, num.simulated=999, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=FALSE)
+
+simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+
+pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
+pVerrShared = otu_table(pVerr)
+class(pVerrShared) <- "numeric"
+
+pVerrSIMPROF <- simprof(pVerrShared, num.expected=1000, num.simulated=999, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=FALSE)
+
+simprof.plot(pVerrSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+```
+
+
+
+```{r}
+draw_envfit_ord <- function(coral_chem, env_data){   
+  chemNoNA <- na.omit(metaFileChem[sample_names(coral_chem),env_data])
+  coralNoNA <- prune_samples(rownames(chemNoNA), coral_chem)
+  
+  theme_set(theme_bw())
+coralNoNAOrd <- ordinate(coralNoNA, "NMDS", "bray")
+coralNoNAOrdPlot <- plot_ordination(coralNoNA, coralNoNAOrd, type = 'samples', color='site') +
+  geom_point(size=3) +
+  scale_color_manual(values=c(cols)) 
+
+  pointsNoNA <- coralNoNAOrd$points[rownames(chemNoNA),]
+  chemFit <- envfit(pointsNoNA, env = chemNoNA, na.rm=TRUE)
+  print(chemFit)
+  chemFit.scores <- as.data.frame(scores(chemFit, display= "vectors"))
+  chemFit.scores <- cbind(chemFit.scores, Species = rownames(chemFit.scores))
+
+  # create arrow info
+  arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NULL, label =   rownames(chemFit.scores))
+  labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, size=1.5, label = rownames(chemFit.scores))
+  arrowhead = arrow(length = unit(0.25, "cm"))
+
+coralNoNAOrdPlot + 
+  coord_fixed() +
+  geom_segment(arrowmap, size = 0.5, data = chemFit.scores, color = "black",  arrow = arrowhead, show_guide = FALSE) +
+  geom_text(labelmap, size = 3, data = chemFit.scores)
+}
+
+waterQual <- c("temp", "salinity", "Domg", "pH")
+nutrients <- c("PO4", "N.N", "silicate", "NO2", "NH4")
+FCM <- c("prok", "syn", "peuk", "pe.peuk", "Hbact")
+
+spistChem <- subset_samples(allPhyloChem, species=='Stylophora pistillata')
+pverrChem <- subset_samples(allPhyloChem, species=='Pocillopora verrucosa')
+
+draw_envfit_ord(spistChem, waterQual)
+draw_envfit_ord(spistPhylo, spistChem, nutrients)
+draw_envfit_ord(spistPhylo, spistChem, FCM)
+
+draw_envfit_ord(pverrPhylo, pverrChem, waterQual)
+draw_envfit_ord(pverrPhylo, pverrChem, nutrients)
+draw_envfit_ord(pverrPhylo, pverrChem, FCM)
+
+
+coral_chem <- spistChem
+env_data <- waterQual
+
+```
+
+
+
 
 

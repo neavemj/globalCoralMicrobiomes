@@ -79,7 +79,7 @@ rownames(otu_table(allPhyloTmp4))
 rownames(otu_table(allSamples))
 
 # check which samples we included for each coral
-write.table(rownames(otu_table(allSamples)), "usedSamples.txt", quote=FALSE, row.names=FALSE)
+#write.table(rownames(otu_table(allSamples)), "usedSamples.txt", quote=FALSE, row.names=FALSE)
 #write.table(sample_data(allPhyloTmp2), "spistMicrobiomeSamples.txt", quote=FALSE, sep="\t")
 #write.table(sample_data(allPhyloTmp3), "pverrMicrobiomeSamples.txt", quote=FALSE, sep="\t")
 
@@ -94,7 +94,6 @@ allDivPlot
 allAlphaTmp <- subset_samples(allAlpha, species=="seawater")
 allAlphaTmp2 <- subset_samples(allAlpha, species=="Stylophora pistillata")
 allAlphaTmp3 <- subset_samples(allAlpha, species=="Pocillopora verrucosa")
-
 allAlpha2 <- merge_phyloseq(allAlphaTmp, allAlphaTmp2, allAlphaTmp3)
 
 # The predicted number of OTUs and diversity indecies look similar across the different coral species. I'll add some whisker plots to make this easier to see. 

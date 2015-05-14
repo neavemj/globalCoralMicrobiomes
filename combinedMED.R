@@ -72,7 +72,10 @@ allPhyloCorals <- merge_phyloseq(allPhyloTmp2, allPhyloTmp3)
 
 unique(sample_data(allPhyloCorals)$reef)
 
+rownames(otu_table(allPhyloCorals))
+
 # check which samples we included for each coral
+#write.table(rownames(otu_table(allPhyloCorals)), "usedSamples.txt", quote=FALSE, row.names=FALSE)
 #write.table(sample_data(allPhyloTmp2), "spistMicrobiomeSamples.txt", quote=FALSE, sep="\t")
 #write.table(sample_data(allPhyloTmp3), "pverrMicrobiomeSamples.txt", quote=FALSE, sep="\t")
 

@@ -278,5 +278,82 @@ draw_envfit_ord(pverrChem, nutrients)
 draw_envfit_ord(pverrChem, FCM)
 ```
 
+### Taxonomic barcharts of bacteria in the corals and seawaters, and core microbiome members
+
+```{r}
+# define a function to draw barcharts at a specific taxonomic level
+# also need to create my own ggplot colors then replace the last one (other column) with gray
+
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length=n+1)
+  hcl(h=hues, l=65, c=100)[1:n]
+}
+
+draw_barcharts <- function(coral_species, tax_level) {
+
+coralFiltGlom <- tax_glom(coral_species, taxrank=tax_level)
+physeqdf <- psmelt(coralFiltGlom)
+
+# get total abundance so can make an 'other' column
+# had to add ^ and $ characters to make sure grep matches whole word
+
+physeqdfOther <- physeqdf
+
+for (j in unique(physeqdf$Sample)) {
+  jFirst = paste('^', j, sep='')
+  jBoth = paste(jFirst, '$', sep='')
+  rowNumbers = grep(jBoth, physeqdf$Sample)
+  otherValue = 100 - sum(physeqdf[rowNumbers,"Abundance"])
+  newRow = (physeqdf[rowNumbers,])[1,]
+  newRow[,tax_level] = "other"
+  newRow[,"Abundance"] = otherValue
+  physeqdfOther <- rbind(physeqdfOther, newRow)
+}
+
+ggCols <- gg_color_hue(length(unique(physeqdfOther[,tax_level])))
+ggCols <- head(ggCols, n=-1)
+
+physeqdfOther$names <- factor(physeqdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
+
+theme_set(theme_bw())
+ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Class))) +
+  geom_bar(stat="identity", colour="black") +
+  scale_fill_manual(values=c(ggCols, "gray")) +
+  scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
+  facet_grid(~site, scales='free', space='free_x') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+}
+
+spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
+sample_data(spist)$names <- factor(sample_names(spist), levels=rownames(metaFile), ordered = TRUE)
+spistFilt = filter_taxa(spist, function(x) mean(x) > 0.5, TRUE)
+
+draw_barcharts(spistFilt, "Class")
+
+
+
+# check for 'core' microbiome members at the genus level
+# which taxa are present at 1% overall abundance and at least 75% of samples
+spistGenusGlom <- tax_glom(spistFilt, taxrank="Genus")
+coreTaxa = filter_taxa(spistGenusGlom, function(x) sum(x > 1) > (0.75*length(x)), TRUE)
+tax_table(coreTaxa)
+sum(otu_table(coreTaxa) > 1) / nsamples(spist)
+
+
+
+
+
+
+taxLevel <- "Class"
+
+draw_barcharts(spist, taxLevel)
+
+```
+
+
+
+
+
+
 
 

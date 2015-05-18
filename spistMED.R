@@ -75,7 +75,6 @@ tax_table(coreTaxa)
 sum(otu_table(coreTaxa) > 1) / nsamples(spist)
 # 0.7945
 
-
 taxLevel <- "Class"
 spistFiltGlom <- tax_glom(spistFilt, taxrank=taxLevel)
 physeqdf <- psmelt(spistFiltGlom)

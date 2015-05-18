@@ -609,4 +609,25 @@ This will show how the samples cluster without any a priori assumptions regardin
 Need to import the shared file containing just spist OTUs, then calcualte the simprof clusters based on the braycurtis metric. 
 
 
+```r
+# spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
+# spistShared = otu_table(spist)
+# class(spistShared) <- "numeric"
+# 
+# spistSIMPROF <- simprof(spistShared, num.expected=1000, num.simulated=999, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=FALSE)
+# 
+# simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+# 
+# pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
+# pVerrShared = otu_table(pVerr)
+# class(pVerrShared) <- "numeric"
+# 
+# pVerrSIMPROF <- simprof(pVerrShared, num.expected=1000, num.simulated=999, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=FALSE)
+# 
+# simprof.plot(pVerrSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+```
+
+
+
+
 

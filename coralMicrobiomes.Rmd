@@ -210,21 +210,21 @@ This will show how the samples cluster without any a priori assumptions regardin
 Need to import the shared file containing just spist OTUs, then calcualte the simprof clusters based on the braycurtis metric. 
 
 ```{r}
-spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
-spistShared = otu_table(spist)
-class(spistShared) <- "numeric"
-
-spistSIMPROF <- simprof(spistShared, num.expected=1000, num.simulated=999, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=FALSE)
-
-simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
-
-pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
-pVerrShared = otu_table(pVerr)
-class(pVerrShared) <- "numeric"
-
-pVerrSIMPROF <- simprof(pVerrShared, num.expected=1000, num.simulated=999, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=FALSE)
-
-simprof.plot(pVerrSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+# spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
+# spistShared = otu_table(spist)
+# class(spistShared) <- "numeric"
+# 
+# spistSIMPROF <- simprof(spistShared, num.expected=1000, num.simulated=999, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=FALSE)
+# 
+# simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+# 
+# pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
+# pVerrShared = otu_table(pVerr)
+# class(pVerrShared) <- "numeric"
+# 
+# pVerrSIMPROF <- simprof(pVerrShared, num.expected=1000, num.simulated=999, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=FALSE)
+# 
+# simprof.plot(pVerrSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
 ```
 
 
@@ -240,7 +240,7 @@ coralNoNAOrdPlot <- plot_ordination(coralNoNA, coralNoNAOrd, type = 'samples', c
   geom_point(size=3) +
   scale_color_manual(values=c(cols)) 
   
-  # somewhere here?
+  # get point for ggplot
   pointsNoNA <- coralNoNAOrd$points[rownames(chemNoNA),]
   chemFit <- envfit(pointsNoNA, env = chemNoNA, na.rm=TRUE)
   print(chemFit)
@@ -248,14 +248,16 @@ coralNoNAOrdPlot <- plot_ordination(coralNoNA, coralNoNAOrd, type = 'samples', c
   chemFit.scores <- cbind(chemFit.scores, Species = rownames(chemFit.scores))
 
   # create arrow info
-  arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NULL)
-  labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, size=1.5, label = rownames(chemFit.scores))
+chemNames <- rownames(chemFit.scores)  
+arrowmap <- aes(xend = MDS1, yend = MDS2, x = 0, y = 0, shape = NULL, color = NULL)
+  labelmap <- aes(x = MDS1, y = MDS2 + 0.04, shape = NULL, color = NULL, size=1.5, label = chemNames)
   arrowhead = arrow(length = unit(0.25, "cm"))
-  print(length(rownames(chemFit.scores)))
+  
+  # note: had to use aes_string to get ggplot to recognize variables
 coralNoNAOrdPlot + 
   coord_fixed() +
   geom_segment(arrowmap, size = 0.5, data = chemFit.scores, color = "black",  arrow = arrowhead, show_guide = FALSE) +
-  geom_text(labelmap, size = 3, data = chemFit.scores)
+  geom_text(aes_string(x = "MDS1", y = "MDS2", shape = NULL, color = NULL, size=1.5, label = "Species"), size = 3, data = chemFit.scores)
 }
 
 waterQual <- c("temp", "salinity", "Domg", "pH")
@@ -272,13 +274,7 @@ draw_envfit_ord(spistChem, FCM)
 draw_envfit_ord(pverrChem, waterQual)
 draw_envfit_ord(pverrChem, nutrients)
 draw_envfit_ord(pverrChem, FCM)
-
-coral_chem <- spistChem
-env_data <- FCM
-
 ```
-
-
 
 
 

@@ -227,7 +227,9 @@ Need to import the shared file containing just spist OTUs, then calcualte the si
 # simprof.plot(pVerrSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
 ```
 
+### Chemical and biological correlations
 
+Use the envfit function from the Vegan package to test if any environmental variables are significantly correlated with microbiome differences in the corals
 
 ```{r}
 draw_envfit_ord <- function(coral_chem, env_data){   

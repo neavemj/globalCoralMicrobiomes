@@ -2,7 +2,7 @@
 title: "coralMicrobiomes"
 author: "Matthew J. Neave"
 date: "April 22, 2015"
-output: html_document
+output: pdf_document
 ---
 
 
@@ -350,7 +350,6 @@ draw_barcharts(seaFilt, "Family")
 The two corals are both dominated by Gammaproteobacteria at the higher taxonomic levels. At the genus level, there is more variability but Endozoicomonas seem to be fairly prevalent. Let's check which bacterial genera are most consistently associated with the corals and may be considered a 'core' microbiome member.
 
 ### Core coral microbiome members
-
 
 ```{r}
 # check for 'core' microbiome members at the genus level

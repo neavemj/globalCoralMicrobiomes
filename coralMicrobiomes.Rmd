@@ -282,7 +282,7 @@ draw_envfit_ord(pverrChem, FCM)
 
 ```{r}
 # define a function to draw barcharts at a specific taxonomic level
-# also need to create my own ggplot colors then replace the last one (other column) with gray
+# also need to create my own ggplot colors then replace the last one ('other' column) with gray
 
 gg_color_hue <- function(n) {
   hues = seq(15, 375, length=n+1)
@@ -316,7 +316,7 @@ ggCols <- head(ggCols, n=-1)
 physeqdfOther$names <- factor(physeqdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
 
 theme_set(theme_bw())
-ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Class))) +
+ggplot(physeqdfOther, aes_string(x="names", y="Abundance", fill=tax_level, order = as.factor(tax_level))) +
   geom_bar(stat="identity", colour="black") +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
@@ -324,33 +324,50 @@ ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Cl
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 }
 
+# subset coral samples, create names factor for label ordering and filter so the graph isn't too full
 spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
 sample_data(spist)$names <- factor(sample_names(spist), levels=rownames(metaFile), ordered = TRUE)
 spistFilt = filter_taxa(spist, function(x) mean(x) > 0.5, TRUE)
-
+draw_barcharts(spistFilt, "Phylum")
 draw_barcharts(spistFilt, "Class")
+draw_barcharts(spistFilt, "Genus")
+
+pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
+sample_data(pVerr)$names <- factor(sample_names(pVerr), levels=unique(sample_names(pVerr)))
+pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.3, TRUE)
+draw_barcharts(pVerrFilt, "Phylum")
+draw_barcharts(pVerrFilt, "Class")
+draw_barcharts(pVerrFilt, "Genus")
+
+sea <- subset_samples(allPhylo, species=='seawater')
+sample_data(sea)$names <- factor(sample_names(sea), levels=rownames(metaFile), ordered = TRUE)
+seaFilt = filter_taxa(sea, function(x) mean(x) > 0.3, TRUE)
+draw_barcharts(seaFilt, "Phylum")
+draw_barcharts(seaFilt, "Class")
+draw_barcharts(seaFilt, "Family")
+```
+
+The two corals are both dominated by Gammaproteobacteria at the higher taxonomic levels. At the genus level, there is more variability but Endozoicomonas seem to be fairly prevalent. Let's check which bacterial genera are most consistently associated with the corals and may be considered a 'core' microbiome member.
+
+### Core coral microbiome members
 
 
-
+```{r}
 # check for 'core' microbiome members at the genus level
-# which taxa are present at 1% overall abundance and at least 75% of samples
+# which taxa are present at 1% overall abundance and at least 50% of samples in Stylophora pistillata?
 spistGenusGlom <- tax_glom(spistFilt, taxrank="Genus")
-coreTaxa = filter_taxa(spistGenusGlom, function(x) sum(x > 1) > (0.75*length(x)), TRUE)
+coreTaxa = filter_taxa(spistGenusGlom, function(x) sum(x > 1) > (0.5*length(x)), TRUE)
 tax_table(coreTaxa)
 sum(otu_table(coreTaxa) > 1) / nsamples(spist)
 
-
-
-
-
-
-taxLevel <- "Class"
-
-draw_barcharts(spist, taxLevel)
-
+# which taxa are present at 1% overall abundance and at least 50% of samples in Pocillopora verrucosa?
+pVerrGenusGlom <- tax_glom(pVerrFilt, taxrank="Genus")
+coreTaxa = filter_taxa(pVerrGenusGlom, function(x) sum(x > 1) > (0.5*length(x)), TRUE)
+tax_table(coreTaxa)
+sum(otu_table(coreTaxa) > 1) / nsamples(pVerr)
 ```
 
-
+Indeed Endozoicomonas were the most prevalent bacteria in the corals and were they only bacterial genera to occur in more than 50% of the colonies sampled. In fact, for both coral species Endozoicomonas occurred in more than 75% of colonies.
 
 
 

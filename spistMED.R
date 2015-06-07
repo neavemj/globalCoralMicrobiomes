@@ -108,14 +108,17 @@ ggCols <- head(ggCols, n=-1)
 
 physeqdfOther$names <- factor(physeqdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
 
+# add number to class for easier referencing
+physeqdfOther <- ddply(physeqdfOther, .(names), transform, pos = cumsum(Abundance) - (0.5 * Abundance))
+
 theme_set(theme_bw())
 ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Class, order = as.factor(Class))) +
   geom_bar(stat="identity", colour="black") +
+  geom_text(aes(label = as.numeric(Class), y = pos), size = 3) +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
 
 # SAVE PLOT: EPS 1500 x 700
 

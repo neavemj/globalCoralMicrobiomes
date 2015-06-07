@@ -317,11 +317,15 @@ for (j in unique(physeqdf$Sample)) {
 ggCols <- gg_color_hue(length(unique(physeqdfOther[,tax_level])))
 ggCols <- head(ggCols, n=-1)
 
+# add names and numbers for easier referencing
 physeqdfOther$names <- factor(physeqdfOther$Sample, levels=rownames(metaFile), ordered = TRUE)
+physeqdfOther$tax_level_num <- as.numeric(physeqdfOther[,tax_level])
+physeqdfOther <- ddply(physeqdfOther, .(names), transform, pos = cumsum(Abundance) - (0.5 * Abundance))
 
 theme_set(theme_bw())
-ggplot(physeqdfOther, aes_string(x="names", y="Abundance", fill=tax_level, order = as.factor(tax_level))) +
+ggplot(physeqdfOther, aes_string(x="names", y="Abundance", fill=tax_level, order=as.factor(tax_level))) +
   geom_bar(stat="identity", colour="black") +
+  geom_text(aes(label=tax_level_num, y=pos), size = 3) +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x') +

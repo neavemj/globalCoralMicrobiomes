@@ -214,21 +214,21 @@ This will show how the samples cluster without any a priori assumptions regardin
 Need to import the shared file containing just spist OTUs, then calcualte the simprof clusters based on the braycurtis metric. 
 
 ```{r, fig.width = 10, tidy=TRUE, tidy.opts=list(width.cutoff=80)}
-spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
-spistShared = otu_table(spist)
-class(spistShared) <- "numeric"
-
-spistSIMPROF <- simprof(spistShared, num.expected=1000, num.simulated=99, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=TRUE)
-
-simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
-
-pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
-pVerrShared = otu_table(pVerr)
-class(pVerrShared) <- "numeric"
-
-pVerrSIMPROF <- simprof(pVerrShared, num.expected=1000, num.simulated=99, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=TRUE)
-
-simprof.plot(pVerrSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+# spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
+# spistShared = otu_table(spist)
+# class(spistShared) <- "numeric"
+# 
+# spistSIMPROF <- simprof(spistShared, num.expected=1000, num.simulated=99, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=TRUE)
+# 
+# simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+# 
+# pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
+# pVerrShared = otu_table(pVerr)
+# class(pVerrShared) <- "numeric"
+# 
+# pVerrSIMPROF <- simprof(pVerrShared, num.expected=1000, num.simulated=99, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=TRUE)
+# 
+# simprof.plot(pVerrSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
 ```
 
 ### Chemical and biological correlations
@@ -324,7 +324,7 @@ physeqdfOther$tax_level_num <- as.numeric(physeqdfOther[,tax_level])
 theme_set(theme_bw())
 ggplot(physeqdfOther, aes_string(x="names", y="Abundance", fill=tax_level, order=tax_level)) +
   geom_bar(stat="identity", colour="black") +
-  geom_text(position = 'stack', aes(label = ifelse(Abundance>2, tax_level_num,''), vjust = 1.5, size = 3)) +
+  geom_text(position = 'stack', aes(label = ifelse(Abundance>2, tax_level_num,''), vjust = 1.5, size = 3)) +      # adds tax number to bars
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x') +

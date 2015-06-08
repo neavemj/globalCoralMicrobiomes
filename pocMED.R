@@ -76,6 +76,10 @@ sum(otu_table(coreTaxa) > 1) / nsamples(pVerr)
 taxLevel <- "Phylum"
 
 pVerrFiltGlom <- tax_glom(pVerrFilt, taxrank=taxLevel)
+
+pVerrFiltGlom_temp <- tapply(taxa_sums(pVerrFilt), factor(tax_table(pVerrFilt)[, taxLevel]), sum)
+
+
 pVerrdf <- psmelt(pVerrFiltGlom)
 
 # get total abundance so can make a 'other' column

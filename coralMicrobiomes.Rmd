@@ -324,8 +324,7 @@ physeqdfOther$tax_level_num <- as.numeric(physeqdfOther[,tax_level])
 theme_set(theme_bw())
 ggplot(physeqdfOther, aes_string(x="names", y="Abundance", fill=tax_level, order=tax_level)) +
   geom_bar(stat="identity", colour="black") +
-  #geom_text(position = 'stack', aes(label = tax_level_num, vjust = 2, y = Abundance), size = 3) +
-  geom_text(position = 'stack', aes(label = ifelse(Abundance>2, tax_level_num,''), vjust = 1.5, y = check_abund(Abundance)), size = 3) +
+  geom_text(position = 'stack', aes(label = ifelse(Abundance>2, tax_level_num,''), vjust = 1.5, size = 3)) +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x') +
@@ -342,15 +341,15 @@ draw_barcharts(spistFilt, "Genus") # 0.8
 
 pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
 sample_data(pVerr)$names <- factor(sample_names(pVerr), levels=unique(sample_names(pVerr)))
-pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.3, TRUE)
-draw_barcharts(pVerrFilt, "Phylum")
-draw_barcharts(pVerrFilt, "Class")
-draw_barcharts(pVerrFilt, "Genus")
+pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.6, TRUE)
+draw_barcharts(pVerrFilt, "Phylum") # 0.3
+draw_barcharts(pVerrFilt, "Class") # 0.45
+draw_barcharts(pVerrFilt, "Genus") # 0.6
 
 sea <- subset_samples(allPhylo, species=='seawater')
 sample_data(sea)$names <- factor(sample_names(sea), levels=rownames(metaFile), ordered = TRUE)
-seaFilt = filter_taxa(sea, function(x) mean(x) > 0.3, TRUE)
-draw_barcharts(seaFilt, "Phylum")
+seaFilt = filter_taxa(sea, function(x) mean(x) > 0.1, TRUE)
+draw_barcharts(seaFilt, "Phylum") # 0.1
 draw_barcharts(seaFilt, "Class")
 draw_barcharts(seaFilt, "Family")
 ```

@@ -337,21 +337,21 @@ sample_data(spist)$names <- factor(sample_names(spist), levels=rownames(metaFile
 spistFilt = filter_taxa(spist, function(x) mean(x) > 0.8, TRUE)
 draw_barcharts(spistFilt, "Phylum") # 0.2
 draw_barcharts(spistFilt, "Class") # 0.5
-draw_barcharts(spistFilt, "Genus") # 0.8
+draw_barcharts(spistFilt, "Genus") # 0.8    # 1500 x 700
 
 pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
 sample_data(pVerr)$names <- factor(sample_names(pVerr), levels=unique(sample_names(pVerr)))
-pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.6, TRUE)
+pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.45, TRUE)
 draw_barcharts(pVerrFilt, "Phylum") # 0.3
 draw_barcharts(pVerrFilt, "Class") # 0.45
-draw_barcharts(pVerrFilt, "Genus") # 0.6
+draw_barcharts(pVerrFilt, "Genus") # 0.6    # 1500 x 600
 
 sea <- subset_samples(allPhylo, species=='seawater')
 sample_data(sea)$names <- factor(sample_names(sea), levels=rownames(metaFile), ordered = TRUE)
-seaFilt = filter_taxa(sea, function(x) mean(x) > 0.1, TRUE)
+seaFilt = filter_taxa(sea, function(x) mean(x) > 0.5, TRUE)
 draw_barcharts(seaFilt, "Phylum") # 0.1
-draw_barcharts(seaFilt, "Class")
-draw_barcharts(seaFilt, "Family")
+draw_barcharts(seaFilt, "Class") # 0.1
+draw_barcharts(seaFilt, "Family")           # 1200 x 600
 ```
 
 The two corals are both dominated by Gammaproteobacteria at the higher taxonomic levels. At the genus level, there is more variability but Endozoicomonas seem to be fairly prevalent. Let's check which bacterial genera are most consistently associated with the corals and may be considered a 'core' microbiome member.

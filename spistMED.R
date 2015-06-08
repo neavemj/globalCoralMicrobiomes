@@ -114,13 +114,24 @@ physeqdfOther <- ddply(physeqdfOther, .(names), transform, pos = cumsum(Abundanc
 theme_set(theme_bw())
 ggplot(physeqdfOther, aes(x=names, y=Abundance, fill=Phylum, order = as.factor(Phylum))) +
   geom_bar(stat="identity", colour="black") +
-  geom_text(position = 'stack', aes(label = as.numeric(Phylum), vjust = 2, y = Abundance), size = 3) +
+  geom_text(position = 'stack', aes(label = ifelse(Abundance>2, as.numeric(Phylum),''), vjust = 1.5, y = check_abund(Abundance)), size = 3) +
   scale_fill_manual(values=c(ggCols, "gray")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,100)) +
   facet_grid(~site, scales='free', space='free_x') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
+Abundance = 0.5
 
+check_abund <- function(abund) {
+  if (abund > 10){  
+  return(abund)
+}
+  else {
+    return(-1)
+  }
+}
+
+check_abund(Abundance)
 
 
 # SAVE PLOT: EPS 1500 x 700

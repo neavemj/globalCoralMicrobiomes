@@ -373,7 +373,7 @@ tax_table(coreTaxa)
 sum(otu_table(coreTaxa) > 1) / nsamples(pVerr)
 ```
 
-Indeed Endozoicomonas were the most prevalent bacteria in the corals and were they only bacterial genera to occur in more than 50% of the colonies sampled. In fact, for both coral species Endozoicomonas occurred in more than 75% of colonies.
+Indeed Endozoicomonas were the most prevalent bacteria in the corals and were the only bacterial genera to occur in more than 50% of the colonies sampled. In fact, for both coral species Endozoicomonas occurred in more than 75% of colonies.
 
 Let's check if these Endozoicomonas OTUs show any patterns across the coral species or at different geographic areas.
 

@@ -1,14 +1,14 @@
 ---
 title: "coralMicrobiomes"
 author: "Matthew J. Neave"
-date: "April 22, 2015"
+date: "November 22, 2015"
 output: pdf_document
 ---
 
 
 This is an R Markdown document detailing the statistical and graphical steps for reproducting the results in:
 
-Neave, M.J., Rachmawati, R., Xun, L., Michell, C.T., Barber, P.H., Bourne, D.G., McCulloch, M.T., Apprill, A., Voolstra, C.R. A global microbiome analysis reveals that closely related corals exhibit fine-scale differences in their association with Endozoicomonas symbionts. 
+Neave, M.J., Rachmawati, R., Xun, L., Michell, C.T., Bourne, D.G., Apprill, A., Voolstra, C.R. Differential specificity between closely related corals and abundant Endozoicomonas endosymbionts across global scales
 
 ### Load required libraries  
 
@@ -214,21 +214,21 @@ This will show how the samples cluster without any a priori assumptions regardin
 Need to import the shared file containing just spist OTUs, then calcualte the simprof clusters based on the braycurtis metric. 
 
 ```{r, fig.width = 10, tidy=TRUE, tidy.opts=list(width.cutoff=80)}
-# spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
-# spistShared = otu_table(spist)
-# class(spistShared) <- "numeric"
-# 
-# spistSIMPROF <- simprof(spistShared, num.expected=1000, num.simulated=99, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=TRUE)
-# 
-# simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
-# 
-# pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
-# pVerrShared = otu_table(pVerr)
-# class(pVerrShared) <- "numeric"
-# 
-# pVerrSIMPROF <- simprof(pVerrShared, num.expected=1000, num.simulated=99, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=TRUE)
-# 
-# simprof.plot(pVerrSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
+spistShared = otu_table(spist)
+class(spistShared) <- "numeric"
+
+spistSIMPROF <- simprof(spistShared, num.expected=1000, num.simulated=99, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=TRUE)
+
+simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
+
+pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
+pVerrShared = otu_table(pVerr)
+class(pVerrShared) <- "numeric"
+
+pVerrSIMPROF <- simprof(pVerrShared, num.expected=1000, num.simulated=99, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=TRUE)
+
+simprof.plot(pVerrSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
 ```
 
 ### Chemical and biological correlations

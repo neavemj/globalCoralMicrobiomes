@@ -218,7 +218,7 @@ spist <- subset_samples(allPhylo, species=='Stylophora pistillata')
 spistShared = otu_table(spist)
 class(spistShared) <- "numeric"
 
-spistSIMPROF <- simprof(spistShared, num.expected=1000, num.simulated=99, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=TRUE)
+spistSIMPROF <- simprof(spistShared, num.expected=1000, num.simulated=999, method.cluster='average', method.distance='braycurtis', method.transform='squareroot', alpha=0.05, sample.orientation='row', silent=TRUE)
 
 simprof.plot(spistSIMPROF, leafcolors=NA, plot=TRUE, fill=TRUE, leaflab="perpendicular", siglinetype=1)
 

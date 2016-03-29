@@ -182,6 +182,25 @@ ggplot(data = allAlphaPlot2$data) +
   theme(axis.text.x = element_text(angle = 90)) +
   facet_wrap(~variable, scales='free_y') +
   scale_x_discrete(limits=c("Stylophora pistillata", "Pocillopora verrucosa", "seawater"))
+
+# get some numbers for this graph
+
+allAlphaPlot2(allAlphaPlot2$data$variable == "chao1")
+
+alpha_data = allAlphaPlot2$data
+chao = subset(alpha_data, variable == "Chao1")
+chao_spist = subset(chao, species == "Stylophora pistillata")
+max(chao_spist$value)
+min(chao_spist$value)
+mean(chao_spist$value)
+
+chao_pverr = subset(chao, species == "Pocillopora verrucosa")
+max(chao_pverr$value)
+min(chao_pverr$value)
+mean(chao_pverr$value)
+
+mean(c(chao_spist$value, chao_pverr$value))
+
 ```
 
 Check for significant differences in the alpha diversity measures using a kruskal-wallis test and a dunn post-hoc test to check which specific groups were different
@@ -339,12 +358,27 @@ draw_barcharts(spistFilt, "Phylum") # 0.2
 draw_barcharts(spistFilt, "Class") # 0.5
 draw_barcharts(spistFilt, "Genus") # 0.8    # 1500 x 700
 
+spist_psuedo <- subset_taxa(spist, Genus=='Pseudomonas')
+spist_psuedo_ning <- subset_samples(spist_psuedo, site=='Ningaloo')
+spist_ps_ng_glom <- tax_glom(spist_psuedo_ning, taxrank="Genus")
+max(otu_table(spist_ps_ng_glom))
+min(otu_table(spist_ps_ng_glom))
+mean(otu_table(spist_ps_ng_glom))
+
 pVerr <- subset_samples(allPhylo, species=='Pocillopora verrucosa')
 sample_data(pVerr)$names <- factor(sample_names(pVerr), levels=unique(sample_names(pVerr)))
-pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.45, TRUE)
+pVerrFilt = filter_taxa(pVerr, function(x) mean(x) > 0.6, TRUE)
 draw_barcharts(pVerrFilt, "Phylum") # 0.3
 draw_barcharts(pVerrFilt, "Class") # 0.45
 draw_barcharts(pVerrFilt, "Genus") # 0.6    # 1500 x 600
+
+pVerr_p <- subset_taxa(pVerr, Genus=='Prochlorococcus')
+pVerr_p_ind <- subset_samples(pVerr_p, site=='Indonesia')
+pVerr_p_ind_glom <- tax_glom(pVerr_p_ind, taxrank="Genus")
+pVerr_p_ind_glom_filt = prune_samples(sample_sums(pVerr_p_ind_glom) > 5, pVerr_p_ind_glom)
+max(otu_table(pVerr_p_ind_glom_filt))
+min(otu_table(pVerr_p_ind_glom_filt))
+mean(otu_table(pVerr_p_ind_glom_filt))
 
 sea <- subset_samples(allPhylo, species=='seawater')
 sample_data(sea)$names <- factor(sample_names(sea), levels=rownames(metaFile), ordered = TRUE)
